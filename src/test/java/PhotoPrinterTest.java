@@ -10,7 +10,8 @@ import java.time.format.DateTimeFormatter;
 public class PhotoPrinterTest {
 
     @Test
-    void print_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
+    void createFrame_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
+
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample1.jpg";
@@ -35,7 +36,7 @@ public class PhotoPrinterTest {
     }
 
     @Test
-    void print_invalidPhoto_expectFileNotFoundException() {
+    void createFrame_invalidPhoto_expectFileNotFoundException() {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample0.jpg"; // File does not exist
