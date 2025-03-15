@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 
-
 /**
  * PhotoPrinter class creates a PhotoFrame with Jlabels based on Photo details.
  * It can display the PhotoFrame in a GUI window.
  * It loads an image, displays its caption, location, and formatted date.
  */
 public class PhotoPrinter {
+
     private static final String locationPinIconPath = "./data/assets/photo_Location_Pin.png";
 
     /**
@@ -77,7 +77,7 @@ public class PhotoPrinter {
     /**
      * Display the Photo in a JFrame window with its Jlabels.
      *
-     * @param photoFrame
+     * @param photoFrame photoFrame object containing the Jframe to be displayed.
      */
     public static void display(PhotoFrame photoFrame) {
         JFrame frame = photoFrame.getFrame();

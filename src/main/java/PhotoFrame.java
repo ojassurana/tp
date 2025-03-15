@@ -5,6 +5,7 @@ import javax.swing.JLabel;
  * PhotoFrame class stores the Jlabels and Jframe of a photo.
  */
 public class PhotoFrame {
+
     private JFrame frame;
     private JLabel captionLabel;
     private JLabel locationDateLabel;
