@@ -5,11 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.awt.GraphicsEnvironment;
 
 public class PhotoPrinterTest {
 
     @Test
     void print_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.setProperty("java.awt.headless", "true");
+        }
+
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample1.jpg";
@@ -35,6 +40,10 @@ public class PhotoPrinterTest {
 
     @Test
     void print_invalidPhoto_expectFileNotFoundException() {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.setProperty("java.awt.headless", "true");
+        }
+
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample0.jpg"; // File does not exist
