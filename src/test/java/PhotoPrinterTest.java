@@ -1,28 +1,15 @@
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.GraphicsEnvironment;
 
-import org.junit.jupiter.api.BeforeAll;
-
-
 public class PhotoPrinterTest {
-
-    @BeforeAll
-    public static void setup() {
-        if (GraphicsEnvironment.isHeadless()) {
-            System.setProperty("java.awt.headless", "true");
-        }
-    }
 
     @Test
     void print_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
-
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample1.jpg";

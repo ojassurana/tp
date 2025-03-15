@@ -27,10 +27,6 @@ public class PhotoPrinter {
      * @return PhotoFrame object containing Jlabels and Jframe of the printed photo.
      */
     public static PhotoFrame print(Photo photo) throws FileNotFoundException {
-        if (GraphicsEnvironment.isHeadless()) {
-            System.setProperty("java.awt.headless", "true");
-        }
-        
         String filePath = photo.getFilePath();
         if (!(new File(filePath).exists())) {
             throw new FileNotFoundException("File does not exist: " + filePath);
