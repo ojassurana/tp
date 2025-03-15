@@ -17,6 +17,9 @@ dependencies {
 test {
     useJUnitPlatform()
 
+    // Enable headless mode for tests
+    systemProperty "java.awt.headless", "true"
+
     testLogging {
         events "passed", "skipped", "failed"
 
