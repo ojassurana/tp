@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
+import java.awt.GraphicsEnvironment;
 
 /**
  * PhotoPrinter class displays photo details in a GUI window.
@@ -69,7 +70,10 @@ public class PhotoPrinter {
 
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        if (!GraphicsEnvironment.isHeadless()) {
+            // Frame is not displayed if running in headless testing environment
+            frame.setVisible(true);
+        }
 
         return new PhotoFrame(frame, captionLabel, locationLabel);
     }

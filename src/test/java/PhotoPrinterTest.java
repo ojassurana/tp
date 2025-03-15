@@ -11,9 +11,6 @@ public class PhotoPrinterTest {
 
     @Test
     void print_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
-        if (GraphicsEnvironment.isHeadless()) {
-            System.setProperty("java.awt.headless", "true");
-        }
 
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
