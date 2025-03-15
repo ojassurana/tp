@@ -2,7 +2,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /**
- * PhotoFrame class stores the Jlabels and Jframe of a printed photo.
+ * PhotoFrame class stores the Jlabels and Jframe of a photo.
  */
 public class PhotoFrame {
     private JFrame frame;
@@ -15,6 +15,10 @@ public class PhotoFrame {
         this.locationDateLabel = locationDateLabel;
     }
 
+    public JFrame getFrame() {
+        return this.frame;
+    }
+
     public String getTitle() {
         return frame.getTitle();
     }
@@ -25,5 +29,9 @@ public class PhotoFrame {
 
     public JLabel getLocationDateLabel() {
         return locationDateLabel;
+    }
+
+    public void closeOperation() {
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

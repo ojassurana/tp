@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +21,7 @@ public class PhotoPrinterTest {
         Photo photo = new Photo(filePath, photoName, caption, location, datetime);
 
         try {
-            PhotoFrame photoFrame = PhotoPrinter.print(photo);
+            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
             // Check photoName with frame title
             assertEquals(photoName, photoFrame.getTitle());
             // Check caption with frame caption label
@@ -35,10 +37,6 @@ public class PhotoPrinterTest {
 
     @Test
     void print_invalidPhoto_expectFileNotFoundException() {
-        if (GraphicsEnvironment.isHeadless()) {
-            System.setProperty("java.awt.headless", "true");
-        }
-
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample0.jpg"; // File does not exist
@@ -46,6 +44,6 @@ public class PhotoPrinterTest {
         String caption = "This is a photo of my friends and I in Osaka.";
         String location = "Dotonbori River";
         Photo photo = new Photo(filePath, photoName, caption, location, datetime);
-        assertThrows(FileNotFoundException.class, () -> PhotoPrinter.print(photo));
+        assertThrows(FileNotFoundException.class, () -> PhotoPrinter.createFrame(photo));
     }
 }

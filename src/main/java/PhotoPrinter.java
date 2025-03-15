@@ -11,22 +11,23 @@ import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
-import java.awt.GraphicsEnvironment;
+
 
 /**
- * PhotoPrinter class displays photo details in a GUI window.
+ * PhotoPrinter class creates a PhotoFrame with Jlabels based on Photo details.
+ * It can display the PhotoFrame in a GUI window.
  * It loads an image, displays its caption, location, and formatted date.
  */
 public class PhotoPrinter {
     private static final String locationPinIconPath = "./data/assets/photo_Location_Pin.png";
 
     /**
-     * Display the photo in a JFrame window.
+     * Returns a PhotoFrame object with Jlabels based on Photo details.
      *
-     * @param photo The photo containing image path, caption, location, and datetime to be displayed.
+     * @param photo The photo containing image path, caption, location, and datetime.
      * @return PhotoFrame object containing Jlabels and Jframe of the printed photo.
      */
-    public static PhotoFrame print(Photo photo) throws FileNotFoundException {
+    public static PhotoFrame createFrame(Photo photo) throws FileNotFoundException {
         String filePath = photo.getFilePath();
         if (!(new File(filePath).exists())) {
             throw new FileNotFoundException("File does not exist: " + filePath);
@@ -70,11 +71,37 @@ public class PhotoPrinter {
 
         frame.pack();
         frame.setLocationRelativeTo(null);
-        if (!GraphicsEnvironment.isHeadless()) {
-            // Frame is not displayed if running in headless testing environment
-            frame.setVisible(true);
-        }
-
         return new PhotoFrame(frame, captionLabel, locationLabel);
+    }
+
+    /**
+     * Display the Photo in a JFrame window with its Jlabels.
+     *
+     * @param photoFrame
+     */
+    public static void display(PhotoFrame photoFrame) {
+        JFrame frame = photoFrame.getFrame();
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
+                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
+        String filePath = "./data/photos/sample1.jpg";
+        String photoName = "First night in Osaka";
+        String caption = "This is a photo of my friends and I in Osaka.";
+        String location = "Dotonbori River";
+        // Creates Photo
+        Photo photo = new Photo(filePath, photoName, caption, location, datetime);
+
+        try {
+            // Create PhotoFrame
+            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
+            // Display PhotoFrame
+            PhotoPrinter.display(photoFrame);
+            photoFrame.closeOperation(); // Exit program when Jframe window is closed
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

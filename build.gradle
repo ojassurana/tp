@@ -26,11 +26,6 @@ test {
         showStackTraces true
         showStandardStreams = false
     }
-    // JVM arguments for X11
-    jvmArgs = [
-            '-Djava.awt.headless=false', // Explicitly disable headless mode
-            '-Dawt.toolkit=sun.awt.X11.XToolkit'
-            ]
 }
 
 application {
