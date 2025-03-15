@@ -31,18 +31,23 @@ jobs:
           java-package: jdk+fx
 
       # Add Xvfb setup for Linux to create a dummy display
-      - name: Install Xvfb
+      - name: Install Xvfb (for GUI-based tests on Linux)
+        if: runner.os == 'Linux'
         run: sudo apt-get install -y xvfb
 
-      - name: Set up Xvfb and DISPLAY
+      - name: Start Virtual Display (Xvfb) on Linux
+        if: runner.os == 'Linux'
+        run: Xvfb :99 -screen 0 1024x768x24 & echo "Xvfb started"
+
+      - name: Verify Xvfb is Running
+        if: runner.os == 'Linux'
+        run: ps aux | grep Xvfb
+
+      - name: Build and check with Gradle using Xvfb
         if: runner.os == 'Linux'
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1024x768x24 &
-          sleep 5 # Give it a moment to start the virtual display
-
-      - name: Disable headless mode
-        run: export _JAVA_OPTIONS="-Djava.awt.headless=false"
+          ./gradlew check
 
       - name: Build and check with Gradle
         run: ./gradlew check
