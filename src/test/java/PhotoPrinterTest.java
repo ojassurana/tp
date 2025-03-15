@@ -25,7 +25,8 @@ public class PhotoPrinterTest {
             // Check caption with frame caption label
             assertEquals(caption, photoFrame.getCaptionLabel().getText());
             // Check location & datetime with frame locationDateLabel
-            String expectedLocationDate = location + " | " + datetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
+            String expectedLocationDate = location + " | "
+                    + datetime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
             assertEquals(expectedLocationDate, photoFrame.getLocationDateLabel().getText());
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
@@ -33,7 +34,7 @@ public class PhotoPrinterTest {
     }
 
     @Test
-    void print_InvalidPhoto_expectFileNotFoundException() {
+    void print_invalidPhoto_expectFileNotFoundException() {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample0.jpg"; // File does not exist
