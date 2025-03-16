@@ -99,14 +99,6 @@ public class Parser {
                         this.hashmap.put("caption", part.substring(2).trim());
                     }
                 }
-//                String photoname = this.hashmap.getOrDefault("photoname", "Unknown");
-//                String filepath= this.hashmap.getOrDefault("filepath", "No Description Provided");
-//                String location = this.hashmap.getOrDefault("location", "No Location Provided");
-//                String caption = this.hashmap.getOrDefault("caption", "No Caption Provided");
-//                System.out.println("PhotoName: " + photoname);
-//                System.out.println("filepath: " + filepath);
-//                System.out.println("Location: " + location);
-//                System.out.println("Caption: " + caption);
                 break;
             case "delete_trip":
             case "delete_photo":

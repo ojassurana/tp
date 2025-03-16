@@ -1,9 +1,4 @@
 package seedu.duke;
-
-
-import Exceptions.*;
-import trip.Trip;
-import parser.Parser;
 import java.util.Scanner;
 
 
