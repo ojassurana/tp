@@ -1,13 +1,11 @@
 package trip;
 
 public class Trip {
-    public int id;
     public String name;
     public String description;
     public String location;
 
-    public Trip(int id, String name, String description, String location) {
-        this.id = id;
+    public Trip(String name, String description, String location) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -15,6 +13,6 @@ public class Trip {
 
     @Override
     public String toString() {
-        return id + ". " + name + " - " + description + " (" + location + ")";
+        return name + " - " + description + " (" + location + ")";
     }
 }
