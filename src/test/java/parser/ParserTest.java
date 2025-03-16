@@ -1,11 +1,14 @@
 package parser;
 
-import Exceptions.*;
-
+import exception.InvalidCommandException;
+import exception.InvalidPhotoFormatException;
+import exception.InvalidSelectFormatException;
+import exception.InvalidTripFormatException;
+import exception.InvalidDeleteFormatException;
 import org.junit.jupiter.api.Test;
 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ParserTest {
 
@@ -33,7 +36,8 @@ class ParserTest {
             String location = "Dotonbori River";
 
             Parser parser = new Parser("add_photo d# 2022-12-23 8:23PM f# ./data/photos/sample1.jpg " +
-                    "n# First night in Osaka c# Skiing in Hokkaido c# This is a photo of my friends and I in Osaka. l# Dotonbori River");
+                    "n# First night in Osaka c# Skiing in Hokkaido c# This is a " +
+                    "photo of my friends and I in Osaka. l# Dotonbori River");
             assertEquals("./data/photos/sample1.jpg", parser.getHashmap().get("filepath"));
             assertEquals("This is a photo of my friends and I in Osaka.", parser.getHashmap().get("caption"));
             assertEquals("Dotonbori River", parser.getHashmap().get("location"));
