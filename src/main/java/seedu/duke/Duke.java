@@ -1,6 +1,6 @@
 package seedu.duke;
-import java.util.Scanner;
 
+import java.util.Scanner;
 
 public class Duke {
     /**
