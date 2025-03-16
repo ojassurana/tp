@@ -4,7 +4,6 @@ package seedu.duke;
 import Exceptions.*;
 import trip.Trip;
 import parser.Parser;
-
 import java.util.Scanner;
 
 
@@ -22,25 +21,6 @@ public class Duke {
         System.out.println("What is your name?");
 
         Scanner in = new Scanner(System.in);
-        String userInput;
-        // create scanner loop
-        while (true) {
-            userInput = in.nextLine();
-            System.out.println(1);
-            if (userInput.equals("bye")){
-                break;
-            }
-            try {
-                Parser parser = new Parser(userInput);
-                for (String i : parser.getHashmap().keySet()) {
-                    System.out.println("key: " + i + " value: " + parser.getHashmap().get(i));
-                }
-            } catch (InvalidCommandException | InvalidTripFormatException | InvalidDeleteFormatException
-                     | InvalidSelectFormatException | InvalidPhotoFormatException e) {
-                System.out.println(2);
-            }
-
-        }
-        System.out.println("Hello ");
+        System.out.println("Hello " + in.nextLine());
     }
 }

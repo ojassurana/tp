@@ -2,12 +2,12 @@ package parser;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import Exceptions.*;
 //import java.util.regex.*;
 
 public class Parser {
-    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete_trip", "delete_photo",
-            "view_trip", "view_photo", "select_trip", "select_photo"}; // all possible command
+    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete_trip", "delete_photo", "view_trip", "view_photo", "select_trip", "select_photo"}; // all possible command
     protected String commandText;
     protected String detail;
     protected Map<String, String> hashmap = new HashMap<>();
@@ -19,7 +19,6 @@ public class Parser {
         if (parsedCommand.length > 1) {
             this.detail = parsedCommand[1];
         }
-        System.out.println(3);
         this.checkDetail();
         this.convertToHashmap();
     }
@@ -65,7 +64,7 @@ public class Parser {
 
     public void convertToHashmap() {
         String[] parts;
-        switch (this.commandText){
+        switch (this.commandText) {
             case "view_trip":
             case "view_photo":
             case "bye":
@@ -86,24 +85,26 @@ public class Parser {
                 break;
             case "add_photo":
                 this.hashmap.put("command", this.commandText);
-                parts = this.detail.split(" (?=[ndlc]#)");
+                parts = this.detail.split(" (?=[ndlcf]#)");
                 for (String part : parts) {
                     if (part.startsWith("n#")) {
-                        this.hashmap.put("photoname", part.substring(2));
-                    } else if (part.startsWith("d#")) {
-                        this.hashmap.put("directory", part.substring(2));
+                        this.hashmap.put("photoname", part.substring(2).trim());
+                    } else if (part.startsWith("f#")) {
+                        this.hashmap.put("filepath", part.substring(2).trim());
                     } else if (part.startsWith("l#")) {
-                        this.hashmap.put("location", part.substring(2));
+                        this.hashmap.put("location", part.substring(2).trim());
                     } else if (part.startsWith("c#")) {
-                        this.hashmap.put("caption", part.substring(2));
+                        this.hashmap.put("caption", part.substring(2).trim());
+                    } else if (part.startsWith("d#")) {
+                        this.hashmap.put("caption", part.substring(2).trim());
                     }
                 }
 //                String photoname = this.hashmap.getOrDefault("photoname", "Unknown");
-//                String directory= this.hashmap.getOrDefault("directory", "No Description Provided");
+//                String filepath= this.hashmap.getOrDefault("filepath", "No Description Provided");
 //                String location = this.hashmap.getOrDefault("location", "No Location Provided");
 //                String caption = this.hashmap.getOrDefault("caption", "No Caption Provided");
 //                System.out.println("PhotoName: " + photoname);
-//                System.out.println("Directory: " + directory);
+//                System.out.println("filepath: " + filepath);
 //                System.out.println("Location: " + location);
 //                System.out.println("Caption: " + caption);
                 break;
@@ -112,7 +113,7 @@ public class Parser {
             case "select_trip":
             case "select_photo":
                 this.hashmap.put("command", this.commandText);
-                this.hashmap.put("id",this.detail);
+                this.hashmap.put("id", this.detail);
                 break;
 
         }
