@@ -2,7 +2,9 @@ package trip;
 
 public class Trip {
     public int id;
-    public String name, description, location;
+    public String name;
+    public String description;
+    public String location;
 
     public Trip(int id, String name, String description, String location) {
         this.id = id;
