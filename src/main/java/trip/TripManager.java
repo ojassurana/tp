@@ -4,16 +4,19 @@ import java.util.ArrayList;
 
 public class TripManager {
     private final List<Trip> trips = new ArrayList<>();
-    private int nextId = 1;
     private Trip selectedTrip = null;
 
     public void addTrip(String name, String description, String location) {
-        trips.add(new Trip(nextId++, name, description, location));
+        trips.add(new Trip(name, description, location));
         System.out.println("Trip added successfully.");
     }
 
-    public void deleteTrip(int id) {
-        trips.removeIf(trip -> trip.id == id);
+    public void deleteTrip(int index) {
+        if (index < 0 || index >= trips.size()) {
+            System.out.println("Invalid trip index.");
+            return;
+        }
+        trips.remove(index);
         System.out.println("Trip deleted successfully.");
     }
 
@@ -21,20 +24,18 @@ public class TripManager {
         if (trips.isEmpty()) {
             System.out.println("No trips available.");
         } else {
-            for (Trip trip : trips) {
-                System.out.println(trip);
+            for (int i = 0; i < trips.size(); i++) {
+                System.out.println(i + ": " + trips.get(i)); // Display index with trip details
             }
         }
     }
 
-    public void selectTrip(int id) {
-        for (Trip trip : trips) {
-            if (trip.id == id) {
-                selectedTrip = trip;
-                System.out.println("Selected trip: " + trip.name);
-                return;
-            }
+    public void selectTrip(int index) {
+        if (index < 0 || index >= trips.size()) {
+            System.out.println("Invalid trip index.");
+            return;
         }
-        System.out.println("Trip not found.");
+        selectedTrip = trips.get(index);
+        System.out.println("Selected trip: " + selectedTrip.name);
     }
 }
