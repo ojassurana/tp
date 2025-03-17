@@ -1,75 +1,44 @@
 package seedu.duke;
 
-import exception.InvalidCommandException;
-import exception.InvalidPhotoFormatException;
-import exception.InvalidSelectFormatException;
-import exception.InvalidTripFormatException;
-import exception.InvalidDeleteFormatException;
+import exception.TravelDiaryException;
 import parser.Parser;
 import trip.TripManager;
-
-import java.util.Scanner;
+import ui.Ui;
 
 public class TravelDiary {
-    /**
-     * Main entry-point for the java.duke.Duke application.
-     */
-    public static void main(String[] args) {
-        String logo = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        System.out.println("Hello from\n" + logo);
-        System.out.println("What is your name?");
-
-        Scanner in = new Scanner(System.in);
-        String userString;
-        Parser parser;
+    // FSM means finite state machine. It tracks which part of the code the user is in
+    // FSM Manual:
+    // 0 -> User is yet to select a trip
+    // 1 -> User is inside a trip right now
+    public static int fsmValue = 0;
+    public static void main(String[] args) throws TravelDiaryException {
+        // int fsm_value = 0;
+        Ui ui = new Ui();
         TripManager tripManager = new TripManager();
-        loop:while (true) {
-            try {
-                userString = in.nextLine();
-                parser = new Parser(userString);
-                System.out.println(parser.getHashmap().getOrDefault("command","none"));
-                switch (parser.getHashmap().get("command")) {
-                case "bye":
-                    break loop;
-                case "view_trip":
-                    tripManager.viewTrips();
-                    break;
-                case "view_photo":
-                    // waiting for album
-                    break;
-                case "select_trip":
-                    tripManager.selectTrip(Integer.parseInt(parser.getHashmap().get("index")));
-                    break;
-                case "add_trip":
-                    tripManager.addTrip(parser.getHashmap().get("name"),
-                            parser.getHashmap().get("description"), parser.getHashmap().get("location") );
-                    break;
-                case "select_photo":
-                    // waiting for album
-                    break;
-                case "delete_trip":
-                    tripManager.deleteTrip(Integer.parseInt(parser.getHashmap().get("index")));
-                    break;
-                case "delete_photo":
-                    // waiting for album
-                    break;
-                default:
-                    System.out.println(1);
-                    break;
-                }
-
-
-
-            } catch (InvalidTripFormatException | InvalidSelectFormatException | InvalidCommandException |
-                     InvalidPhotoFormatException | InvalidDeleteFormatException e) {
-                throw new RuntimeException(e);
-            }
-
+        ui.showWelcome();
+        while (!processCommand(ui, tripManager)){
+            ui.showLine();
         }
-        System.out.println("Hello " + in.nextLine());
+    }
+
+    private static boolean processCommand(Ui ui, TripManager tripManager) throws TravelDiaryException {
+        String input = ui.readInput().trim();
+        Parser parser;
+        try {
+            parser = new Parser(input);
+        } catch (TravelDiaryException e) {
+            ui.showToUser(e.getMessage());
+            return false;
+        }
+        ui.showLine();
+        try {
+            parser.execute(tripManager, fsmValue);
+            fsmValue = parser.fsmValue;
+        } catch (TravelDiaryException e) {
+            ui.showToUser(e.getMessage());
+            return false;
+        }
+
+        return parser.isExit;
     }
 }

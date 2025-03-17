@@ -38,4 +38,8 @@ public class TripManager {
         selectedTrip = trips.get(index);
         System.out.println("Selected trip: " + selectedTrip.name);
     }
+
+    public Trip getSelectedTrip() {
+        return this.selectedTrip;
+    }
 }
