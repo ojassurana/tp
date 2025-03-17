@@ -1,6 +1,10 @@
 package seedu.duke;
 
-import exception.*;
+import exception.InvalidCommandException;
+import exception.InvalidPhotoFormatException;
+import exception.InvalidSelectFormatException;
+import exception.InvalidTripFormatException;
+import exception.InvalidDeleteFormatException;
 import parser.Parser;
 import trip.TripManager;
 
