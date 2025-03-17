@@ -43,4 +43,9 @@ public class Photo {
     public LocalDateTime getDatetime() {
         return this.datetime;
     }
+
+    @Override
+    public String toString() {
+        return photoName;
+    }
 }
