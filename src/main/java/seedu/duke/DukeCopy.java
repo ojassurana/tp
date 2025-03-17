@@ -45,7 +45,8 @@ public class DukeCopy {
                     tripManager.selectTrip(Integer.parseInt(parser.getHashmap().get("index")));
                     break;
                 case "add_trip":
-                    tripManager.addTrip(parser.getHashmap().get("name"), parser.getHashmap().get("description"), parser.getHashmap().get("location") );
+                    tripManager.addTrip(parser.getHashmap().get("name"),
+                            parser.getHashmap().get("description"), parser.getHashmap().get("location") );
                     break;
                 case "select_photo":
                     // waiting for album
