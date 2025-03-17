@@ -90,6 +90,7 @@ public class Parser {
                     this.hashmap.put("location", part.substring(2).trim());
                 }
             }
+
             break;
         case "add_photo":
             this.hashmap.put("command", this.commandText);
@@ -113,7 +114,7 @@ public class Parser {
         case "select_trip":
         case "select_photo":
             this.hashmap.put("command", this.commandText);
-            this.hashmap.put("id", this.detail);
+            this.hashmap.put("index", this.detail);
             break;
         default:
 
