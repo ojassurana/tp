@@ -1,10 +1,6 @@
 package parser;
 
-import exception.InvalidCommandException;
-import exception.InvalidPhotoFormatException;
-import exception.InvalidSelectFormatException;
-import exception.InvalidTripFormatException;
-import exception.InvalidDeleteFormatException;
+import exception.TravelDiaryException;
 import org.junit.jupiter.api.Test;
 
 
@@ -20,8 +16,7 @@ class ParserTest {
             assertEquals("Skiing in Hokkaido", parser.getHashmap().get("description"));
             assertEquals("Japan", parser.getHashmap().get("location"));
             assertEquals("Japan Trip", parser.getHashmap().get("name"));
-        } catch (InvalidTripFormatException | InvalidSelectFormatException | InvalidCommandException |
-                 InvalidPhotoFormatException | InvalidDeleteFormatException e) {
+        } catch (TravelDiaryException e) {
             System.out.println("error encountered");
         }
     }
@@ -43,8 +38,7 @@ class ParserTest {
             assertEquals("Dotonbori River", parser.getHashmap().get("location"));
             assertEquals("First night in Osaka", parser.getHashmap().get("photoname"));
             assertEquals("add_photo", parser.getHashmap().get("command"));
-        } catch (InvalidTripFormatException | InvalidSelectFormatException | InvalidCommandException |
-                 InvalidPhotoFormatException | InvalidDeleteFormatException e) {
+        } catch (TravelDiaryException e) {
             System.out.println("error encountered");
         }
     }
