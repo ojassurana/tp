@@ -16,8 +16,7 @@ class ParserTest {
             assertEquals("Skiing in Hokkaido", parser.getHashmap().get("description"));
             assertEquals("Japan", parser.getHashmap().get("location"));
             assertEquals("Japan Trip", parser.getHashmap().get("name"));
-        } catch (TravelDiaryException | InvalidSelectFormatException | InvalidCommandException |
-                 InvalidPhotoFormatException | InvalidDeleteFormatException e) {
+        } catch (TravelDiaryException e) {
             System.out.println("error encountered");
         }
     }
@@ -39,8 +38,7 @@ class ParserTest {
             assertEquals("Dotonbori River", parser.getHashmap().get("location"));
             assertEquals("First night in Osaka", parser.getHashmap().get("photoname"));
             assertEquals("add_photo", parser.getHashmap().get("command"));
-        } catch (TravelDiaryException | InvalidSelectFormatException | InvalidCommandException |
-                 InvalidPhotoFormatException | InvalidDeleteFormatException e) {
+        } catch (TravelDiaryException e) {
             System.out.println("error encountered");
         }
     }
