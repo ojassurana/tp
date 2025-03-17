@@ -34,7 +34,7 @@ public class TravelDiary {
         try {
             parser.execute(tripManager, fsmValue);
             fsmValue = parser.fsmValue;
-        } catch (TravelDiaryException e) {
+        } catch (TravelDiaryException | NumberFormatException e) {
             ui.showToUser(e.getMessage());
             return false;
         }

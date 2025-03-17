@@ -1,8 +1,10 @@
 package album;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +18,7 @@ class AlbumTest {
         // Test adding a photo using the overload with datetime
         Album album = new Album();
         LocalDateTime dt = LocalDateTime.of(2023, 1, 1, 12, 0);
-        album.addPhoto("path/to/photo.jpg", "MyPhoto", "A beautiful scene", "Paris", dt);
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "A beautiful scene", "Paris", dt));
 
         // Capture the output from viewPhotos
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -35,8 +37,7 @@ class AlbumTest {
     void testAddPhoto() {
         // Test adding a photo using the overload without specifying a datetime
         Album album = new Album();
-        album.addPhoto("path/to/photo2.jpg", "Photo2", "Sunset", "New York");
-
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo2.jpg", "Photo2", "Sunset", "New York"));
         // Capture the output from viewPhotos
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -53,8 +54,8 @@ class AlbumTest {
     @Test
     void deletePhoto() {
         Album album = new Album();
-        album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption", "Paris", LocalDateTime.of(2023, 1, 1, 12, 0));
-
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption",
+                "Paris", LocalDateTime.of(2023, 1, 1, 12, 0)));
         // Capture output for valid deletion
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -91,9 +92,11 @@ class AlbumTest {
         assertTrue(output.contains("No photos found."), "View photos should indicate no photos found.");
 
         // Test viewPhotos on a non-empty album
-        album.addPhoto("path/to/photo1.jpg", "Photo1", "Caption1", "London", LocalDateTime.of(2023, 2, 2, 15, 0));
-        album.addPhoto("path/to/photo2.jpg", "Photo2", "Caption2", "Tokyo", LocalDateTime.of(2023, 3, 3, 16, 0));
-
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo1.jpg", "Photo1", "Caption1",
+                "London", LocalDateTime.of(2023, 2, 2, 15, 0)));
+        assertDoesNotThrow(() ->
+            album.addPhoto("path/to/photo2.jpg", "Photo2", "Caption2",
+                    "Tokyo", LocalDateTime.of(2023, 3, 3, 16, 0)));
         outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         album.viewPhotos();
@@ -107,8 +110,8 @@ class AlbumTest {
     @Test
     void selectPhoto() {
         Album album = new Album();
-        album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption", "Paris", LocalDateTime.of(2023, 1, 1, 12, 0));
-
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption",
+                "Paris", LocalDateTime.of(2023, 1, 1, 12, 0)));
         // Capture output for valid photo selection
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;

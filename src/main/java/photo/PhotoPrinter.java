@@ -1,5 +1,7 @@
 package photo;
 
+import exception.TravelDiaryException;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -86,7 +88,7 @@ public class PhotoPrinter {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TravelDiaryException {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
         String filePath = "./data/photos/sample1.jpg";

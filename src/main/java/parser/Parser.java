@@ -22,13 +22,12 @@ public class Parser {
     }
 
     public Parser(String userString) throws TravelDiaryException {
-        commandChecker(userString);
         String[] parsedCommand = userString.split(" ", 2);
         this.commandText = parsedCommand[0];
+        commandChecker(this.commandText);
         if (parsedCommand.length > 1) {
             this.detail = parsedCommand[1];
         }
-        this.checkEmpty();
         this.convertToHashmap();
     }
 
@@ -43,8 +42,7 @@ public class Parser {
     public static void commandChecker(String userString) throws TravelDiaryException {
         boolean isValid = false;
         for (String s : COMMAND_ARRAY) {
-            if (userString.startsWith(s + " ") || s.equals("bye") || s.equals("view_trip")
-                    || s.equals("view_photo") || s.equals("menu")) {
+            if (userString.equals(s)) {
                 isValid = true;
                 break;
             }
@@ -52,37 +50,26 @@ public class Parser {
         if (!isValid) {
             throw new TravelDiaryException();
         }
-
     }
 
-    public void checkEmpty() throws TravelDiaryException {
-        if (this.detail == null) {
-            switch (this.commandText) {
-            case "add_trip":
-                throw new TravelDiaryException();
-            case "add_photo":
-                throw new TravelDiaryException();
-            case "delete_trip":
-            case "delete_photo":
-                throw new TravelDiaryException();
-            case "select_photo":
-            case "select_trip":
-                throw new TravelDiaryException();
-            default:
-            }
+    public void isEmptyDetail(boolean expected) throws TravelDiaryException{
+        if ((null == this.detail) != expected){
+            throw new TravelDiaryException();
         }
     }
 
-    public void convertToHashmap() {
+    public void convertToHashmap() throws TravelDiaryException {
         String[] parts;
         switch (this.commandText) {
         case "view_trip":
         case "view_photo":
         case "bye":
         case "menu":
+            isEmptyDetail(true);
             this.hashmap.put("command", this.commandText);
             break;
         case "add_trip":
+            isEmptyDetail(false);
             this.hashmap.put("command", this.commandText);
             parts = this.detail.split(" (?=[ndl]#)");
             for (String part : parts) {
@@ -97,6 +84,7 @@ public class Parser {
 
             break;
         case "add_photo":
+            isEmptyDetail(false);
             this.hashmap.put("command", this.commandText);
             parts = this.detail.split(" (?=[ndlcf]#)");
             for (String part : parts) {
@@ -115,6 +103,7 @@ public class Parser {
         case "delete_photo":
         case "select_trip":
         case "select_photo":
+            isEmptyDetail(false);
             this.hashmap.put("command", this.commandText);
             this.hashmap.put("index", this.detail);
             break;
@@ -123,9 +112,10 @@ public class Parser {
         }
     }
 
-    public void execute(TripManager tripManager, int fsmValue) throws TravelDiaryException {
+    public void execute(TripManager tripManager, int fsmValue) throws TravelDiaryException,NumberFormatException {
         this.fsmValue = fsmValue;
         System.out.println(fsmValue);
+
         if (this.fsmValue == 0) {
             switch (this.getHashmap().get("command")) {
             case "bye":
@@ -149,27 +139,26 @@ public class Parser {
                 throw new TravelDiaryException();
             }
         } else if (this.fsmValue == 1) {
-            String command = this.getHashmap().get("command") + "";
-            switch (command) {
+            switch (this.getHashmap().get("command")) {
             case "bye":
                 this.isExit = true;
                 break;
             case "add_photo":
+                for (String key: this.hashmap.keySet()){
+                    System.out.println(key + ": " + this.hashmap.get(key));
+                }
                 tripManager.getSelectedTrip().album.addPhoto(this.getHashmap().get("filepath"),
-                        this.getHashmap().get("photoname"), this.getHashmap().get("photoname"),
+                        this.getHashmap().get("photoname"), this.getHashmap().get("caption"),
                         this.getHashmap().get("location"));
                 break;
             case "select_photo":
-                // waiting for album
                 tripManager.getSelectedTrip().album.selectPhoto(Integer.parseInt(this.getHashmap().get("index")));
                 break;
             case "view_photo":
                 tripManager.getSelectedTrip().album.viewPhotos();
-                // waiting for album
                 break;
             case "delete_photo":
                 tripManager.getSelectedTrip().album.deletePhoto(Integer.parseInt(this.getHashmap().get("index")));
-
                 break;
             case "menu":
                 this.fsmValue = 0;

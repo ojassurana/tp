@@ -1,5 +1,7 @@
 package photo;
 
+import exception.TravelDiaryException;
+
 import java.time.LocalDateTime;
 
 /**
@@ -12,15 +14,18 @@ public class Photo {
     private String location;
     private LocalDateTime datetime; // Using LocalDateTime for datetime
 
-    public Photo(String filePath, String photoName, String caption, String location, LocalDateTime datetime) {
+    public Photo(String filePath, String photoName, String caption, String location, LocalDateTime datetime) throws TravelDiaryException {
+        if (filePath == null || photoName == null){
+            throw new TravelDiaryException();
+        }
         this.filePath = filePath;
         this.photoName = photoName;
-        this.caption = caption;
-        this.location = location;
+        this.caption = (caption == null) ? "no caption" : caption;
+        this.location = (location == null) ? "no location" : location;
         this.datetime = datetime;
     }
 
-    public Photo(String filePath, String photoName, String caption, String location) {
+    public Photo(String filePath, String photoName, String caption, String location) throws TravelDiaryException {
         this(filePath, photoName, caption, location, LocalDateTime.now());
     }
 
