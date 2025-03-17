@@ -10,7 +10,7 @@ import trip.TripManager;
 
 import java.util.Scanner;
 
-public class DukeCopy {
+public class TravelDiary {
     /**
      * Main entry-point for the java.duke.Duke application.
      */
