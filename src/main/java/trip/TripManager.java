@@ -1,4 +1,6 @@
 package trip;
+import exception.TravelDiaryException;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -6,7 +8,7 @@ public class TripManager {
     private final List<Trip> trips = new ArrayList<>();
     private Trip selectedTrip = null;
 
-    public void addTrip(String name, String description, String location) {
+    public void addTrip(String name, String description, String location) throws TravelDiaryException{
         trips.add(new Trip(name, description, location));
         System.out.println("Trip added successfully.");
     }
@@ -30,10 +32,11 @@ public class TripManager {
         }
     }
 
-    public void selectTrip(int index) {
+    public void selectTrip(int index) throws TravelDiaryException {
         if (index < 0 || index >= trips.size()) {
             System.out.println("Invalid trip index.");
-            return;
+            throw new TravelDiaryException();
+            //return;
         }
         selectedTrip = trips.get(index);
         System.out.println("Selected trip: " + selectedTrip.name);

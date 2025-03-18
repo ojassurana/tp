@@ -1,6 +1,7 @@
 package trip;
 
 import album.Album;
+import exception.TravelDiaryException;
 
 public class Trip {
     public String name;
@@ -8,10 +9,14 @@ public class Trip {
     public String location;
     public Album album;
 
-    public Trip(String name, String description, String location) {
+    public Trip(String name, String description, String location) throws TravelDiaryException {
+        // make sure the name attribute is provided
+        if (name == null){
+            throw new TravelDiaryException();
+        }
         this.name = name;
-        this.description = description;
-        this.location = location;
+        this.description = (description == null) ? "no description" : description;;
+        this.location = (location == null) ? "no location" : location;
         this.album = new Album();
     }
 

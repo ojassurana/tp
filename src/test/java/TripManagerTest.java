@@ -3,6 +3,8 @@ import trip.TripManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 class TripManagerTest {
     private TripManager tripManager;
 
@@ -13,20 +15,28 @@ class TripManagerTest {
 
     @Test
     void testAddTrip() {
-        tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+        assertDoesNotThrow(() -> {
+            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+        });
         tripManager.viewTrips(); // Check console output
     }
 
     @Test
     void testDeleteTrip() {
-        tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+        assertDoesNotThrow(() -> {
+            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+        });
         tripManager.deleteTrip(1);
         tripManager.viewTrips(); // Should show no trips
     }
 
     @Test
     void testSelectTrip() {
-        tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
-        tripManager.selectTrip(1);
+        assertDoesNotThrow(() -> {
+            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+        });
+        assertDoesNotThrow(() -> {
+            tripManager.selectTrip(0);
+        });
     }
 }
