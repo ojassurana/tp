@@ -1,11 +1,15 @@
 package parser;
 
+import exception.CommandNotRecogniseException;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 
+import exception.WrongMachineState;
 import trip.TripManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Parser {
     public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete_trip",
@@ -21,7 +25,7 @@ public class Parser {
     public Parser() {
     }
 
-    public Parser(String userString) throws TravelDiaryException {
+    public Parser(String userString) throws TravelDiaryException, CommandNotRecogniseException {
         String[] parsedCommand = userString.split(" ", 2);
         this.commandText = parsedCommand[0];
         commandChecker(this.commandText);
@@ -39,7 +43,7 @@ public class Parser {
         this.hashmap = hashmap;
     }
 
-    public static void commandChecker(String userString) throws TravelDiaryException {
+    public static void commandChecker(String userString) throws CommandNotRecogniseException {
         boolean isValid = false;
         for (String s : COMMAND_ARRAY) {
             if (userString.equals(s)) {
@@ -48,12 +52,12 @@ public class Parser {
             }
         }
         if (!isValid) {
-            throw new TravelDiaryException();
+            throw new CommandNotRecogniseException(userString);
         }
     }
 
-    public void isEmptyDetail(boolean expected) throws TravelDiaryException{
-        if ((null == this.detail) != expected){
+    public void isEmptyDetail(boolean expected) throws TravelDiaryException {
+        if ((null == this.detail) != expected) {
             throw new TravelDiaryException();
         }
     }
@@ -112,10 +116,9 @@ public class Parser {
         }
     }
 
-    public void execute(TripManager tripManager, int fsmValue) throws TravelDiaryException,NumberFormatException {
+    public void execute(TripManager tripManager, int fsmValue) throws TravelDiaryException, NumberFormatException,
+            MissingCompulsoryParameter, WrongMachineState {
         this.fsmValue = fsmValue;
-        System.out.println(fsmValue);
-
         if (this.fsmValue == 0) {
             switch (this.getHashmap().get("command")) {
             case "bye":
@@ -135,18 +138,24 @@ public class Parser {
             case "delete_trip":
                 tripManager.deleteTrip(Integer.parseInt(this.getHashmap().get("index")));
                 break;
+            case "menu":
+                this.fsmValue = 0;
+                System.out.println("back to main menu");
+                break;
             default:
-                throw new TravelDiaryException();
+                throw new WrongMachineState(fsmValue);
+
             }
         } else if (this.fsmValue == 1) {
-            switch (this.getHashmap().get("command")) {
+            String command = this.getHashmap().get("command");
+            if (!Objects.equals(command, "bye") && !Objects.equals(command, "menu")) {
+                System.out.println("current trip: " + tripManager.getSelectedTrip() + "\n");
+            }
+            switch (command) {
             case "bye":
                 this.isExit = true;
                 break;
             case "add_photo":
-                for (String key: this.hashmap.keySet()){
-                    System.out.println(key + ": " + this.hashmap.get(key));
-                }
                 tripManager.getSelectedTrip().album.addPhoto(this.getHashmap().get("filepath"),
                         this.getHashmap().get("photoname"), this.getHashmap().get("caption"),
                         this.getHashmap().get("location"));
@@ -162,9 +171,12 @@ public class Parser {
                 break;
             case "menu":
                 this.fsmValue = 0;
+                tripManager.getSelectedTrip().album.setSelectedPhoto(null);
+                tripManager.setSelectedTrip(null);
+                System.out.println("back to main menu");
                 break;
             default:
-                throw new TravelDiaryException();
+                throw new WrongMachineState(fsmValue);
             }
         }
     }

@@ -1,6 +1,6 @@
 package album;
 
-import exception.TravelDiaryException;
+import exception.MissingCompulsoryParameter;
 import photo.Photo;
 
 import java.time.LocalDateTime;
@@ -11,13 +11,14 @@ public class Album {
     private final List<Photo> photos = new ArrayList<>();
     private Photo selectedPhoto = null;
 
+
     public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
-            throws TravelDiaryException {
+            throws MissingCompulsoryParameter {
         photos.add(new Photo(filePath, photoName, caption, location, datetime));
     }
 
     public void addPhoto(String filePath, String photoName, String caption, String location)
-            throws TravelDiaryException {
+            throws MissingCompulsoryParameter {
         photos.add(new Photo(filePath, photoName, caption, location));
     }
 
@@ -38,7 +39,10 @@ public class Album {
                 System.out.println(i + ": " + photos.get(i)); // Display index with photos detail
             }
         }
-        System.out.println(photos.size());
+    }
+
+    public void setSelectedPhoto(Photo selectedPhoto) {
+        this.selectedPhoto = selectedPhoto;
     }
 
     public void selectPhoto(int index) {

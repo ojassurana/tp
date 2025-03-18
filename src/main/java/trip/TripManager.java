@@ -1,4 +1,5 @@
 package trip;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 
 import java.util.List;
@@ -8,9 +9,13 @@ public class TripManager {
     private final List<Trip> trips = new ArrayList<>();
     private Trip selectedTrip = null;
 
-    public void addTrip(String name, String description, String location) throws TravelDiaryException{
+    public void addTrip(String name, String description, String location) throws MissingCompulsoryParameter {
         trips.add(new Trip(name, description, location));
         System.out.println("Trip added successfully.");
+    }
+
+    public void setSelectedTrip(Trip selectedTrip) {
+        this.selectedTrip = selectedTrip;
     }
 
     public void deleteTrip(int index) {

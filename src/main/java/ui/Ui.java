@@ -1,9 +1,14 @@
 package ui;
 
+
+import java.util.Arrays;
 import java.util.Scanner;
+
+import parser.Parser;
 
 public class Ui {
     private static final String SEPARATOR_LINE = "____________________________________________________________\n";
+    public static final String[] COMMAND_ARRAY = Parser.COMMAND_ARRAY;
     private final Scanner scanner;
 
     public Ui() {
@@ -36,4 +41,10 @@ public class Ui {
     public void close() {
         scanner.close();
     }
+
+    public void showAvailableCommands() {
+        Arrays.stream(COMMAND_ARRAY).forEach((i) -> System.out.println("    - " + i));
+    }
+
+
 }
