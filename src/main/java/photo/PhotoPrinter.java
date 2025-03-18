@@ -1,5 +1,7 @@
 package photo;
 
+import exception.MissingCompulsoryParameter;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -13,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
+import java.util.Locale;
 
 /**
  * PhotoPrinter class creates a PhotoFrame with Jlabels based on Photo details.
@@ -86,9 +89,9 @@ public class PhotoPrinter {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MissingCompulsoryParameter {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
+                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
         String filePath = "./data/photos/sample1.jpg";
         String photoName = "First night in Osaka";
         String caption = "This is a photo of my friends and I in Osaka.";
