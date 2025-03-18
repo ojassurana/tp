@@ -2,6 +2,8 @@ package album;
 
 import exception.MissingCompulsoryParameter;
 import photo.Photo;
+import photo.PhotoFrame;
+import photo.PhotoPrinter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,5 +54,11 @@ public class Album {
         selectedPhoto = photos.get(index);
         System.out.println("Name: " + selectedPhoto.getPhotoName() + " caption: " + selectedPhoto.getCaption() +
                 " location: " + selectedPhoto.getLocation());
+        try {
+            PhotoFrame photoFrame = PhotoPrinter.createFrame(selectedPhoto);
+            PhotoPrinter.display(photoFrame);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

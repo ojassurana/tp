@@ -25,6 +25,7 @@ public class Ui {
     public void showWelcome() {
         System.out.println("Welcome to your Travel Diary Management System!\nTo continue, please press one of the " +
                 "commands.\n");
+        showAvailableCommands();
     }
 
     /**
@@ -44,6 +45,7 @@ public class Ui {
 
     public void showAvailableCommands() {
         Arrays.stream(COMMAND_ARRAY).forEach((i) -> System.out.println("    - " + i));
+        System.out.println(System.lineSeparator());
     }
 
 
