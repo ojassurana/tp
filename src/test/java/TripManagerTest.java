@@ -36,7 +36,7 @@ class TripManagerTest {
             tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
         });
         assertDoesNotThrow(() -> {
-            tripManager.selectTrip(1);
+            tripManager.selectTrip(0);
         });
     }
 }
