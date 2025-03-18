@@ -11,11 +11,13 @@ public class Album {
     private final List<Photo> photos = new ArrayList<>();
     private Photo selectedPhoto = null;
 
-    public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime) throws TravelDiaryException {
+    public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
+            throws TravelDiaryException {
         photos.add(new Photo(filePath, photoName, caption, location, datetime));
     }
 
-    public void addPhoto(String filePath, String photoName, String caption, String location) throws TravelDiaryException {
+    public void addPhoto(String filePath, String photoName, String caption, String location)
+            throws TravelDiaryException {
         photos.add(new Photo(filePath, photoName, caption, location));
     }
 

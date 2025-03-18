@@ -27,7 +27,7 @@ public class TravelDiary {
         try {
             parser = new Parser(input);
         } catch (TravelDiaryException e) {
-            ui.showToUser(e.getMessage());
+            ui.showToUser("exception encountered");
             return false;
         }
         ui.showLine();
@@ -35,7 +35,7 @@ public class TravelDiary {
             parser.execute(tripManager, fsmValue);
             fsmValue = parser.fsmValue;
         } catch (TravelDiaryException | NumberFormatException e) {
-            ui.showToUser(e.getMessage());
+            ui.showToUser("exception encountered");
             return false;
         }
 

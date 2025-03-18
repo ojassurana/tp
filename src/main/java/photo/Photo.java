@@ -14,8 +14,9 @@ public class Photo {
     private String location;
     private LocalDateTime datetime; // Using LocalDateTime for datetime
 
-    public Photo(String filePath, String photoName, String caption, String location, LocalDateTime datetime) throws TravelDiaryException {
-        if (filePath == null || photoName == null){
+    public Photo(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
+            throws TravelDiaryException {
+        if (filePath == null || photoName == null) {
             throw new TravelDiaryException();
         }
         this.filePath = filePath;
