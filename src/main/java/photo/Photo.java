@@ -1,8 +1,9 @@
 package photo;
 
-import exception.TravelDiaryException;
+import exception.MissingCompulsoryParameter;
 
 import java.time.LocalDateTime;
+
 
 /**
  * Photo class stores details of a photo.
@@ -15,9 +16,10 @@ public class Photo {
     private LocalDateTime datetime; // Using LocalDateTime for datetime
 
     public Photo(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
-            throws TravelDiaryException {
+            throws MissingCompulsoryParameter {
         if (filePath == null || photoName == null) {
-            throw new TravelDiaryException();
+            String[] parameters = {(filePath == null) ? "filepath" : null,(photoName == null) ? "photoname" : null};
+            throw new MissingCompulsoryParameter(parameters);
         }
         this.filePath = filePath;
         this.photoName = photoName;
@@ -26,7 +28,7 @@ public class Photo {
         this.datetime = datetime;
     }
 
-    public Photo(String filePath, String photoName, String caption, String location) throws TravelDiaryException {
+    public Photo(String filePath, String photoName, String caption, String location) throws MissingCompulsoryParameter {
         this(filePath, photoName, caption, location, LocalDateTime.now());
     }
 
