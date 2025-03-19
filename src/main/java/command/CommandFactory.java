@@ -10,8 +10,8 @@ import java.util.Objects;
 
 public class CommandFactory {
 
-    public Command getCommand(TripManager tripManager, Parser parser, int fsmValue) throws TravelDiaryException, NumberFormatException,
-            MissingCompulsoryParameter, WrongMachineState {
+    public Command getCommand(TripManager tripManager, Parser parser, int fsmValue) throws
+            TravelDiaryException, NumberFormatException, MissingCompulsoryParameter, WrongMachineState {
         parser.fsmValue = fsmValue;
         if (parser.fsmValue == 0) {
             switch (parser.getHashmap().get("command")) {

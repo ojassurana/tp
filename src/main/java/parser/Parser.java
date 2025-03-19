@@ -1,19 +1,15 @@
 package parser;
 
 import exception.CommandNotRecogniseException;
-import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 
-import exception.WrongMachineState;
-import trip.TripManager;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Parser {
-    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo",
-                                                  "delete", "view_trip", "view_photo", "select", "menu"}; // all possible command
+    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete", "view_trip",
+                                                  "view_photo", "select", "menu"}; // all possible command
     public boolean isExit = false;
     public int fsmValue = 0;
     protected String commandText;
