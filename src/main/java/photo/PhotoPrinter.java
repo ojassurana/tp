@@ -39,7 +39,7 @@ public class PhotoPrinter {
         }
 
         JFrame frame = new JFrame(photo.getPhotoName());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.getContentPane().setBackground(new Color(255, 254, 224));
 

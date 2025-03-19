@@ -1,6 +1,7 @@
 package album;
 
 import exception.MissingCompulsoryParameter;
+import exception.TravelDiaryException;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
@@ -47,9 +48,10 @@ public class Album {
         this.selectedPhoto = selectedPhoto;
     }
 
-    public void selectPhoto(int index) {
+    public void selectPhoto(int index) throws TravelDiaryException {
         if (index < 0 || index >= photos.size()) {
             System.out.println("Invalid photo index.");
+            throw new TravelDiaryException();
         }
         selectedPhoto = photos.get(index);
         System.out.println("Name: " + selectedPhoto.getPhotoName() + " caption: " + selectedPhoto.getCaption() +

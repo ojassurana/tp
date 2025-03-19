@@ -117,8 +117,7 @@ class AlbumTest {
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outContent));
 
-        album.selectPhoto(0);
-
+        assertDoesNotThrow(()-> album.selectPhoto(0));
         System.setOut(originalOut);
         String output = outContent.toString().trim();
         assertTrue(output.contains("Name: MyPhoto"), "Selected photo details should be printed.");

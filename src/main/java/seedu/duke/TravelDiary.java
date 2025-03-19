@@ -1,5 +1,7 @@
 package seedu.duke;
 
+import command.Command;
+import command.CommandFactory;
 import exception.CommandNotRecogniseException;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
@@ -35,7 +37,9 @@ public class TravelDiary {
         }
         ui.showLine();
         try {
-            parser.execute(tripManager, fsmValue);
+            CommandFactory commandFactory = new CommandFactory();
+            Command command = commandFactory.getCommand(tripManager, parser, fsmValue);
+            command.execute(tripManager,ui); // need to add storage in these param in the future
             fsmValue = parser.fsmValue;
         } catch (TravelDiaryException | MissingCompulsoryParameter | WrongMachineState e) {
             ui.showToUser("\nexception encountered");
@@ -43,7 +47,7 @@ public class TravelDiary {
         } catch (NumberFormatException e){
             ui.showToUser("number format exception encountered");
             ui.showToUser("please enter number for your index");
-            ui.showToUser("eg. "+ parser.getHashmap().getOrDefault("command", "select_trip") +" 1");
+            ui.showToUser("eg. "+ parser.getHashmap().getOrDefault("command", "select ") +" 1");
             ui.showToUser("exception encountered");
             return false;
         }
