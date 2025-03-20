@@ -6,7 +6,8 @@ import java.util.Map;
 
 public class CommandFactory {
 
-    public static Command getCommand(Map<String, String> parsedCommand, int fsmValue) throws TravelDiaryException {
+    public static Command getCommand(Map<String, String> parsedCommand, int fsmValue) throws
+            TravelDiaryException, NumberFormatException{
         String cmd = parsedCommand.get("command");
 
         // Handle commands available in both FSM states.
@@ -15,14 +16,14 @@ public class CommandFactory {
         }
         if ("select".equals(cmd)) {
             int index = Integer.parseInt(parsedCommand.get("index"));
-            return new SelectCommand(); // Insert index in, update FSM value
+            return new SelectCommand(index); // Insert index in, update FSM value
         }
         if ("list".equals(cmd)) {
             return new ListCommand();
         }
         if ("delete".equals(cmd)) {
             int index = Integer.parseInt(parsedCommand.get("index"));
-            return new DeleteCommand(); // Insert index in
+            return new DeleteCommand(index); // Insert index in
         }
 
         // Delegate state-specific commands.
@@ -57,7 +58,7 @@ public class CommandFactory {
             String photoname = parsedCommand.get("photoname");
             String caption = parsedCommand.get("caption");
             String location = parsedCommand.get("location");
-            return new AddPhotoCommand(); // Add filepath, photoname, caption, location
+            return new AddPhotoCommand(filepath,photoname, caption, location);
         }
         if ("menu".equals(cmd)) {
             // Assuming MenuCommand resets FSM state and performs any required housekeeping.

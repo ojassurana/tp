@@ -1,6 +1,5 @@
 package album;
 
-import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import photo.Photo;
 import photo.PhotoFrame;
@@ -16,13 +15,15 @@ public class Album {
 
 
     public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
-            throws MissingCompulsoryParameter {
+            throws TravelDiaryException {
         photos.add(new Photo(filePath, photoName, caption, location, datetime));
+
     }
 
     public void addPhoto(String filePath, String photoName, String caption, String location)
-            throws MissingCompulsoryParameter {
+            throws TravelDiaryException {
         photos.add(new Photo(filePath, photoName, caption, location));
+        System.out.println("Photo added successfully.");
     }
 
     public void deletePhoto(int index) {
@@ -50,7 +51,6 @@ public class Album {
 
     public void selectPhoto(int index) throws TravelDiaryException {
         if (index < 0 || index >= photos.size()) {
-            System.out.println("Invalid photo index.");
             throw new TravelDiaryException("Invalid photo index.");
         }
         selectedPhoto = photos.get(index);

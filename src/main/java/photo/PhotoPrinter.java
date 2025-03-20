@@ -1,6 +1,6 @@
 package photo;
 
-import exception.MissingCompulsoryParameter;
+import exception.TravelDiaryException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Window;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,7 +90,7 @@ public class PhotoPrinter {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) throws MissingCompulsoryParameter {
+    public static void main(String[] args) throws TravelDiaryException {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
         String filePath = "./data/photos/sample1.jpg";
@@ -107,6 +108,13 @@ public class PhotoPrinter {
             photoFrame.closeOperation(); // Exit program when Jframe window is closed
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
+        }
+
+
+    }
+    public static void closeAllWindows() {
+        for (Window window : Window.getWindows()) {
+            window.dispose(); // Close each open window
         }
     }
 }
