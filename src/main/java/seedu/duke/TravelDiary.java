@@ -39,7 +39,7 @@ public class TravelDiary {
             command = CommandFactory.getCommand(parsedCommand, fsmValue);
             command.execute(tripManager, ui, fsmValue);
             fsmValue = command.fsmValue;
-        } catch (TravelDiaryException | MissingCompulsoryParameter e) {
+        } catch (TravelDiaryException e) {
             ui.showToUser(e.getMessage());
             return false;
         }
