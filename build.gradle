@@ -29,11 +29,11 @@ test {
 }
 
 application {
-    mainClass.set("seedu.duke.TravelDiary")
+    mainClass.set("seedu.duke.Duke")
 }
 
 shadowJar {
-    archiveBaseName.set("TravelDiary")
+    archiveBaseName.set("duke")
     archiveClassifier.set("")
 }
 
@@ -43,5 +43,4 @@ checkstyle {
 
 run{
     standardInput = System.in
-    enableAssertions = true
 }
