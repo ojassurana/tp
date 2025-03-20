@@ -40,7 +40,7 @@ public class TripManager {
     public void selectTrip(int index) throws TravelDiaryException {
         if (index < 0 || index >= trips.size()) {
             System.out.println("Invalid trip index.");
-            throw new TravelDiaryException();
+            throw new TravelDiaryException("Invalid trip index.");
             //return;
         }
         selectedTrip = trips.get(index);

@@ -51,7 +51,7 @@ public class Album {
     public void selectPhoto(int index) throws TravelDiaryException {
         if (index < 0 || index >= photos.size()) {
             System.out.println("Invalid photo index.");
-            throw new TravelDiaryException();
+            throw new TravelDiaryException("Invalid photo index.");
         }
         selectedPhoto = photos.get(index);
         System.out.println("Name: " + selectedPhoto.getPhotoName() + " caption: " + selectedPhoto.getCaption() +
