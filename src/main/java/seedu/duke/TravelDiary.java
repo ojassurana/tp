@@ -2,6 +2,7 @@ package seedu.duke;
 
 import command.Command;
 import command.CommandFactory;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import parser.Parser;
 import trip.TripManager;
@@ -15,11 +16,12 @@ public class TravelDiary {
     // 0 -> User is yet to select a trip
     // 1 -> User is inside a trip right now
     public static int fsmValue = 0;
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         Ui ui = new Ui();
         TripManager tripManager = new TripManager();
         ui.showWelcome();
-        while (!processCommand(ui, tripManager)){
+        while (!processCommand(ui, tripManager)) {
             ui.showLine();
         }
     }
@@ -38,7 +40,7 @@ public class TravelDiary {
             command = CommandFactory.getCommand(parsedCommand, fsmValue);
             command.execute(tripManager, ui, fsmValue);
             fsmValue = command.fsmValue;
-        } catch (TravelDiaryException e) {
+        } catch (TravelDiaryException | NumberFormatException | MissingCompulsoryParameter e) {
             ui.showToUser(e.getMessage());
             return false;
         }
