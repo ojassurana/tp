@@ -2,105 +2,127 @@ package parser;
 
 import exception.CommandNotRecogniseException;
 import exception.TravelDiaryException;
+import ui.Ui;
 
-
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Parser {
-    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete", "view_trip",
-                                                  "view_photo", "select", "menu"}; // all possible command
-    public boolean isExit = false;
-    public int fsmValue = 0;
-    protected String commandText;
-    protected String detail;
-    protected Map<String, String> hashmap = new HashMap<>();
+    private static final Ui ui = new Ui();
+    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete", "list", "select", "menu"};
 
-    public Parser(String userString) throws TravelDiaryException, CommandNotRecogniseException {
-        String[] parsedCommand = userString.split(" ", 2);
-        this.commandText = parsedCommand[0];
-        commandChecker(this.commandText);
-        if (parsedCommand.length > 1) {
-            this.detail = parsedCommand[1];
+    public static Map<String, String> getCommandDetails() throws TravelDiaryException {
+        String input = ui.readInput().trim();
+        if (input.isEmpty()) {
+            throw new TravelDiaryException("No command provided. Please enter a command.");
         }
-        this.convertToHashmap();
+        String[] tokens = splitCommandAndArguments(input);
+        String command = tokens[0];
+        String rest = tokens[1];
+        return convertToHashmap(command, rest);
     }
 
-    public Map<String, String> getHashmap() {
-        return hashmap;
+    private static String[] splitCommandAndArguments(String input) {
+        String[] tokens = input.split("\\s+", 2);
+        String command = tokens[0].toLowerCase();
+        String rest = tokens.length > 1 ? tokens[1].trim() : "";
+        return new String[] { command, rest };
     }
 
-    public void setHashmap(Map<String, String> hashmap) {
-        this.hashmap = hashmap;
-    }
-
-    public static void commandChecker(String userString) throws CommandNotRecogniseException {
-        boolean isValid = false;
-        for (String s : COMMAND_ARRAY) {
-            if (userString.equals(s)) {
-                isValid = true;
-                break;
-            }
-        }
-        if (!isValid) {
-            throw new CommandNotRecogniseException(userString);
-        }
-    }
-
-    public void isEmptyDetail(boolean expected) throws TravelDiaryException {
-        if ((null == this.detail) != expected) {
-            throw new TravelDiaryException();
-        }
-    }
-
-    public void convertToHashmap() throws TravelDiaryException {
-        String[] parts;
-        switch (this.commandText) {
-        case "view_trip":
-        case "view_photo":
+    public static Map<String, String> convertToHashmap(String command, String rest)
+            throws TravelDiaryException {
+        switch (command) {
         case "bye":
+        case "list":
         case "menu":
-            isEmptyDetail(true);
-            this.hashmap.put("command", this.commandText);
-            break;
-        case "add_trip":
-            isEmptyDetail(false);
-            this.hashmap.put("command", this.commandText);
-            parts = this.detail.split(" (?=[ndl]#)");
-            for (String part : parts) {
-                if (part.startsWith("n#")) {
-                    this.hashmap.put("name", part.substring(2).trim());
-                } else if (part.startsWith("d#")) {
-                    this.hashmap.put("description", part.substring(2).trim());
-                } else if (part.startsWith("l#")) {
-                    this.hashmap.put("location", part.substring(2).trim());
-                }
-            }
-
-            break;
-        case "add_photo":
-            isEmptyDetail(false);
-            this.hashmap.put("command", this.commandText);
-            parts = this.detail.split(" (?=[ndlcf]#)");
-            for (String part : parts) {
-                if (part.startsWith("n#")) {
-                    this.hashmap.put("photoname", part.substring(2).trim());
-                } else if (part.startsWith("f#")) {
-                    this.hashmap.put("filepath", part.substring(2).trim());
-                } else if (part.startsWith("l#")) {
-                    this.hashmap.put("location", part.substring(2).trim());
-                } else if (part.startsWith("c#")) {
-                    this.hashmap.put("caption", part.substring(2).trim());
-                }
-            }
-            break;
+            return createSimpleCommandMap(command);
         case "delete":
         case "select":
-            isEmptyDetail(false);
-            this.hashmap.put("command", this.commandText);
-            this.hashmap.put("index", this.detail);
-            break;
+            return createIndexCommandMap(command, rest);
+        case "add_trip":
+            return parseAddTrip(rest);
+        case "add_photo":
+            return parseAddPhoto(rest);
         default:
+            throw new TravelDiaryException("I'm sorry, I don't understand what you want me to do :c\n"
+                    + "Please refer to the manual coming soon!");
         }
+    }
+
+    private static Map<String, String> createSimpleCommandMap(String command) {
+        Map<String, String> map = new HashMap<>();
+        map.put("command", command);
+        return map;
+    }
+
+    private static Map<String, String> createIndexCommandMap(String command, String index) {
+        Map<String, String> map = new HashMap<>();
+        map.put("command", command);
+        map.put("index", index);
+        return map;
+    }
+
+    private static Map<String, String> parseAddTrip(String rest) throws TravelDiaryException {
+        Map<String, String> map = new HashMap<>();
+        map.put("command", "add_trip");
+        String[] parts = rest.split(" (?=[ndl]#)");
+        Set<String> allowedTags = new HashSet<>(Arrays.asList("n#", "d#", "l#"));
+        Map<String, String> tagsMap = processTags(parts, allowedTags);
+        map.put("name", tagsMap.get("n#"));
+        map.put("description", tagsMap.get("d#"));
+        map.put("location", tagsMap.get("l#"));
+        if (map.get("name") == null || map.get("description") == null || map.get("location") == null) {
+            throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), d# (description), l# (location).");
+        }
+        return map;
+    }
+
+    private static Map<String, String> parseAddPhoto(String rest) throws TravelDiaryException {
+        Map<String, String> map = new HashMap<>();
+        map.put("command", "add_photo");
+        String[] parts = rest.split(" (?=[ndlcf]#)");
+        Set<String> allowedTags = new HashSet<>(Arrays.asList("f#", "n#", "c#", "l#"));
+        Map<String, String> tagsMap = processTags(parts, allowedTags);
+        map.put("filepath", tagsMap.get("f#"));
+        map.put("photoname", tagsMap.get("n#"));
+        map.put("caption", tagsMap.get("c#"));
+        map.put("location", tagsMap.get("l#"));
+        if (map.get("filepath") == null || map.get("photoname") == null ||
+                map.get("caption") == null || map.get("location") == null) {
+            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# (photoname), c# (caption), l# (location).");
+        }
+        return map;
+    }
+
+    private static Map<String, String> processTags(String[] parts, Set<String> allowedTags)
+            throws TravelDiaryException {
+        Map<String, String> tagsMap = new HashMap<>();
+        Set<String> seenTags = new HashSet<>();
+        for (String part : parts) {
+            Map.Entry<String, String> entry = processTagPart(part, allowedTags, seenTags);
+            tagsMap.put(entry.getKey(), entry.getValue());
+        }
+        return tagsMap;
+    }
+
+    private static Map.Entry<String, String> processTagPart(String part, Set<String> allowedTags,
+                                                            Set<String> seenTags) throws TravelDiaryException {
+        for (String tag : allowedTags) {
+            if (part.startsWith(tag)) {
+                if (!seenTags.add(tag)) {
+                    throw new TravelDiaryException("Duplicate tag provided for " + tag);
+                }
+                String value = part.substring(tag.length()).trim();
+                if (value.isEmpty()) {
+                    throw new TravelDiaryException("Empty value provided for tag " + tag);
+                }
+                return new AbstractMap.SimpleEntry<>(tag, value);
+            }
+        }
+        throw new TravelDiaryException("Invalid tag in command: " + part);
     }
 }

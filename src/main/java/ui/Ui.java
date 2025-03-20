@@ -19,18 +19,12 @@ public class Ui {
         return scanner.nextLine();
     }
 
-    /**
-     * Displays the welcome message to the user.
-     */
     public void showWelcome() {
         System.out.println("Welcome to your Travel Diary Management System!\nTo continue, please press one of the " +
                 "commands.\n");
         showAvailableCommands();
     }
 
-    /**
-     * Displays a simple line separator to the console.
-     */
     public void showLine() {
         System.out.println("----");
     }
@@ -47,6 +41,4 @@ public class Ui {
         Arrays.stream(COMMAND_ARRAY).forEach((i) -> System.out.println("    - " + i));
         System.out.println(System.lineSeparator());
     }
-
-
 }
