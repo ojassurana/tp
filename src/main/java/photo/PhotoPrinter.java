@@ -1,6 +1,7 @@
 package photo;
 
 import exception.MissingCompulsoryParameter;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -15,10 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.util.Locale;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  * PhotoPrinter class creates a PhotoFrame with Jlabels based on Photo details.
@@ -27,8 +24,6 @@ import java.util.logging.SimpleFormatter;
  */
 public class PhotoPrinter {
 
-    public static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    public static final String LOG_FILE_PATH = "./data/assets/logfile.log";
     private static final String locationPinIconPath = "./data/assets/photo_Location_Pin.png";
 
     /**
@@ -39,63 +34,49 @@ public class PhotoPrinter {
      */
     public static PhotoFrame createFrame(Photo photo) throws FileNotFoundException {
         String filePath = photo.getFilePath();
-        assert filePath != null : "filepath should not be null";
         if (!(new File(filePath).exists())) {
             throw new FileNotFoundException("File does not exist: " + filePath);
         }
-        PhotoFrame photoFrame = null;
-        try {
-            logger.setLevel(Level.INFO); // Set logger to alert at INFO level
-            // Configure the logger with a file handler
-            FileHandler fileHandler = new FileHandler(LOG_FILE_PATH, true); // Append to existing file
-            fileHandler.setFormatter(new SimpleFormatter());
-            logger.addHandler(fileHandler);
-            String photoName = photo.getPhotoName();
-            JFrame frame = new JFrame(photoName);
-            logger.log(Level.INFO, String.format("Jframe has been created for %s", photoName));
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(new BorderLayout());
-            frame.getContentPane().setBackground(new Color(255, 254, 224));
 
-            // Load and resize image
-            ImageIcon originalIcon = new ImageIcon(filePath);
-            Image scaledImage = originalIcon.getImage().getScaledInstance(600, 400, Image.SCALE_SMOOTH);
-            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-            imageLabel.setBorder(BorderFactory.createLineBorder(new Color(51, 36, 33), 5));
+        JFrame frame = new JFrame(photo.getPhotoName());
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.getContentPane().setBackground(new Color(255, 254, 224));
 
-            // Resize the location pin icon
-            ImageIcon locationIcon = new ImageIcon(locationPinIconPath);
-            Image scaledLocationImage = locationIcon.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
-            locationIcon = new ImageIcon(scaledLocationImage);
+        // Load and resize image
+        ImageIcon originalIcon = new ImageIcon(filePath);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(600, 400, Image.SCALE_SMOOTH);
+        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+        imageLabel.setBorder(BorderFactory.createLineBorder(new Color(51, 36, 33), 5));
 
-            // Format the datetime
-            LocalDateTime dateTime = photo.getDatetime();
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
-            String formattedDate = dateTime.format(outputFormatter);
+        // Resize the location pin icon
+        ImageIcon locationIcon = new ImageIcon(locationPinIconPath);
+        Image scaledLocationImage = locationIcon.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
+        locationIcon = new ImageIcon(scaledLocationImage);
 
-            // LocationDateTime label
-            String locationAndDateText = photo.getLocation() + " | " + formattedDate;
-            JLabel locationLabel = new JLabel(locationAndDateText, locationIcon, SwingConstants.CENTER);
-            locationLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
-            locationLabel.setForeground(Color.DARK_GRAY);
+        // Format the datetime
+        LocalDateTime dateTime = photo.getDatetime();
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+        String formattedDate = dateTime.format(outputFormatter);
 
-            // Caption label
-            JLabel captionLabel = new JLabel(photo.getCaption(), SwingConstants.CENTER);
-            captionLabel.setFont(new Font("Helvetica", Font.BOLD, 16));
+        // LocationDateTime label
+        String locationAndDateText = photo.getLocation() + " | " + formattedDate;
+        JLabel locationLabel = new JLabel(locationAndDateText, locationIcon, SwingConstants.CENTER);
+        locationLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
+        locationLabel.setForeground(Color.DARK_GRAY);
 
-            // Adding labels to Frame
-            frame.add(locationLabel, BorderLayout.NORTH);
-            frame.add(imageLabel, BorderLayout.CENTER);
-            frame.add(captionLabel, BorderLayout.SOUTH);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            photoFrame = new PhotoFrame(frame, captionLabel, locationLabel);
-        } catch (Exception e) {
-            if (photoFrame == null) {
-                logger.log(Level.SEVERE, String.format("Jframe has failed to be created for %s", photo.getPhotoName()));
-            }
-        }
-        return photoFrame;
+        // Caption label
+        JLabel captionLabel = new JLabel(photo.getCaption(), SwingConstants.CENTER);
+        captionLabel.setFont(new Font("Helvetica", Font.BOLD, 16));
+
+        // Adding labels to Frame
+        frame.add(locationLabel, BorderLayout.NORTH);
+        frame.add(imageLabel, BorderLayout.CENTER);
+        frame.add(captionLabel, BorderLayout.SOUTH);
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        return new PhotoFrame(frame, captionLabel, locationLabel);
     }
 
     /**
