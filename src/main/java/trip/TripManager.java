@@ -1,5 +1,4 @@
 package trip;
-import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 
 import java.util.List;
