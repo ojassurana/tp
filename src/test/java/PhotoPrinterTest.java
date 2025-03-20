@@ -16,7 +16,6 @@ public class PhotoPrinterTest {
 
     @Test
     void createFrame_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
-
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
         String filePath = "./data/photos/sample1.jpg";
@@ -48,7 +47,7 @@ public class PhotoPrinterTest {
         String photoName = "First night in Osaka";
         String caption = "This is a photo of my friends and I in Osaka.";
         String location = "Dotonbori River";
-        Photo photo = assertDoesNotThrow(() ->new Photo(filePath, photoName, caption, location, datetime));
+        Photo photo = assertDoesNotThrow(() -> new Photo(filePath, photoName, caption, location, datetime));
         assertThrows(FileNotFoundException.class, () -> PhotoPrinter.createFrame(photo));
     }
 }
