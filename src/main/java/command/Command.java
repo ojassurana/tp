@@ -12,5 +12,6 @@ public abstract class Command {
         return false;
     }
 
-    public abstract void execute(TripManager tripManager, Ui ui, int fsmValue) throws TravelDiaryException, MissingCompulsoryParameter;
+    public abstract void execute(TripManager tripManager, Ui ui, int fsmValue) throws
+            TravelDiaryException, MissingCompulsoryParameter;
 }

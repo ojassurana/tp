@@ -19,7 +19,8 @@ public class AddPhotoCommand extends Command {
     }
 
     @Override
-    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws TravelDiaryException, MissingCompulsoryParameter {
+    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
+            TravelDiaryException, MissingCompulsoryParameter {
         tripManager.getSelectedTrip().album.addPhoto(this.filepath, this.photoname, this.caption, this.location);
         this.fsmValue =fsmValue;
     }

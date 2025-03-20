@@ -18,7 +18,8 @@ public class AddTripCommand extends Command{
     }
 
     @Override
-    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws TravelDiaryException, MissingCompulsoryParameter {
+    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
+            TravelDiaryException, MissingCompulsoryParameter {
         tripManager.addTrip(this.name, this.description, this.location);
         this.fsmValue = fsmValue;
     }

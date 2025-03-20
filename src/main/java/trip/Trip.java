@@ -1,7 +1,7 @@
 package trip;
 
 import album.Album;
-import exception.MissingCompulsoryParameter;
+import exception.TravelDiaryException;
 
 public class Trip {
     public String name;
@@ -10,16 +10,15 @@ public class Trip {
     public Album album;
 
 
-    public Trip(String name, String description, String location) throws MissingCompulsoryParameter {
+    public Trip(String name, String description, String location) throws TravelDiaryException {
         // make sure the name attribute is provided
-        if (name == null) {
-            String[] parameters = {"name"};
-            throw new MissingCompulsoryParameter(parameters);
+        if (name == null || description == null || location == null) {
+            throw new  TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), " +
+                    "d# (description), l# (location).");
         }
         this.name = name;
-        this.description = (description == null) ? "no description" : description;
-        ;
-        this.location = (location == null) ? "no location" : location;
+        this.description = description;
+        this.location = location;
         this.album = new Album();
     }
 

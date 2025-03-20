@@ -6,7 +6,8 @@ import java.util.Map;
 
 public class CommandFactory {
 
-    public static Command getCommand(Map<String, String> parsedCommand, int fsmValue) throws TravelDiaryException, NumberFormatException{
+    public static Command getCommand(Map<String, String> parsedCommand, int fsmValue) throws
+            TravelDiaryException, NumberFormatException{
         String cmd = parsedCommand.get("command");
 
         // Handle commands available in both FSM states.

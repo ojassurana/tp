@@ -5,6 +5,7 @@ import command.CommandFactory;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import parser.Parser;
+import photo.PhotoPrinter;
 import trip.TripManager;
 import ui.Ui;
 
@@ -24,6 +25,7 @@ public class TravelDiary {
         while (!processCommand(ui, tripManager)) {
             ui.showLine();
         }
+        PhotoPrinter.closeAllWindows();
     }
 
     private static boolean processCommand(Ui ui, TripManager tripManager) {

@@ -9,7 +9,7 @@ public class TripManager {
     private final List<Trip> trips = new ArrayList<>();
     private Trip selectedTrip = null;
 
-    public void addTrip(String name, String description, String location) throws MissingCompulsoryParameter {
+    public void addTrip(String name, String description, String location) throws TravelDiaryException {
         trips.add(new Trip(name, description, location));
         System.out.println("Trip added successfully.");
     }
@@ -39,7 +39,6 @@ public class TripManager {
 
     public void selectTrip(int index) throws TravelDiaryException {
         if (index < 0 || index >= trips.size()) {
-            System.out.println("Invalid trip index.");
             throw new TravelDiaryException("Invalid trip index.");
             //return;
         }
