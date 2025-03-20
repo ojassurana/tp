@@ -12,7 +12,7 @@ public class SelectTripCommand extends Command {
     }
 
     @Override
-    public void execute(TripManager tripManager, Ui ui) throws TravelDiaryException {
-        tripManager.selectTrip(this.index);
+    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws TravelDiaryException {
+        ui.showToUser("Alvida! Till we meet next time :)");
     }
 }
