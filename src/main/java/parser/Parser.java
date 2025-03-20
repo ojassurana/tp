@@ -1,6 +1,5 @@
 package parser;
 
-import exception.CommandNotRecogniseException;
 import exception.TravelDiaryException;
 import ui.Ui;
 
@@ -76,7 +75,8 @@ public class Parser {
         map.put("description", tagsMap.get("d#"));
         map.put("location", tagsMap.get("l#"));
         if (map.get("name") == null || map.get("description") == null || map.get("location") == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), d# (description), l# (location).");
+            throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), " +
+                    "d# (description), l# (location).");
         }
         return map;
     }
@@ -93,7 +93,8 @@ public class Parser {
         map.put("location", tagsMap.get("l#"));
         if (map.get("filepath") == null || map.get("photoname") == null ||
                 map.get("caption") == null || map.get("location") == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# (photoname), c# (caption), l# (location).");
+            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# " +
+                    "(photoname), c# (caption), l# (location).");
         }
         return map;
     }

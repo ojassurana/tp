@@ -1,6 +1,5 @@
 package command;
 
-import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import trip.TripManager;
 import ui.Ui;

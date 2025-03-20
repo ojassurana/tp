@@ -2,7 +2,6 @@ package seedu.duke;
 
 import command.Command;
 import command.CommandFactory;
-import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import parser.Parser;
 import trip.TripManager;
