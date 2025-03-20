@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class Parser {
-    private static final Ui ui = new Ui();
     public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete", "list", "select", "menu"};
+    private static final Ui ui = new Ui();
 
     public static Map<String, String> getCommandDetails() throws TravelDiaryException {
         String input = ui.readInput().trim();
