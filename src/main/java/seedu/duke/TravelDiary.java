@@ -10,6 +10,7 @@ import trip.TripManager;
 import ui.Ui;
 
 import java.util.Map;
+import java.util.logging.Logger; // Added import for logging
 
 public class TravelDiary {
     // FSM tracks which part of the code the user is in.
@@ -17,6 +18,9 @@ public class TravelDiary {
     // 0 -> User is yet to select a trip
     // 1 -> User is inside a trip right now
     public static int fsmValue = 0;
+
+    // Initialize logger
+    private static final Logger logger = Logger.getLogger(TravelDiary.class.getName());
 
     public static void main(String[] args) {
         Ui ui = new Ui();
@@ -32,6 +36,8 @@ public class TravelDiary {
         Map<String, String> parsedCommand;
         try {
             parsedCommand = Parser.getCommandDetails();
+            // Log the parsed command for debugging purposes
+            logger.info("Parsed command: " + parsedCommand.toString());
         } catch (TravelDiaryException e) {
             ui.showToUser(e.getMessage());
             return false;
