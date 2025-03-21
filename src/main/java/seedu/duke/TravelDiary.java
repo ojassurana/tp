@@ -38,6 +38,8 @@ public class TravelDiary {
             parsedCommand = Parser.getCommandDetails();
             // Log the parsed command for debugging purposes
             logger.info("Parsed command: " + parsedCommand.toString());
+            // Assertion example: Ensure that the parsed command is not null or empty.
+            assert !parsedCommand.isEmpty() : "Parsed command map is null or empty!";
         } catch (TravelDiaryException e) {
             ui.showToUser(e.getMessage());
             return false;
