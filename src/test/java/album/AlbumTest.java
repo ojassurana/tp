@@ -1,5 +1,6 @@
 package album;
 
+import exception.TravelDiaryException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -117,8 +118,7 @@ class AlbumTest {
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outContent));
 
-        album.selectPhoto(0);
-
+        assertDoesNotThrow(()-> album.selectPhoto(0));
         System.setOut(originalOut);
         String output = outContent.toString().trim();
         assertTrue(output.contains("Name: MyPhoto"), "Selected photo details should be printed.");
@@ -128,7 +128,7 @@ class AlbumTest {
         // Test selecting a photo with an invalid index.
         // Since the selectPhoto method doesn't return after printing an error message,
         // it will eventually try to access an invalid index and throw an IndexOutOfBoundsException.
-        assertThrows(IndexOutOfBoundsException.class, () -> {
+        assertThrows(TravelDiaryException.class, () -> {
             album.selectPhoto(5);
         }, "Selecting photo with an invalid index should throw an IndexOutOfBoundsException.");
     }

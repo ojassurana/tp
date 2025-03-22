@@ -1,6 +1,6 @@
 package photo;
 
-import exception.MissingCompulsoryParameter;
+import exception.TravelDiaryException;
 
 import java.time.LocalDateTime;
 
@@ -16,19 +16,19 @@ public class Photo {
     private LocalDateTime datetime; // Using LocalDateTime for datetime
 
     public Photo(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
-            throws MissingCompulsoryParameter {
-        if (filePath == null || photoName == null) {
-            String[] parameters = {(filePath == null) ? "filepath" : null,(photoName == null) ? "photoname" : null};
-            throw new MissingCompulsoryParameter(parameters);
+            throws TravelDiaryException {
+        if (filePath == null || photoName == null || caption == null || location == null) {
+            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# " +
+                    "(photoname), c# (caption), l# (location).");
         }
         this.filePath = filePath;
         this.photoName = photoName;
-        this.caption = (caption == null) ? "no caption" : caption;
-        this.location = (location == null) ? "no location" : location;
+        this.caption = caption;
+        this.location = location;
         this.datetime = datetime;
     }
 
-    public Photo(String filePath, String photoName, String caption, String location) throws MissingCompulsoryParameter {
+    public Photo(String filePath, String photoName, String caption, String location) throws TravelDiaryException {
         this(filePath, photoName, caption, location, LocalDateTime.now());
     }
 
