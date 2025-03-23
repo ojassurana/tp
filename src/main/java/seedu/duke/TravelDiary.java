@@ -2,8 +2,6 @@ package seedu.duke;
 
 import command.Command;
 import command.CommandFactory;
-import exception.MissingCompulsoryParameter;
-import exception.TravelDiaryException;
 import parser.Parser;
 import photo.PhotoPrinter;
 import trip.TripManager;
@@ -11,6 +9,7 @@ import ui.Ui;
 
 import java.util.Map;
 import java.util.logging.Logger; // Added import for logging
+// import java.util.logging.Level;
 
 public class TravelDiary {
     // FSM tracks which part of the code the user is in.
@@ -23,6 +22,10 @@ public class TravelDiary {
     private static final Logger logger = Logger.getLogger(TravelDiary.class.getName());
 
     public static void main(String[] args) {
+        // For muting the logger
+        // Logger rootLogger = Logger.getLogger("");
+        //rootLogger.setLevel(Level.OFF);
+
         Ui ui = new Ui();
         TripManager tripManager = new TripManager();
         ui.showWelcome();
@@ -40,17 +43,16 @@ public class TravelDiary {
             logger.info("Parsed command: " + parsedCommand.toString());
             // Assertion example: Ensure that the parsed command is not null or empty.
             assert !parsedCommand.isEmpty() : "Parsed command map is null or empty!";
-        } catch (TravelDiaryException e) {
+        } catch (Exception e) {
             ui.showToUser(e.getMessage());
             return false;
         }
-        ui.showLine();
         Command command;
         try {
             command = CommandFactory.getCommand(parsedCommand, fsmValue);
             command.execute(tripManager, ui, fsmValue);
             fsmValue = command.fsmValue;
-        } catch (TravelDiaryException | NumberFormatException | MissingCompulsoryParameter e) {
+        } catch (Exception e) {
             ui.showToUser(e.getMessage());
             return false;
         }

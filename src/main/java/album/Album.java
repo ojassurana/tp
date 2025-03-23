@@ -1,5 +1,6 @@
 package album;
 
+import exception.InvalidIndexException;
 import exception.TravelDiaryException;
 import photo.Photo;
 import photo.PhotoFrame;
@@ -23,7 +24,7 @@ public class Album {
     public void addPhoto(String filePath, String photoName, String caption, String location)
             throws TravelDiaryException {
         photos.add(new Photo(filePath, photoName, caption, location));
-        System.out.println("Photo added successfully.");
+        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
 
     public void deletePhoto(int index) {
@@ -31,17 +32,17 @@ public class Album {
             System.out.println("Invalid photo index.");
             return;
         }
+        Photo photo = photos.get(index);
         photos.remove(index);
-        System.out.println("Photo deleted successfully.");
+        System.out.printf("\tPhoto [%s] has been deleted successfully.\n", photo.getPhotoName());
     }
 
     public void viewPhotos() {
         if (photos.isEmpty()) {
-            System.out.println("No photos found.");
+            System.out.println("No photos are found.");
         } else {
-            for (int i = 0; i < photos.size(); i++) {
-                System.out.println(i + ": " + photos.get(i)); // Display index with photos detail
-            }
+            System.out.println("\n\tHere are all your photos:");
+            System.out.println(this);
         }
     }
 
@@ -49,18 +50,27 @@ public class Album {
         this.selectedPhoto = selectedPhoto;
     }
 
-    public void selectPhoto(int index) throws TravelDiaryException {
+    public void selectPhoto(int index) throws InvalidIndexException {
         if (index < 0 || index >= photos.size()) {
-            throw new TravelDiaryException("Invalid photo index.");
+            throw new InvalidIndexException();
         }
         selectedPhoto = photos.get(index);
-        System.out.println("Name: " + selectedPhoto.getPhotoName() + " caption: " + selectedPhoto.getCaption() +
-                " location: " + selectedPhoto.getLocation());
+        System.out.println("\t" + selectedPhoto);
         try {
             PhotoFrame photoFrame = PhotoPrinter.createFrame(selectedPhoto);
             PhotoPrinter.display(photoFrame);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder albumDetails = new StringBuilder();
+        for (int i = 0; i < photos.size(); i++) {
+            albumDetails.append("\t").append(i + 1).append(") ")
+                    .append(photos.get(i).toString()).append("\n"); // Append details
+        }
+        return albumDetails.toString(); // Convert StringBuilder to String
     }
 }

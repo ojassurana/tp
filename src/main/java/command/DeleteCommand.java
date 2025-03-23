@@ -1,6 +1,6 @@
 package command;
 
-import exception.TravelDiaryException;
+import exception.IndexOutOfRangeException;
 import trip.TripManager;
 import ui.Ui;
 
@@ -11,9 +11,13 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws TravelDiaryException {
+    public void execute(TripManager tripManager, Ui ui, int fsmValue) {
         if (fsmValue == 0){
-            tripManager.deleteTrip(index);
+            try {
+                tripManager.deleteTrip(index);
+            } catch (IndexOutOfRangeException e) {
+                System.out.println(e.getMessage());
+            }
         } else if (fsmValue == 1) {
             tripManager.getSelectedTrip().album.deletePhoto(index);
         }

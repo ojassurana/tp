@@ -1,8 +1,10 @@
 package parser;
 
+import exception.CommandNotRecogniseException;
+import exception.InvalidIndexException;
 import exception.TravelDiaryException;
+import exception.NullIndexException;
 import ui.Ui;
-
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +16,9 @@ public class Parser {
     public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete", "list", "select", "menu"};
     private static final Ui ui = new Ui();
 
-    public static Map<String, String> getCommandDetails() throws TravelDiaryException {
+    public static Map<String, String> getCommandDetails()
+            throws TravelDiaryException, InvalidIndexException, CommandNotRecogniseException {
+        System.out.print("Enter: ");
         String input = ui.readInput().trim();
         if (input.isEmpty()) {
             throw new TravelDiaryException("No command provided. Please enter a command.");
@@ -33,7 +37,7 @@ public class Parser {
     }
 
     public static Map<String, String> convertToHashmap(String command, String rest)
-            throws TravelDiaryException {
+            throws TravelDiaryException, NullPointerException, InvalidIndexException, CommandNotRecogniseException {
         switch (command) {
         case "bye":
         case "list":
@@ -47,8 +51,7 @@ public class Parser {
         case "add_photo":
             return parseAddPhoto(rest);
         default:
-            throw new TravelDiaryException("I'm sorry, I don't understand what you want me to do :c\n"
-                    + "Please refer to the manual coming soon!");
+            throw new CommandNotRecogniseException(command);
         }
     }
 
@@ -58,12 +61,16 @@ public class Parser {
         return map;
     }
 
-    private static Map<String, String> createIndexCommandMap(String command, String index) {
+    private static Map<String, String> createIndexCommandMap(String command, String index) throws NullIndexException{
+        if (index.isEmpty()) {
+            throw new NullIndexException();
+        }
         Map<String, String> map = new HashMap<>();
         map.put("command", command);
         map.put("index", index);
         return map;
     }
+
 
     private static Map<String, String> parseAddTrip(String rest) throws TravelDiaryException {
         Map<String, String> map = new HashMap<>();
