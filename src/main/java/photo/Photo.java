@@ -54,6 +54,6 @@ public class Photo {
 
     @Override
     public String toString() {
-        return photoName;
+        return String.format("%s (%s) %s \n\t\t%s", this.photoName, this.location, this.datetime, this.caption);
     }
 }

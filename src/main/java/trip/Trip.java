@@ -36,8 +36,12 @@ public class Trip {
         logger.info("Trip object successfully created: " + this);
     }
 
+    public String getAlbumDetails() {
+        return this.album.toString();
+    }
+
     @Override
     public String toString() {
-        return name + " - " + description + " (" + location + ")";
+        return String.format("%s (%s)\n\t\t%s\n", name, location, description);
     }
 }

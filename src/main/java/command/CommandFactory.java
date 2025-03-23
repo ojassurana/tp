@@ -1,13 +1,14 @@
 package command;
 
 import exception.TravelDiaryException;
+import exception.TripNotSelectedException;
 
 import java.util.Map;
 
 public class CommandFactory {
 
     public static Command getCommand(Map<String, String> parsedCommand, int fsmValue) throws
-            TravelDiaryException, NumberFormatException{
+            TravelDiaryException, NumberFormatException, TripNotSelectedException {
         String cmd = parsedCommand.get("command");
 
         // Handle commands available in both FSM states.
@@ -15,7 +16,7 @@ public class CommandFactory {
             return new ExitCommand();
         }
         if ("select".equals(cmd)) {
-            int index = Integer.parseInt(parsedCommand.get("index"));
+            int index = Integer.parseInt(parsedCommand.get("index")) - 1;
             return new SelectCommand(index); // Insert index in, update FSM value
         }
         if ("list".equals(cmd)) {
@@ -36,7 +37,8 @@ public class CommandFactory {
         }
     }
 
-    private static Command handleMenuStateCommand(Map<String, String> parsedCommand) throws TravelDiaryException {
+    private static Command handleMenuStateCommand(Map<String, String> parsedCommand)
+            throws TravelDiaryException, TripNotSelectedException {
         String cmd = parsedCommand.get("command");
         if ("add_trip".equals(cmd)) {
             String name = parsedCommand.get("name");
@@ -47,8 +49,7 @@ public class CommandFactory {
         if ("menu".equals(cmd)) {
             throw new TravelDiaryException("You are already in the menu.");
         }
-        throw new TravelDiaryException("Please select a trip first using 'select' [Trip ID] command. To view all " +
-                "your trips, use 'list'");
+        throw new TripNotSelectedException();
     }
 
     private static Command handleTripStateCommand(Map<String, String> parsedCommand) throws TravelDiaryException {
@@ -58,7 +59,7 @@ public class CommandFactory {
             String photoname = parsedCommand.get("photoname");
             String caption = parsedCommand.get("caption");
             String location = parsedCommand.get("location");
-            return new AddPhotoCommand(filepath,photoname, caption, location);
+            return new AddPhotoCommand(filepath, photoname, caption, location);
         }
         if ("menu".equals(cmd)) {
             // Assuming MenuCommand resets FSM state and performs any required housekeeping.
