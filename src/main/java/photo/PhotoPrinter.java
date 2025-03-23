@@ -1,8 +1,6 @@
 package photo;
 
 import exception.TravelDiaryException;
-import trip.TripManager;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -111,15 +109,24 @@ public class PhotoPrinter {
             PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
             // Display PhotoFrame
             PhotoPrinter.display(photoFrame);
-            photoFrame.closeOperation(); // Exit program when Jframe window is closed
+            //photoFrame.closeOperation(); // Exit program when Jframe window is closed
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
 
     }
     public static void closeAllWindows() {
-        for (Window window : Window.getWindows()) {
-            window.dispose(); // Close each open window
+        Window[] windows = Window.getWindows();
+        int numOfWindows = windows.length;
+        if (numOfWindows == 0) {
+            System.out.println("\tAll photos have been closed.");
+        } else {
+            for (int i = 0; i < numOfWindows; i++) {
+                windows[i].dispose(); // Close each open window
+                logger.info(String.format("%s photo has been closed.", i + 1));
+            }
+            System.out.println(String.format("\t%s photo has been closed.", numOfWindows));
         }
     }
+
 }
