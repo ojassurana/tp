@@ -7,7 +7,6 @@ import exception.TravelDiaryException;
 import parser.Parser;
 import photo.PhotoPrinter;
 import storage.Storage;
-import trip.Trip;
 import trip.TripManager;
 import ui.Ui;
 import exception.InvalidIndexException;
@@ -64,7 +63,10 @@ public class TravelDiary {
 
             // Save trips after each command to maintain persistent storage
             Storage.saveTasks(tripManager.getTrips());
-        } catch (TravelDiaryException | NumberFormatException | MissingCompulsoryParameter | TripNotSelectedException e) {
+        } catch (TravelDiaryException |
+                 NumberFormatException |
+                 MissingCompulsoryParameter |
+                 TripNotSelectedException e) {
             ui.showToUser(e.getMessage());
             return false;
         }

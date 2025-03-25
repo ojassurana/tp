@@ -13,7 +13,8 @@ public class SelectCommand extends Command {
     }
 
     @Override
-    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws InvalidIndexException, TravelDiaryException {
+    public void execute(TripManager tripManager, Ui ui, int fsmValue)
+            throws InvalidIndexException, TravelDiaryException {
         if (fsmValue == 0) {
             tripManager.selectTrip(index);
             this.fsmValue = 1;
