@@ -1,6 +1,7 @@
 package trip;
-import exception.IndexOutOfRangeException;
 import exception.TravelDiaryException;
+import exception.IndexOutOfRangeException;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -26,14 +27,11 @@ public class TripManager {
     public void deleteTrip(int index) throws IndexOutOfRangeException {
         logger.info("Attempting to delete trip at index: " + index);
         if (index < 0 || index >= trips.size()) {
-            logger.severe("Invalid trip index: " + index);
             throw new IndexOutOfRangeException();
         }
-        String name = trips.get(index).name;
-        logger.info("Trip deleted: " + name);
+        logger.info("Trip deleted: " + trips.get(index).name);
         trips.remove(index);
-        System.out.printf("\tTrip [%s] has been deleted successfully.\n", name);
-        viewTrips();
+        System.out.println("Trip deleted successfully.");
     }
 
     public void viewTrips() {
@@ -42,8 +40,9 @@ public class TripManager {
             logger.warning("No trips available.");
             System.out.println("\n\tNo trips available. Start adding a new trip now!");
         } else {
-            System.out.println("\n\tHere are all your trips:");
-            System.out.println(this);
+            for (int i = 0; i < trips.size(); i++) {
+                System.out.println(i + ": " + trips.get(i)); // Display index with trip details
+            }
         }
     }
 
@@ -72,5 +71,9 @@ public class TripManager {
                     .append(trips.get(i).toString());
         }
         return tripsDetails.toString();
+    }
+
+    public List<Trip> getTrips() {
+        return trips;
     }
 }
