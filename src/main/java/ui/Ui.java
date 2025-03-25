@@ -59,6 +59,13 @@ public class Ui {
         System.out.println("7. bye - Exit the Travel Diary");
         System.out.println("   Example: bye\n");
 
+        showAddPhotoCommandFormat();
+    }
+
+    public void showAddPhotoCommandFormat() {
+        System.out.println(("\tBefore adding a photo, " +
+                "please select a trip first. using 'select' [Trip ID] command. To view all " +
+                "your trips, use 'list'"));
         System.out.println("Pro Tips:");
         System.out.println("- Use '#' to separate tag types (n#, d#, l#, f#, c#)");
         System.out.println("- Always provide all required tags when adding trips or photos");

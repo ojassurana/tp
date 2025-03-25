@@ -12,7 +12,7 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TripManager tripManager, Ui ui, int fsmValue) {
+    public void execute(TripManager tripManager, Ui ui, int fsmValue) throws IndexOutOfRangeException {
         if (fsmValue == 0) {
             tripManager.deleteTrip(index);
         } else if (fsmValue == 1) {
@@ -21,3 +21,4 @@ public class DeleteCommand extends Command {
         this.fsmValue = fsmValue;
     }
 }
+
