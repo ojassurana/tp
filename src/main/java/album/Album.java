@@ -1,7 +1,7 @@
 package album;
 
-import exception.InvalidIndexException;
 import exception.TravelDiaryException;
+import exception.InvalidIndexException;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Album {
-    private final List<Photo> photos = new ArrayList<>();
-    private Photo selectedPhoto = null;
+    public final List<Photo> photos = new ArrayList<>();
+    public Photo selectedPhoto = null;
 
 
     public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
