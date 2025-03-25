@@ -39,11 +39,10 @@ public class Album {
 
     public void viewPhotos() {
         if (photos.isEmpty()) {
-            System.out.println("No photos found.");
+            System.out.println("No photos are found.");
         } else {
-            for (int i = 0; i < photos.size(); i++) {
-                System.out.println(i + ": " + photos.get(i)); // Display index with photos detail
-            }
+            System.out.println("\n\tHere are all your photos:");
+            System.out.println(this);
         }
     }
 
@@ -56,8 +55,7 @@ public class Album {
             throw new InvalidIndexException();
         }
         selectedPhoto = photos.get(index);
-        System.out.println("Name: " + selectedPhoto.getPhotoName() + " caption: " + selectedPhoto.getCaption() +
-                " location: " + selectedPhoto.getLocation());
+        System.out.println("\t" + selectedPhoto);
         try {
             PhotoFrame photoFrame = PhotoPrinter.createFrame(selectedPhoto);
             PhotoPrinter.display(photoFrame);
