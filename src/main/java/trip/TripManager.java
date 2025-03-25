@@ -1,6 +1,6 @@
 package trip;
-import exception.IndexOutOfRangeException;
 import exception.TravelDiaryException;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -14,8 +14,7 @@ public class TripManager {
         logger.info("Adding a new trip: " + name);
         trips.add(new Trip(name, description, location));
         logger.info("Trip added successfully: " + name);
-        System.out.printf("\tTrip [%s] has been added successfully.\n", name);
-        viewTrips();
+        System.out.println("Trip added successfully.");
     }
 
     public void setSelectedTrip(Trip selectedTrip) {
@@ -23,39 +22,39 @@ public class TripManager {
         this.selectedTrip = selectedTrip;
     }
 
-    public void deleteTrip(int index) throws IndexOutOfRangeException {
+    public void deleteTrip(int index) {
         logger.info("Attempting to delete trip at index: " + index);
         if (index < 0 || index >= trips.size()) {
             logger.severe("Invalid trip index: " + index);
-            throw new IndexOutOfRangeException();
+            System.out.println("Invalid trip index.");
+            return;
         }
-        String name = trips.get(index).name;
-        logger.info("Trip deleted: " + name);
+        logger.info("Trip deleted: " + trips.get(index).name);
         trips.remove(index);
-        System.out.printf("\tTrip [%s] has been deleted successfully.\n", name);
-        viewTrips();
+        System.out.println("Trip deleted successfully.");
     }
 
     public void viewTrips() {
         logger.info("Viewing all trips.");
         if (trips.isEmpty()) {
             logger.warning("No trips available.");
-            System.out.println("\n\tNo trips available. Start adding a new trip now!");
+            System.out.println("No trips available.");
         } else {
-            System.out.println("\n\tHere are all your trips:");
-            System.out.println(this);
+            for (int i = 0; i < trips.size(); i++) {
+                System.out.println(i + ": " + trips.get(i)); // Display index with trip details
+            }
         }
     }
 
-    public void selectTrip(int index) throws IndexOutOfRangeException {
+    public void selectTrip(int index) throws TravelDiaryException {
         logger.info("Selecting trip at index: " + index);
         if (index < 0 || index >= trips.size()) {
             logger.severe("Invalid trip index: " + index);
-            throw new IndexOutOfRangeException();
+            throw new TravelDiaryException("Invalid trip index.");
         }
         selectedTrip = trips.get(index);
         logger.info("Selected trip: " + selectedTrip.name);
-        System.out.println("\tSelected trip: " + selectedTrip);
+        System.out.println("Selected trip: " + selectedTrip.name);
     }
 
     public Trip getSelectedTrip() {
@@ -64,13 +63,7 @@ public class TripManager {
         return this.selectedTrip;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder tripsDetails = new StringBuilder();
-        for (int i = 0; i < trips.size(); i++) {
-            tripsDetails.append("\t").append(i + 1).append(") ")
-                    .append(trips.get(i).toString());
-        }
-        return tripsDetails.toString();
+    public List<Trip> getTrips() {
+        return trips;
     }
 }

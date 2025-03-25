@@ -2,60 +2,73 @@ package seedu.duke;
 
 import command.Command;
 import command.CommandFactory;
+import exception.MissingCompulsoryParameter;
+import exception.TravelDiaryException;
 import parser.Parser;
 import photo.PhotoPrinter;
+import storage.Storage;
+import trip.Trip;
 import trip.TripManager;
 import ui.Ui;
+import exception.InvalidIndexException;
+import exception.CommandNotRecogniseException;
+import exception.TripNotSelectedException;
 
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger; // Added import for logging
-// import java.util.logging.Level;
 
 public class TravelDiary {
-    // FSM tracks which part of the code the user is in.
-    // FSM Manual:
-    // 0 -> User is yet to select a trip
-    // 1 -> User is inside a trip right now
+    // Finite State Machine (FSM) to track user's current context
+    // FSM States:
+    // 0 -> No trip selected
+    // 1 -> Inside a specific trip
     public static int fsmValue = 0;
 
-    // Initialize logger
-    private static final Logger logger = Logger.getLogger(TravelDiary.class.getName());
-
     public static void main(String[] args) {
-        // For muting the logger
-        // Logger rootLogger = Logger.getLogger("");
-        //rootLogger.setLevel(Level.OFF);
-
         Ui ui = new Ui();
         TripManager tripManager = new TripManager();
+
+        // Load existing trips from storage
+        List savedTrips = Storage.loadTrips(tripManager);
+
         ui.showWelcome();
-        while (!processCommand(ui, tripManager)) {
+        boolean exitProgram = false;
+        while (!exitProgram) {
+            try {
+                exitProgram = processCommand(ui, tripManager);
+            } catch (InvalidIndexException e) {
+                ui.showToUser("Invalid index: " + e.getMessage());
+            }
             ui.showLine();
         }
+
+        // Save trips before exiting
+        Storage.saveTasks(tripManager.getTrips());
         PhotoPrinter.closeAllWindows();
     }
 
-    private static boolean processCommand(Ui ui, TripManager tripManager) {
-        Map<String, String> parsedCommand;
+    private static boolean processCommand(Ui ui, TripManager tripManager) throws InvalidIndexException {
+        Map parsedCommand;
         try {
             parsedCommand = Parser.getCommandDetails();
-            // Log the parsed command for debugging purposes
-            logger.info("Parsed command: " + parsedCommand.toString());
-            // Assertion example: Ensure that the parsed command is not null or empty.
-            assert !parsedCommand.isEmpty() : "Parsed command map is null or empty!";
-        } catch (Exception e) {
+        } catch (TravelDiaryException | CommandNotRecogniseException e) {
             ui.showToUser(e.getMessage());
             return false;
         }
+
         Command command;
         try {
             command = CommandFactory.getCommand(parsedCommand, fsmValue);
             command.execute(tripManager, ui, fsmValue);
             fsmValue = command.fsmValue;
-        } catch (Exception e) {
+
+            // Save trips after each command to maintain persistent storage
+            Storage.saveTasks(tripManager.getTrips());
+        } catch (TravelDiaryException | NumberFormatException | MissingCompulsoryParameter | TripNotSelectedException e) {
             ui.showToUser(e.getMessage());
             return false;
         }
+
         return command.isExit();
     }
 }
