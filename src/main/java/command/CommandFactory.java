@@ -15,6 +15,9 @@ public class CommandFactory {
         if ("bye".equals(cmd)) {
             return new ExitCommand();
         }
+        if ("close".equals(cmd)) {
+            return new ClosePhotoCommand();
+        }
         if ("select".equals(cmd)) {
             int index = Integer.parseInt(parsedCommand.get("index")) - 1;
             return new SelectCommand(index); // Insert index in, update FSM value

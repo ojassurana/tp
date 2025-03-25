@@ -1,7 +1,6 @@
 package photo;
 
 import exception.TravelDiaryException;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 /**
  * PhotoPrinter class creates a PhotoFrame with Jlabels based on Photo details.
@@ -26,7 +26,7 @@ import java.util.Locale;
 public class PhotoPrinter {
 
     private static final String locationPinIconPath = "./data/assets/photo_Location_Pin.png";
-
+    private static final Logger logger = Logger.getLogger(PhotoPrinter.class.getName());
     /**
      * Returns a PhotoFrame object with Jlabels based on Photo details.
      *
@@ -40,6 +40,7 @@ public class PhotoPrinter {
         }
 
         JFrame frame = new JFrame(photo.getPhotoName());
+        logger.info("Created JFrame for: " + photo.getPhotoName());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.getContentPane().setBackground(new Color(255, 254, 224));
@@ -77,6 +78,7 @@ public class PhotoPrinter {
 
         frame.pack();
         frame.setLocationRelativeTo(null);
+        logger.info(String.format("PhotoFrame instantiated: %s, %s", photo.getCaption(), photo.getLocation()));
         return new PhotoFrame(frame, captionLabel, locationLabel);
     }
 
@@ -87,7 +89,9 @@ public class PhotoPrinter {
      */
     public static void display(PhotoFrame photoFrame) {
         JFrame frame = photoFrame.getFrame();
+        assert frame != null : "Jframe should not be null";
         frame.setVisible(true);
+        logger.info(String.format("Photo displayed: %s", photoFrame.getTitle()));
     }
 
     public static void main(String[] args) throws TravelDiaryException {
@@ -105,16 +109,24 @@ public class PhotoPrinter {
             PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
             // Display PhotoFrame
             PhotoPrinter.display(photoFrame);
-            photoFrame.closeOperation(); // Exit program when Jframe window is closed
+            //photoFrame.closeOperation(); // Exit program when Jframe window is closed
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
 
-
     }
     public static void closeAllWindows() {
-        for (Window window : Window.getWindows()) {
-            window.dispose(); // Close each open window
+        Window[] windows = Window.getWindows();
+        int numOfWindows = windows.length;
+        if (numOfWindows == 0) {
+            System.out.println("\tAll photos have been closed.");
+        } else {
+            for (int i = 0; i < numOfWindows; i++) {
+                windows[i].dispose(); // Close each open window
+                logger.info(String.format("%s photo has been closed.", i + 1));
+            }
+            System.out.println(String.format("\t%s photo has been closed.", numOfWindows));
         }
     }
+
 }

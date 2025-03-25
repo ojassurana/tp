@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class Parser {
-    public static final String[] COMMAND_ARRAY = {"bye", "add_trip", "add_photo", "delete", "list", "select", "menu"};
+    public static final String[] COMMAND_ARRAY = {"bye", "close", "add_trip"
+            , "add_photo", "delete", "list", "select", "menu"};
     private static final Ui ui = new Ui();
 
     public static Map<String, String> getCommandDetails()
@@ -41,6 +42,7 @@ public class Parser {
         switch (command) {
         case "bye":
         case "list":
+        case "close":
         case "menu":
             return createSimpleCommandMap(command);
         case "delete":
