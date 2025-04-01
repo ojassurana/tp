@@ -11,7 +11,7 @@ class ParserTest {
     @Test
     public void addTripParsingTest() {
         Map<String, String> parsedCommand = assertDoesNotThrow(() -> Parser.processInput("add_trip n#2025 Great " +
-                "Barrier Reef d#Summer break with family l#Australia"));
+                "Barrier Reef d#Summer break with family"));
         // Verify the parsed result
         assertEquals("add_trip", parsedCommand.get("command"));
         assertEquals("2025 Great Barrier Reef", parsedCommand.get("name"));
