@@ -41,7 +41,7 @@ public class TripManager {
             System.out.println("\n\tNo trips available. Start adding a new trip now!");
         } else {
             for (int i = 0; i < trips.size(); i++) {
-                System.out.println(i + ": " + trips.get(i)); // Display index with trip details
+                System.out.println(i + 1 + ": " + trips.get(i)); // Display index with trip details
             }
         }
     }

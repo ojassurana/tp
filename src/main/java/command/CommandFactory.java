@@ -30,6 +30,11 @@ public class CommandFactory {
             return new DeleteCommand(index); // Insert index in
         }
 
+        if ("help".equals(cmd)) {
+            // Help command is available in all states
+            return new HelpCommand(parsedCommand.getOrDefault("fsm", null));
+        }
+
         // Delegate state-specific commands.
         if (fsmValue == 0) {
             return handleMenuStateCommand(parsedCommand);

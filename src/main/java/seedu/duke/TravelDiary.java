@@ -4,6 +4,9 @@ import command.Command;
 import command.CommandFactory;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
+import exception.FileReadException;
+import exception.FileFormatException;
+import exception.FileWriteException;
 import parser.Parser;
 import photo.PhotoPrinter;
 import storage.Storage;
@@ -15,22 +18,35 @@ import exception.TripNotSelectedException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 
 public class TravelDiary {
+    public static int fsmValue = 0;
+    private static final Logger logger = Logger.getLogger(TravelDiary.class.getName());
+    private static final String FILE_PATH = "./data/travel_diary.txt";
     // Finite State Machine (FSM) to track user's current context
     // FSM States:
     // 0 -> No trip selected
     // 1 -> Inside a specific trip
-    public static int fsmValue = 0;
 
     public static void main(String[] args) {
         Ui ui = new Ui();
         TripManager tripManager = new TripManager();
+        Logger rootLogger = Logger.getLogger("");
+        rootLogger.setLevel(Level.OFF);
 
         // Load existing trips from storage
-        List savedTrips = Storage.loadTrips(tripManager);
+        try {
+            List savedTrips = Storage.loadTrips(tripManager, FILE_PATH);
+            ui.showWelcome();  // Show welcome message only after successful load
+        } catch (FileReadException | FileFormatException e) {
+            ui.showToUser("Error loading saved trips: " + e.getMessage());
+            logger.log(Level.SEVERE, "Failed to load trips", e);
+            return;  // Exit if there's an error loading trips
+        }
 
-        ui.showWelcome();
         boolean exitProgram = false;
         while (!exitProgram) {
             try {
@@ -42,7 +58,12 @@ public class TravelDiary {
         }
 
         // Save trips before exiting
-        Storage.saveTasks(tripManager.getTrips());
+        try {
+            Storage.saveTasks(tripManager.getTrips(), FILE_PATH);
+        } catch (FileWriteException e) {
+            ui.showToUser("Error saving trips: " + e.getMessage());
+            logger.log(Level.SEVERE, "Failed to save trips", e);
+        }
         PhotoPrinter.closeAllWindows();
     }
 
@@ -62,7 +83,12 @@ public class TravelDiary {
             fsmValue = command.fsmValue;
 
             // Save trips after each command to maintain persistent storage
-            Storage.saveTasks(tripManager.getTrips());
+            try {
+                Storage.saveTasks(tripManager.getTrips(), FILE_PATH);
+            } catch (FileWriteException e) {
+                ui.showToUser("Error saving trips: " + e.getMessage());
+                logger.log(Level.WARNING, "Failed to save trips after command", e);
+            }
         } catch (TravelDiaryException |
                  NumberFormatException |
                  MissingCompulsoryParameter |

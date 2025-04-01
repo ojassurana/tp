@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class Parser {
     public static final String[] COMMAND_ARRAY = {"bye", "close", "add_trip"
-            , "add_photo", "delete", "list", "select", "menu"};
+            , "add_photo", "delete", "list", "select", "menu", "help"};
     private static final Ui ui = new Ui();
 
     public static Map<String, String> getCommandDetails()
@@ -52,6 +52,8 @@ public class Parser {
             return parseAddTrip(rest);
         case "add_photo":
             return parseAddPhoto(rest);
+        case "help":
+            return parseHelp(rest);
         default:
             throw new CommandNotRecogniseException(command);
         }
@@ -134,5 +136,25 @@ public class Parser {
             }
         }
         throw new TravelDiaryException("Invalid tag in command: " + part);
+    }
+
+    private static Map<String, String> parseHelp(String rest) {
+        Map<String, String> map = new HashMap<>();
+        map.put("command", "help");
+
+        // If rest is not empty, try to parse it as an fsm value
+        if (!rest.isEmpty()) {
+            try {
+                int fsm = Integer.parseInt(rest.trim());
+                // Only accept 0 or 1 as valid FSM states
+                if (fsm == 0 || fsm == 1) {
+                    map.put("fsm", String.valueOf(fsm));
+                }
+            } catch (NumberFormatException e) {
+                // If parsing fails, ignore and use default fsm
+            }
+        }
+
+        return map;
     }
 }
