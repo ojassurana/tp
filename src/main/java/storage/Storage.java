@@ -3,7 +3,14 @@ package storage;
 import trip.Trip;
 import trip.TripManager;
 import photo.Photo;
+import exception.FileReadException;
+import exception.FileFormatException;
+import exception.FileWriteException;
+import exception.PhotoLoadException;
+import exception.PhotoSaveException;
+import exception.TripLoadException;
 import exception.TravelDiaryException;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,18 +19,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import album.Album;
 
 public class Storage {
-    private static final String FILE_PATH = "./data/travel_diary.txt";
     private static final String TRIP_MARKER = "T";
     private static final String PHOTO_MARKER = "P";
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static void saveTasks(List<Trip> trips) {
-        File dataFile = new File(FILE_PATH);
+    public static void saveTasks(List<Trip> trips, String filePath) throws FileWriteException {
+        File dataFile = new File(filePath);
         dataFile.getParentFile().mkdirs(); // Ensure directory exists
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
@@ -34,22 +41,22 @@ public class Storage {
                 if (trip.album != null) {
                     writer.write("A | " + encodeString(trip.name));
                     writer.newLine();
-                    System.out.println("Saving album for trip: " + trip.name);  // Log album saving
-
                     if (trip.album.photos != null) {
                         for (Photo photo : trip.album.photos) {
-                            writer.write(formatPhotoLine(photo));
-                            writer.newLine();
-                            System.out.println("Saving photo: " + photo.getPhotoName());  // Log each photo saving
+                            try {
+                                writer.write(formatPhotoLine(photo));
+                                writer.newLine();
+                            } catch (Exception e) {
+                                throw new PhotoSaveException(photo.getPhotoName(), filePath, e);
+                            }
                         }
                     }
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
+            throw new FileWriteException(filePath, e);
         }
     }
-
 
     /**
      * Formats a trip into a line for storage
@@ -77,37 +84,59 @@ public class Storage {
                 dateTimeString;
     }
 
-    public static List<Trip> loadTrips(TripManager tripManager) {
+    public static List<Trip> loadTrips(TripManager tripManager, String filePath)
+            throws FileReadException, FileFormatException {
         List<Trip> trips = new ArrayList<>();
-        File dataFile = new File(FILE_PATH);
+        File dataFile = new File(filePath);
 
         if (!dataFile.exists()) {
             return trips;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
-            trips = processFileLines(reader, tripManager);
+            trips = processFileLines(reader, tripManager, filePath);
         } catch (IOException e) {
-            System.out.println("Error reading trips from file: " + e.getMessage());
+            throw new FileReadException(filePath, e);
         }
 
         return trips;
     }
 
-    private static List<Trip> processFileLines(BufferedReader reader, TripManager tripManager) throws IOException {
+    private static List<Trip> processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
+            throws IOException, FileFormatException {
         List<Trip> trips = new ArrayList<>();
         String line;
         Trip currentTrip = null;
+        int lineNumber = 0;
 
         while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(" \\| ");
+            lineNumber++;
+            try {
+                String[] parts = line.split(" \\| ");
 
-            if (isNewTripMarker(parts)) {
-                currentTrip = handleTripCreation(parts, tripManager, currentTrip, trips);
-            } else if (isAlbumMarker(parts, currentTrip)) {
-                handleAlbumMarker(parts, currentTrip);
-            } else if (isPhotoMarker(parts, currentTrip)) {
-                handlePhotoAddition(parts, currentTrip);
+                if (parts.length == 0) {
+                    throw new FileFormatException(filePath, line);
+                }
+
+                if (isNewTripMarker(parts)) {
+                    currentTrip = handleTripCreation(parts, tripManager, currentTrip, trips, filePath, lineNumber);
+                } else if (isAlbumMarker(parts, currentTrip)) {
+                    handleAlbumMarker(parts, currentTrip, filePath, lineNumber);
+                } else if (isPhotoMarker(parts, currentTrip)) {
+                    handlePhotoAddition(parts, currentTrip, filePath, lineNumber);
+                } else {
+                    throw new FileFormatException(filePath, line);
+                }
+            } catch (TripLoadException | PhotoLoadException e) {
+                // Propagate these exceptions without wrapping
+                throw e;
+            } catch (Exception e) {
+                // Wrap any other exceptions
+                if (!(e instanceof FileFormatException)) {
+                    throw new FileFormatException(filePath, lineNumber, e);
+                } else {
+                    throw e;
+                }
             }
         }
 
@@ -120,27 +149,33 @@ public class Storage {
     }
 
     private static boolean isNewTripMarker(String[] parts) {
-        return parts[0].equals(TRIP_MARKER);
+        return parts.length > 0 && parts[0].equals(TRIP_MARKER);
     }
 
     private static boolean isAlbumMarker(String[] parts, Trip currentTrip) {
-        return parts[0].equals("A") && currentTrip != null;
+        return parts.length > 0 && parts[0].equals("A") && currentTrip != null;
     }
 
     private static boolean isPhotoMarker(String[] parts, Trip currentTrip) {
-        return parts[0].equals(PHOTO_MARKER) && currentTrip != null && currentTrip.album != null;
+        return parts.length > 0 && parts[0].equals(PHOTO_MARKER) && currentTrip != null && currentTrip.album != null;
     }
 
     private static Trip handleTripCreation(String[] parts,
                                            TripManager tripManager,
                                            Trip previousTrip,
-                                           List<Trip> trips) {
+                                           List<Trip> trips,
+                                           String filePath,
+                                           int lineNumber) throws TripLoadException, FileFormatException {
         // Add previous trip to the list if it exists
         if (previousTrip != null) {
             trips.add(previousTrip);
         }
 
         try {
+            if (parts.length < 4) {
+                throw new FileFormatException(filePath, String.join(" | ", parts));
+            }
+
             String name = decodeString(parts[1]);
             String description = decodeString(parts[2]);
             String location = decodeString(parts[3]);
@@ -158,42 +193,64 @@ public class Storage {
 
             return currentTrip;
         } catch (TravelDiaryException e) {
-            System.out.println("Error creating trip: " + e.getMessage());
-            return null;
+            throw new TripLoadException(parts.length > 1 ? decodeString(parts[1]) : "unknown", e);
         }
     }
 
-    private static void handleAlbumMarker(String[] parts, Trip currentTrip) {
+    private static void handleAlbumMarker(String[] parts, Trip currentTrip, String filePath, int lineNumber)
+            throws FileFormatException {
+        if (parts.length <= 1) {
+            throw new FileFormatException(filePath, String.join(" | ", parts));
+        }
+
         String albumName = decodeString(parts[1]);
-        System.out.println("Loading album for trip: " + albumName);
     }
 
-    private static void handlePhotoAddition(String[] parts, Trip currentTrip) {
+    private static void handlePhotoAddition(String[] parts, Trip currentTrip, String filePath, int lineNumber)
+            throws PhotoLoadException, FileFormatException {
         try {
-            LocalDateTime photoTime = extractPhotoTime(parts);
+            if (parts.length < 4) {
+                throw new FileFormatException(filePath, String.join(" | ", parts));
+            }
+
+            String photoPath = decodeString(parts[1]);
+            String photoName = decodeString(parts[2]);
+            String caption = decodeString(parts[3]);
+
+            LocalDateTime photoTime = null;
+            try {
+                photoTime = extractPhotoTime(parts);
+            } catch (DateTimeParseException e) {
+                // Create a new exception with just the file path and line
+                throw new FileFormatException(filePath, lineNumber, e);
+            }
 
             if (photoTime != null) {
                 currentTrip.album.addPhoto(
-                        decodeString(parts[1]),   // file path
-                        decodeString(parts[2]),   // photo name
-                        decodeString(parts[3]),   // caption
-                        "",                       // location (seems unused)
+                        photoPath,
+                        photoName,
+                        caption,
+                        "",
                         photoTime
                 );
             } else {
                 currentTrip.album.addPhoto(
-                        decodeString(parts[1]),   // file path
-                        decodeString(parts[2]),   // photo name
-                        decodeString(parts[3]),   // caption
-                        ""                        // location (seems unused)
+                        photoPath,
+                        photoName,
+                        caption,
+                        ""
                 );
             }
         } catch (TravelDiaryException e) {
-            System.out.println("Error adding photo to album: " + e.getMessage());
+            throw new PhotoLoadException(
+                    parts.length > 2 ? decodeString(parts[2]) : "unknown",
+                    parts.length > 1 ? decodeString(parts[1]) : "unknown",
+                    e
+            );
         }
     }
 
-    private static LocalDateTime extractPhotoTime(String[] parts) {
+    private static LocalDateTime extractPhotoTime(String[] parts) throws DateTimeParseException {
         return (parts.length > 4 && !parts[4].isEmpty())
                 ? LocalDateTime.parse(parts[4], DATETIME_FORMAT)
                 : null;
