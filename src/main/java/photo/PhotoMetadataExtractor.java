@@ -1,7 +1,7 @@
 package photo;
 
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.metadata.*;
+import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 
@@ -64,7 +64,8 @@ public class PhotoMetadataExtractor {
 
 
     public static String getLocationFromCoordinates(double latitude, double longitude) {
-        String urlString = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + latitude + "&lon=" + longitude;
+        String urlString = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" +
+                latitude + "&lon=" + longitude;
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
