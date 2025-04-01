@@ -103,5 +103,6 @@ These specialized exceptions provide detailed information about what went wrong 
 - Displays photos with captions, locations, and timestamps.
 - Depends on **PhotoFrame** to handle the graphical display.
 - Depends on **Photo** for retrieving image data and metadata.
+- 
 
 
