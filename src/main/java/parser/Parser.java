@@ -24,6 +24,10 @@ public class Parser {
         if (input.isEmpty()) {
             throw new TravelDiaryException("No command provided. Please enter a command.");
         }
+        return processInput(input);
+    }
+    public static Map<String, String> processInput(String input)
+            throws TravelDiaryException, InvalidIndexException, CommandNotRecogniseException {
         String[] tokens = splitCommandAndArguments(input);
         String command = tokens[0];
         String rest = tokens[1];
@@ -79,15 +83,14 @@ public class Parser {
     private static Map<String, String> parseAddTrip(String rest) throws TravelDiaryException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_trip");
-        String[] parts = rest.split(" (?=[ndl]#)");
-        Set<String> allowedTags = new HashSet<>(Arrays.asList("n#", "d#", "l#"));
+        String[] parts = rest.split(" (?=[nd]#)");
+        Set<String> allowedTags = new HashSet<>(Arrays.asList("n#", "d#"));
         Map<String, String> tagsMap = processTags(parts, allowedTags);
         map.put("name", tagsMap.get("n#"));
         map.put("description", tagsMap.get("d#"));
-        map.put("location", tagsMap.get("l#"));
-        if (map.get("name") == null || map.get("description") == null || map.get("location") == null) {
+        if (map.get("name") == null || map.get("description") == null) {
             throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), " +
-                    "d# (description), l# (location).");
+                    "d# (description).");
         }
         return map;
     }

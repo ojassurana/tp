@@ -9,28 +9,25 @@ public class Trip {
 
     public String name;
     public String description;
-    public String location;
     public Album album;
 
-    public Trip(String name, String description, String location) throws TravelDiaryException {
+    public Trip(String name, String description) throws TravelDiaryException {
         logger.info("Initializing Trip object");
 
         // Ensure the name, description, and location attributes are provided
-        if (name == null || description == null || location == null) {
+        if (name == null || description == null) {
             logger.severe("Missing required tag(s) for add_trip");
             throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), " +
-                    "d# (description), l# (location). ");
+                    "d# (description). ");
         }
 
         this.name = name;
         this.description = description;
-        this.location = location;
         this.album = new Album();
 
         // Assertions to validate non-null attributes
         assert this.name != null : "Trip name should not be null";
         assert this.description != null : "Trip description should not be null";
-        assert this.location != null : "Trip location should not be null";
         assert this.album != null : "Trip album should not be null";
 
         logger.info("Trip object successfully created: " + this);
@@ -42,6 +39,6 @@ public class Trip {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)\n\t\t%s\n", name, location, description);
+        return String.format("%s\n\t\t%s\n", name, description);
     }
 }

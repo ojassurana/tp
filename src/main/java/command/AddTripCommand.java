@@ -39,7 +39,7 @@ public class AddTripCommand extends Command {
             logger.warning("UI instance is null");
         }
 
-        tripManager.addTrip(this.name, this.description, this.location);
+        tripManager.addTrip(this.name, this.description);
         this.fsmValue = fsmValue;
 
         logger.info("Trip successfully added: " + this.name);

@@ -68,7 +68,7 @@ public class TravelDiary {
     }
 
     private static boolean processCommand(Ui ui, TripManager tripManager) throws InvalidIndexException {
-        Map parsedCommand;
+        Map<String, String> parsedCommand;
         try {
             parsedCommand = Parser.getCommandDetails();
         } catch (TravelDiaryException | CommandNotRecogniseException e) {

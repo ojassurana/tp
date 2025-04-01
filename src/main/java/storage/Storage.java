@@ -64,8 +64,7 @@ public class Storage {
     private static String formatTripLine(Trip trip) {
         return TRIP_MARKER + " | " +
                 encodeString(trip.name) + " | " +
-                encodeString(trip.description) + " | " +
-                encodeString(trip.location);
+                encodeString(trip.description);
     }
 
     /**
@@ -172,16 +171,15 @@ public class Storage {
         }
 
         try {
-            if (parts.length < 4) {
+            if (parts.length < 3) {
                 throw new FileFormatException(filePath, String.join(" | ", parts));
             }
 
             String name = decodeString(parts[1]);
             String description = decodeString(parts[2]);
-            String location = decodeString(parts[3]);
 
             // Use the existing addTrip method
-            tripManager.addTrip(name, description, location);
+            tripManager.addTrip(name, description);
 
             // Get the last added trip
             Trip currentTrip = tripManager.getTrips().get(tripManager.getTrips().size() - 1);
