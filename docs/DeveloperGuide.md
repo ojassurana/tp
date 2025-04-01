@@ -12,11 +12,11 @@
 ## Product scope
 ### Target user profile
 
-{Describe the target user profile}
+Roadtrippers, van lifers, backpackers, and long-distance drivers who want to document their journeys efficiently. These users value convenience, real-time tracking, and the ability to relive their trips through route history.
+
 
 ### Value proposition
-
-{Describe the value proposition: what problem does it solve?}
+The app enables roadtrippers to seamlessly track their journeys on the go. It automatically logs their geographical location, records mileage between stops, and helps them organize rest stops and key travel moments. By reducing manual input, it ensures that travelers can focus on their experience while still capturing essential trip details effortlessly.
 
 ## User Stories
 
@@ -36,3 +36,13 @@
 ## Instructions for manual testing
 
 {Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+
+## Design
+
+# PhotoPrinter
+![PhotoPrinter](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/16bbdd2e8a63af5e7aecbf1fc662e6bd7f0c7c35/photo_printerdraft.png)
+###
+- Creates a **PhotoFrame** for displaying a **Photo**.
+- Displays photos with captions, locations, and timestamps.
+- Depends on **PhotoFrame** to handle the graphical display.
+- Depends on **Photo** for retrieving image data and metadata.
