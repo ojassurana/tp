@@ -63,7 +63,6 @@ public class HelpCommand extends Command {
             System.out.println("  add_trip n# d# l#   - Add a new trip");
             System.out.println("                         n# - Trip name");
             System.out.println("                         d# - Trip description");
-            System.out.println("                         l# - Trip location");
             System.out.println("  select <index>      - Select a trip to view/edit");
             System.out.println("  delete <index>      - Delete a specific trip");
         } else if (fsm == 1) {
@@ -81,7 +80,7 @@ public class HelpCommand extends Command {
 
         System.out.println("\nExample usage:");
         if (fsm == 0) {
-            System.out.println("  add_trip n#Paris Trip d#Vacation in Paris l#Paris, France");
+            System.out.println("  add_trip n#Paris Trip d#Vacation in Paris");
         } else if (fsm == 1) {
             System.out.println("  add_photo f#path/to/image.jpg n#Eiffel Tower c#View from Trocadero l#Paris");
         }

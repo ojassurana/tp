@@ -16,7 +16,7 @@ class TripManagerTest {
     @Test
     void testAddTrip() {
         assertDoesNotThrow(() -> {
-            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido");
         });
         tripManager.viewTrips(); // Check console output
     }
@@ -24,7 +24,7 @@ class TripManagerTest {
     @Test
     void testDeleteTrip() {
         assertDoesNotThrow(() -> {
-            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido");
         });
         try {
             tripManager.deleteTrip(1);
@@ -37,7 +37,7 @@ class TripManagerTest {
     @Test
     void testSelectTrip() {
         assertDoesNotThrow(() -> {
-            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido", "Japan");
+            tripManager.addTrip("Japan Trip", "Skiing in Hokkaido");
         });
         assertDoesNotThrow(() -> {
             tripManager.selectTrip(0);

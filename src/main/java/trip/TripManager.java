@@ -11,9 +11,9 @@ public class TripManager {
     private final List<Trip> trips = new ArrayList<>();
     private Trip selectedTrip = null;
 
-    public void addTrip(String name, String description, String location) throws TravelDiaryException {
+    public void addTrip(String name, String description) throws TravelDiaryException {
         logger.info("Adding a new trip: " + name);
-        trips.add(new Trip(name, description, location));
+        trips.add(new Trip(name, description));
         logger.info("Trip added successfully: " + name);
         System.out.printf("\tTrip [%s] has been added successfully.\n", name);
         viewTrips();

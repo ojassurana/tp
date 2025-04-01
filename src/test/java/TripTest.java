@@ -10,17 +10,16 @@ public class TripTest {
     @Test
     void testTripCreation() {
 
-        Trip trip = assertDoesNotThrow(() -> new Trip("Japan Trip", "Skiing in Hokkaido", "Japan"));
+        Trip trip = assertDoesNotThrow(() -> new Trip("Japan Trip", "Skiing in Hokkaido"));
         assertEquals("Japan Trip", trip.name);
         assertEquals("Skiing in Hokkaido", trip.description);
-        assertEquals("Japan", trip.location);
     }
 
     @Test
     void testToStringFormat() {
-        Trip trip = assertDoesNotThrow(() -> new Trip("Japan Trip", "Skiing in Hokkaido", "Japan"));
-        String expected = "Japan Trip (Japan)\n" +
-                "\t\tSkiing in Hokkaido\n";
+        Trip trip = assertDoesNotThrow(() -> new Trip("Japan Trip", "Skiing in Hokkaido"));
+        String expected = "Japan Trip\n" +
+                "\t\tSkiing in Hokkaido (No Date Available - No Date Available)\n";
         assertEquals(expected, trip.toString());
     }
 }
