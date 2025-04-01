@@ -116,7 +116,6 @@ public class Storage {
                 if (parts.length == 0) {
                     throw new FileFormatException(filePath, line);
                 }
-
                 if (isNewTripMarker(parts)) {
                     currentTrip = handleTripCreation(parts, tripManager, currentTrip, trips, filePath, lineNumber);
                 } else if (isAlbumMarker(parts, currentTrip)) {
@@ -166,6 +165,7 @@ public class Storage {
                                            String filePath,
                                            int lineNumber) throws TripLoadException, FileFormatException {
         // Add previous trip to the list if it exists
+
         if (previousTrip != null) {
             trips.add(previousTrip);
         }
@@ -174,16 +174,13 @@ public class Storage {
             if (parts.length < 3) {
                 throw new FileFormatException(filePath, String.join(" | ", parts));
             }
-
             String name = decodeString(parts[1]);
             String description = decodeString(parts[2]);
 
             // Use the existing addTrip method
             tripManager.addTrip(name, description);
-
             // Get the last added trip
             Trip currentTrip = tripManager.getTrips().get(tripManager.getTrips().size() - 1);
-
             // Ensure the trip has an album
             if (currentTrip.album == null) {
                 currentTrip.album = new Album();
