@@ -37,43 +37,45 @@ public class PhotoMetadataExtractor {
      */
     public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException {
         File imageFile = new File(filepath);
-        try {
-            Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
-            ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+//        try {
+        Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
+        ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
-            if (exifDirectory != null) {
-                // Extract original datetime from metadata
-                Date originalDate = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                if (originalDate != null) {
-                    LocalDateTime localDate = originalDate.toInstant()
-                            .atZone(ZoneId.of("Asia/Singapore"))
-                            .toLocalDateTime();
-                    this.datetime = localDate;
-                } else {
-                    throw new ImageProcessingException("No DateTime metadata found.");
-                }
-
-                GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-                if (gpsDirectory != null
-                        && gpsDirectory.containsTag(GpsDirectory.TAG_LATITUDE)
-                        && gpsDirectory.containsTag(GpsDirectory.TAG_LONGITUDE)) {
-                    double extractedLat = gpsDirectory.getGeoLocation().getLatitude();
-                    double extractedLon = gpsDirectory.getGeoLocation().getLongitude();
-                    this.latitude = extractedLat;
-                    this.longitude = extractedLon;
-                    this.location = getLocationFromCoordinates(extractedLat, extractedLon);
-                } else {
-                    throw new ImageProcessingException("No GPS Data Found \n" +
-                            "please insert photo with GPS metadata");
-                }
+        if (exifDirectory != null) {
+            // Extract original datetime from metadata
+            Date originalDate = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            if (originalDate != null) {
+                LocalDateTime localDate = originalDate.toInstant()
+                        .atZone(ZoneId.of("Asia/Singapore"))
+                        .toLocalDateTime();
+                this.datetime = localDate;
+            } else {
+                throw new ImageProcessingException("No DateTime metadata found.");
             }
-        } catch (IOException e) {
-//            System.err.println("Error reading file: " + filepath);
-            throw e;
-        } catch (ImageProcessingException e) {
-//            System.out.println("Error in metadata file: " + filepath);
-            throw e;
+
+            GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+            if (gpsDirectory != null
+                    && gpsDirectory.containsTag(GpsDirectory.TAG_LATITUDE)
+                    && gpsDirectory.containsTag(GpsDirectory.TAG_LONGITUDE)) {
+                double extractedLat = gpsDirectory.getGeoLocation().getLatitude();
+                double extractedLon = gpsDirectory.getGeoLocation().getLongitude();
+                this.latitude = extractedLat;
+                this.longitude = extractedLon;
+                this.location = getLocationFromCoordinates(extractedLat, extractedLon);
+            } else {
+                throw new ImageProcessingException("No GPS Data Found \n" +
+                        "please insert photo with GPS metadata");
+            }
+        } else{
+            throw new ImageProcessingException("No Metadata Found");
         }
+//        } catch (IOException e) {
+////            System.err.println("Error reading file: " + filepath);
+//            throw e;
+//        } catch (ImageProcessingException e) {
+////            System.out.println("Error in metadata file: " + filepath);
+//            throw e;
+//        }
     }
 
     /**

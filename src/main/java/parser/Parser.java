@@ -1,10 +1,8 @@
 package parser;
 
-import exception.CommandNotRecogniseException;
-import exception.InvalidIndexException;
-import exception.TravelDiaryException;
-import exception.NullIndexException;
+import exception.*;
 import ui.Ui;
+
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,7 +16,7 @@ public class Parser {
     private static final Ui ui = new Ui();
 
     public static Map<String, String> getCommandDetails()
-            throws TravelDiaryException, InvalidIndexException, CommandNotRecogniseException {
+            throws TravelDiaryException, InvalidIndexException, CommandNotRecogniseException, ParserException {
         System.out.print("Enter: ");
         String input = ui.readInput().trim();
         if (input.isEmpty()) {
@@ -26,8 +24,9 @@ public class Parser {
         }
         return processInput(input);
     }
+
     public static Map<String, String> processInput(String input)
-            throws TravelDiaryException, InvalidIndexException, CommandNotRecogniseException {
+            throws TravelDiaryException, InvalidIndexException, CommandNotRecogniseException, ParserException {
         String[] tokens = splitCommandAndArguments(input);
         String command = tokens[0];
         String rest = tokens[1];
@@ -38,11 +37,11 @@ public class Parser {
         String[] tokens = input.split("\\s+", 2);
         String command = tokens[0].toLowerCase();
         String rest = tokens.length > 1 ? tokens[1].trim() : "";
-        return new String[] { command, rest };
+        return new String[]{command, rest};
     }
 
     public static Map<String, String> convertToHashmap(String command, String rest)
-            throws TravelDiaryException, NullPointerException, InvalidIndexException, CommandNotRecogniseException {
+            throws TravelDiaryException, NullPointerException, InvalidIndexException, CommandNotRecogniseException, ParserException {
         switch (command) {
         case "bye":
         case "list":
@@ -69,7 +68,7 @@ public class Parser {
         return map;
     }
 
-    private static Map<String, String> createIndexCommandMap(String command, String index) throws NullIndexException{
+    private static Map<String, String> createIndexCommandMap(String command, String index) throws NullIndexException {
         if (index.isEmpty()) {
             throw new NullIndexException();
         }
@@ -80,7 +79,7 @@ public class Parser {
     }
 
 
-    private static Map<String, String> parseAddTrip(String rest) throws TravelDiaryException {
+    private static Map<String, String> parseAddTrip(String rest) throws TravelDiaryException, ParserException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_trip");
         String[] parts = rest.split(" (?=[nd]#)");
@@ -89,13 +88,12 @@ public class Parser {
         map.put("name", tagsMap.get("n#"));
         map.put("description", tagsMap.get("d#"));
         if (map.get("name") == null || map.get("description") == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), " +
-                    "d# (description).");
+            throw new MissingTagsException("add_trip", "n# (name) d# (description).");
         }
         return map;
     }
 
-    private static Map<String, String> parseAddPhoto(String rest) throws TravelDiaryException {
+    private static Map<String, String> parseAddPhoto(String rest) throws TravelDiaryException, ParserException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_photo");
         // Split on spaces before any tag that starts with n, d, c, f or l
@@ -110,22 +108,21 @@ public class Parser {
         map.put("caption", tagsMap.get("c#"));
 
         // Optional location tag if provided
-//        if (tagsMap.containsKey("l#")) {
-//            System.out.println(tagsMap.get("l#"));
-//            map.put("location", tagsMap.get("l#"));
-//        }
+        if (tagsMap.containsKey("l#")) {
+            System.out.println(tagsMap.get("l#"));
+            map.put("location", tagsMap.get("l#"));
+        }
 
         // Only check required tags
         if (map.get("filepath") == null || map.get("photoname") == null || map.get("caption") == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
-                    "n# (photoname), c# (caption)");
+            throw new MissingTagsException("add_photo", "f# (filepath) n# (photoname) c# (caption).");
         }
         return map;
     }
 
 
     private static Map<String, String> processTags(String[] parts, Set<String> allowedTags)
-            throws TravelDiaryException {
+            throws  ParserException {
         Map<String, String> tagsMap = new HashMap<>();
         Set<String> seenTags = new HashSet<>();
         for (String part : parts) {
@@ -136,27 +133,31 @@ public class Parser {
     }
 
     private static Map.Entry<String, String> processTagPart(String part, Set<String> allowedTags,
-                                                            Set<String> seenTags) throws TravelDiaryException {
+                                                            Set<String> seenTags) throws ParserException {
         for (String tag : allowedTags) {
             if (part.startsWith(tag)) {
                 if (!seenTags.add(tag)) {
-                    throw new TravelDiaryException("Duplicate tag provided for " + tag);
+                    throw new TagException("\tMissing required tag(s) for ", tag);
                 }
                 String value = part.substring(tag.length()).trim();
+                if (value.contains("#")) {
+                    String unrecogniseTag = value.substring(value.indexOf("#") - 1, value.indexOf("#") + 1);
+                    throw new TagException("\tUnrecognised tag: ", unrecogniseTag);
+                }
                 if (value.isEmpty()) {
-                    throw new TravelDiaryException("Empty value provided for tag " + tag);
+                    throw new TagException("\tEmpty value provided for tag: ", tag);
                 }
                 return new AbstractMap.SimpleEntry<>(tag, value);
             }
         }
-        throw new TravelDiaryException("Invalid tag in command: " + part);
+        throw new TagException("\tEmpty value provided for tag: ", part);
     }
 
     private static Map<String, String> parseHelp(String rest) {
         Map<String, String> map = new HashMap<>();
         map.put("command", "help");
 
-        // If rest is not empty, try to parse it as an fsm value
+        // If rest is not empty, try to parse it as a fsm value
         if (!rest.isEmpty()) {
             try {
                 int fsm = Integer.parseInt(rest.trim());

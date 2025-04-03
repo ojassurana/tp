@@ -3,19 +3,12 @@ package seedu.duke;
 import com.drew.imaging.ImageProcessingException;
 import command.Command;
 import command.CommandFactory;
-import exception.MissingCompulsoryParameter;
-import exception.TravelDiaryException;
-import exception.FileReadException;
-import exception.FileFormatException;
-import exception.FileWriteException;
+import exception.*;
 import parser.Parser;
 import photo.PhotoPrinter;
 import storage.Storage;
 import trip.TripManager;
 import ui.Ui;
-import exception.InvalidIndexException;
-import exception.CommandNotRecogniseException;
-import exception.TripNotSelectedException;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,7 +66,7 @@ public class TravelDiary {
         Map<String, String> parsedCommand;
         try {
             parsedCommand = Parser.getCommandDetails();
-        } catch (TravelDiaryException | CommandNotRecogniseException e) {
+        } catch (TravelDiaryException | CommandNotRecogniseException | ParserException e) {
             ui.showToUser(e.getMessage());
             return false;
         }
