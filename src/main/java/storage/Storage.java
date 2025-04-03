@@ -178,7 +178,8 @@ public class Storage {
             String description = decodeString(parts[2]);
 
             // Use the existing addTrip method
-            tripManager.addTrip(name, description);
+
+            tripManager.addTrip(name, description, false);
             // Get the last added trip
             Trip currentTrip = tripManager.getTrips().get(tripManager.getTrips().size() - 1);
             // Ensure the trip has an album
