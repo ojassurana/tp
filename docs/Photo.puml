@@ -1,0 +1,55 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+
+class Album {
+    + List<Photo> photos
+}
+
+class Photo {
+    - String filePath
+    - String caption
+    + Photo(String filePath, String photoName, String caption)
+    + void extractData(String filePath, LocalDateTime datetime)
+}
+
+class Location {
+    - double latitude
+    - double longitude
+    + Location(double latitude, double longitude)
+}
+
+class PhotoMetadataExtractor {
+    + PhotoMetadataExtractor(String filepath)
+    + Map<String, Object> getMetadataMap()
+}
+
+class PhotoDateTimeComparator {
+    + int compare(Photo p1, Photo p2)
+}
+
+class PhotoPrinter {
+    + <u> PhotoFrame createFrame(Photo photo)
+    + <u> void display(PhotoFrame photoFrame)
+}
+
+class AddPhotoCommand {
+    + AddPhotoCommand(String filepath, String photoname, String caption)
+    + execute(TripManager tripManager, Ui ui, int fsmValue)
+}
+
+class ClosePhotoCommand {
+    + execute(TripManager tripManager, Ui ui, int fsmValue)
+}
+
+
+Album --> Photo : contains >
+Photo --> Location : has >
+Photo --> PhotoMetadataExtractor : uses >
+PhotoDateTimeComparator --> Photo : uses >
+Album --> PhotoPrinter : uses >
+AddPhotoCommand --> Photo : adds >
+AddPhotoCommand --> Album : interacts >
+ClosePhotoCommand --> PhotoPrinter : closes windows >
+
+@enduml
