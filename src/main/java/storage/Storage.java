@@ -135,7 +135,7 @@ public class Storage {
      * @param silentMode Whether to suppress console output during loading
      * @return List of loaded trips
      */
-    public static List<Trip> loadTrips(TripManager tripManager, String filePath, boolean silentMode)
+    public static void loadTrips(TripManager tripManager, String filePath, boolean silentMode)
             throws FileReadException, FileFormatException {
         logger.info("Loading trips from file: " + filePath + " (silent mode: " + silentMode + ")");
 
@@ -149,13 +149,11 @@ public class Storage {
         if (!dataFile.exists()) {
             // Restore original silent mode before returning
             tripManager.setSilentMode(originalSilentMode);
-            return trips;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
             trips = processFileLines(reader, tripManager, filePath);
 
-            return trips;
         } catch (IOException e) {
             throw new FileReadException(filePath, e);
         } finally {
@@ -168,10 +166,10 @@ public class Storage {
     /**
      * Loads trips from a file using default silent mode from TripManager
      */
-    public static List<Trip> loadTrips(TripManager tripManager, String filePath)
+    public static void loadTrips(TripManager tripManager, String filePath)
             throws FileReadException, FileFormatException {
         // Use the tripManager's current silent mode setting
-        return loadTrips(tripManager, filePath, tripManager.isSilentMode());
+        loadTrips(tripManager, filePath, tripManager.isSilentMode());
     }
 
     /**

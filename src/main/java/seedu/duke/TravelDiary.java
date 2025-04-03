@@ -42,7 +42,7 @@ public class TravelDiary {
 
         // Load existing trips from storage
         try {
-            List savedTrips = Storage.loadTrips(tripManager, FILE_PATH);
+            Storage.loadTrips(tripManager, FILE_PATH);
             ui.showWelcome();  // Show welcome message only after successful load
         } catch (FileReadException | FileFormatException e) {
             ui.showToUser("Error loading saved trips: " + e.getMessage());
