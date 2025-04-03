@@ -96,7 +96,7 @@ public class Album {
         for (int i = 0; i < photos.size(); i++) {
             if (i > 0) {
                 albumDetails += String.format("\t\t\t\t|\t%s km%n",
-                        Tracker.calculateDist(photos.get(i-1), photos.get(i)));
+                        Tracker.getDist(photos.get(i-1), photos.get(i)));
             }
             albumDetails += String.format("\t%d) %s%n", i + 1, photos.get(i));
         }
