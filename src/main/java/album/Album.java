@@ -13,19 +13,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Album {
+
     public final List<Photo> photos = new ArrayList<>();
     public Photo selectedPhoto = null;
+    private boolean silentMode = false;
+
+    /**
+     * Enable or disable silent mode to prevent console output during operations
+     */
+    public void setSilentMode(boolean silentMode) {
+        this.silentMode = silentMode;
+    }
+
+    /**
+     * Returns current silent mode state
+     */
+    public boolean isSilentMode() {
+        return silentMode;
+    }
 
     public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
             throws TravelDiaryException, ImageProcessingException, IOException {
         photos.add(new Photo(filePath, photoName, caption, datetime));
-        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        if (!silentMode) {
+            System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        }
     }
 
     public void addPhoto(String filePath, String photoName, String caption)
             throws TravelDiaryException, ImageProcessingException, IOException {
         photos.add(new Photo(filePath, photoName, caption));
-        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        if (!silentMode) {
+            System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        }
     }
 
     public void deletePhoto(int index) {
