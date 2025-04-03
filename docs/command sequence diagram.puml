@@ -1,0 +1,49 @@
+@startuml
+
+participant ":UI" as Caller
+participant ":CommandFactory" as CF
+participant ":ExitCommand" as EC
+participant ":ClosePhotoCommand" as CPC
+participant ":SelectCommand" as SC
+participant ":ListCommand" as LC
+participant ":DeleteCommand" as DC
+participant ":HelpCommand" as HC
+participant ":AddTripCommand" as ATC
+participant ":AddPhotoCommand" as APC
+participant ":MenuCommand" as MC
+
+Caller -> CF: getCommand(parsedCommand, fsmValue)
+activate CF
+
+alt command == "bye"
+    CF -> EC: new ExitCommand()
+    CF --> Caller: return ExitCommand
+else command == "close"
+    CF -> CPC: new ClosePhotoCommand()
+    CF --> Caller: return ClosePhotoCommand
+else command == "select"
+    CF -> SC: new SelectCommand(index)
+    CF --> Caller: return SelectCommand
+else command == "list"
+    CF -> LC: new ListCommand()
+    CF --> Caller: return ListCommand
+else command == "delete"
+    CF -> DC: new DeleteCommand(index)
+    CF --> Caller: return DeleteCommand
+else command == "help"
+    CF -> HC: new HelpCommand(fsm)
+    CF --> Caller: return HelpCommand
+else
+    alt fsmValue == 0
+        CF -> ATC: handleMenuStateCommand(parsedCommand)
+        CF --> Caller: return AddTripCommand
+    else fsmValue == 1
+        CF -> APC: handleTripStateCommand(parsedCommand)
+        CF --> Caller: return (AddPhotoCommand or MenuCommand)
+    else
+        CF -> CF: throw TravelDiaryException("Invalid state.")
+    end alt
+end alt
+
+deactivate CF
+@enduml
