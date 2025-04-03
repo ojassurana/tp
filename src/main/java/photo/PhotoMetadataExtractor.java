@@ -9,14 +9,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PhotoMetadataExtractor {
     private String location;
@@ -58,12 +57,17 @@ public class PhotoMetadataExtractor {
         }
     }
 
-    public static void main(String[] args) {
-        PhotoMetadataExtractor me = new PhotoMetadataExtractor("./data/photos/clem_with_metadata.jpg");
-        System.out.println("location : " + me.location);
-        System.out.println("datetime : " + me.datetime);
-        System.out.println("longitude : " + me.longitude);
-        System.out.println("latitude : " + me.latitude);
+    /**
+     * Returns a HashMap containing the extracted metadata:
+     * { "location": "<City>, <Country>", "latitude": <latitude>, "longitude": <longitude>, "datetime": <datetime> }
+     */
+    public Map<String, Object> getMetadataMap() {
+        Map<String, Object> metadataMap = new HashMap<>();
+        metadataMap.put("location", this.location);
+        metadataMap.put("latitude", this.latitude);
+        metadataMap.put("longitude", this.longitude);
+        metadataMap.put("datetime", this.datetime);
+        return metadataMap;
     }
 
     /**
