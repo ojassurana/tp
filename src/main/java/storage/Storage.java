@@ -134,33 +134,54 @@ public class Storage {
      * @param filePath The path to the file containing trip data
      * @param silentMode Whether to suppress console output during loading
      */
+
     public static void loadTrips(TripManager tripManager, String filePath, boolean silentMode)
             throws FileReadException, FileFormatException {
         logger.info("Loading trips from file: " + filePath + " (silent mode: " + silentMode + ")");
+
+        // Create the file if it does not exist
+        File dataFile = new File(filePath);
+        if (!dataFile.exists()) {
+            try {
+                // Create parent directories if they don't exist
+                if (dataFile.getParentFile() != null) {
+                    dataFile.getParentFile().mkdirs();
+                }
+
+                if (dataFile.createNewFile()) {
+                    logger.info("Created new file: " + filePath);
+                    // If we just created a new empty file, there's nothing to load
+                    // So return early without trying to read the file
+                    return;
+                } else {
+                    logger.warning("File already exists: " + filePath);
+                }
+            } catch (IOException e) {
+                // Log the error but don't throw an exception
+                logger.warning("Could not create file: " + filePath + ". " + e.getMessage());
+                // Just return without loading anything
+                return;
+            }
+        }
 
         // Store current silent mode and set to requested mode
         boolean originalSilentMode = tripManager.isSilentMode();
         tripManager.setSilentMode(silentMode);
 
         List<Trip> trips = new ArrayList<>();
-        File dataFile = new File(filePath);
-
-        if (!dataFile.exists()) {
-            // Restore original silent mode before returning
-            tripManager.setSilentMode(originalSilentMode);
-        }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
             trips = processFileLines(reader, tripManager, filePath);
-
         } catch (IOException e) {
-            throw new FileReadException(filePath, e);
+            // Log the error but don't throw an exception
+            logger.warning("Error reading file: " + filePath + ". " + e.getMessage());
         } finally {
             // Always restore the original silent mode, even if an exception occurs
             tripManager.setSilentMode(originalSilentMode);
             logger.info("Restored original silent mode: " + originalSilentMode);
         }
     }
+
 
     /**
      * Loads trips from a file using default silent mode from TripManager
