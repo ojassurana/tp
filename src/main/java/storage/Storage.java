@@ -25,8 +25,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Storage {
+    private static final Logger logger = Logger.getLogger(Storage.class.getName());
     private static final String TRIP_MARKER = "T";
     private static final String PHOTO_MARKER = "P";
     private static final String ALBUM_MARKER = "A";
@@ -128,21 +130,45 @@ public class Storage {
 
     /**
      * Loads trips from a file
+     * @param tripManager The trip manager to add trips to
+     * @param filePath The path to the file containing trip data
+     * @param silentMode Whether to suppress console output during loading
      */
-    public static List<Trip> loadTrips(TripManager tripManager, String filePath)
+    public static void loadTrips(TripManager tripManager, String filePath, boolean silentMode)
             throws FileReadException, FileFormatException {
+        logger.info("Loading trips from file: " + filePath + " (silent mode: " + silentMode + ")");
+
+        // Store current silent mode and set to requested mode
+        boolean originalSilentMode = tripManager.isSilentMode();
+        tripManager.setSilentMode(silentMode);
+
         List<Trip> trips = new ArrayList<>();
         File dataFile = new File(filePath);
 
         if (!dataFile.exists()) {
-            return trips;
+            // Restore original silent mode before returning
+            tripManager.setSilentMode(originalSilentMode);
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
-            return processFileLines(reader, tripManager, filePath);
+            trips = processFileLines(reader, tripManager, filePath);
+
         } catch (IOException e) {
             throw new FileReadException(filePath, e);
+        } finally {
+            // Always restore the original silent mode, even if an exception occurs
+            tripManager.setSilentMode(originalSilentMode);
+            logger.info("Restored original silent mode: " + originalSilentMode);
         }
+    }
+
+    /**
+     * Loads trips from a file using default silent mode from TripManager
+     */
+    public static void loadTrips(TripManager tripManager, String filePath)
+            throws FileReadException, FileFormatException {
+        // Use the tripManager's current silent mode setting
+        loadTrips(tripManager, filePath, tripManager.isSilentMode());
     }
 
     /**
@@ -263,11 +289,8 @@ public class Storage {
             String name = decodeString(parts[1]);
             String description = decodeString(parts[2]);
 
-            // Use the existing addTrip method
-            tripManager.addTrip(name, description);
-
-            // Get the last added trip
-            Trip currentTrip = tripManager.getTrips().get(tripManager.getTrips().size() - 1);
+            // Use the existing addTripSilently method to respect silent mode flag
+            Trip currentTrip = tripManager.addTripSilently(name, description);
 
             // Ensure the trip has an album
             if (currentTrip.album == null) {
@@ -311,11 +334,26 @@ public class Storage {
             // Extract photo timestamp
             LocalDateTime photoTime = extractPhotoTime(parts);
 
-            // Create the photo with all available data
-            if (photoTime != null) {
-                currentTrip.album.addPhoto(photoPath, photoName, caption, photoTime);
-            } else {
-                currentTrip.album.addPhoto(photoPath, photoName, caption);
+            // Get current album silent mode setting before adding photo
+            boolean originalSilentMode = false;
+            if (currentTrip.album != null) {
+                originalSilentMode = currentTrip.album.isSilentMode();
+                // Use the trip's silent mode setting for the album during loading
+                currentTrip.album.setSilentMode(true);
+            }
+
+            try {
+                // Create the photo with all available data
+                if (photoTime != null) {
+                    currentTrip.album.addPhoto(photoPath, photoName, caption, photoTime);
+                } else {
+                    currentTrip.album.addPhoto(photoPath, photoName, caption);
+                }
+            } finally {
+                // Restore the original silent mode setting
+                if (currentTrip.album != null) {
+                    currentTrip.album.setSilentMode(originalSilentMode);
+                }
             }
 
         } catch (DateTimeParseException e) {

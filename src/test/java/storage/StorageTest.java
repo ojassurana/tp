@@ -1,14 +1,11 @@
 package storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import trip.Trip;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import trip.TripManager;
 import exception.FileReadException;
-import exception.FileFormatException;
 
 import java.io.File;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,17 +19,18 @@ class StorageTest {
     }
 
     @Test
-    void testLoadNonExistentFile() throws FileReadException, FileFormatException {
+    void testLoadNonExistentFile() {
         File nonExistentFile = new File("nonexistent.txt");
 
-        List<Trip> trips = null;
-        try {
-            trips = Storage.loadTrips(tripManager, nonExistentFile.getAbsolutePath());
-        } catch (FileReadException | FileFormatException e) {
-            assertNotNull(e, "Exception should be thrown for non-existent file.");
-        }
+        // The method is expected to throw a FileReadException
+        FileReadException exception = assertThrows(
+                FileReadException.class,
+                () -> Storage.loadTrips(tripManager, nonExistentFile.getAbsolutePath())
+        );
 
-        assertNotNull(trips);
-        assertTrue(trips.isEmpty(), "Trips list should be empty for a non-existent file");
+        // Verify the exception contains appropriate information
+        assertNotNull(exception);
+        assertTrue(exception.getMessage().contains("nonexistent.txt"));
     }
+
 }
