@@ -25,7 +25,6 @@ public class TripManager {
     public boolean isSilentMode() {
         return silentMode;
     }
-
     /**
      * Adds a trip and optionally displays the updated list
      */
@@ -46,6 +45,7 @@ public class TripManager {
         logger.info("Trip added silently: " + name);
         return newTrip;
     }
+
 
     public void setSelectedTrip(Trip selectedTrip) {
         logger.info("Setting selected trip: " + (selectedTrip != null ? selectedTrip.name : "null"));
