@@ -1,6 +1,13 @@
 package parser;
 
-import exception.*;
+
+import exception.CommandNotRecogniseException;
+import exception.InvalidIndexException;
+import exception.ParserException;
+import exception.TravelDiaryException;
+import exception.TagException;
+import exception.NullIndexException;
+import exception.MissingTagsException;
 import ui.Ui;
 
 import java.util.AbstractMap;
@@ -41,7 +48,8 @@ public class Parser {
     }
 
     public static Map<String, String> convertToHashmap(String command, String rest)
-            throws TravelDiaryException, NullPointerException, InvalidIndexException, CommandNotRecogniseException, ParserException {
+            throws TravelDiaryException, NullPointerException, InvalidIndexException, CommandNotRecogniseException,
+            ParserException {
         switch (command) {
         case "bye":
         case "list":

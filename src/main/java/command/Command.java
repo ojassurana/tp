@@ -17,5 +17,6 @@ public abstract class Command {
     }
 
     public abstract void execute(TripManager tripManager, Ui ui, int fsmValue) throws
-            TravelDiaryException, MissingCompulsoryParameter, InvalidIndexException, IOException, ImageProcessingException;
+            TravelDiaryException, MissingCompulsoryParameter, InvalidIndexException, IOException,
+            ImageProcessingException;
 }

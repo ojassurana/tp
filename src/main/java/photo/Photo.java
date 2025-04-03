@@ -58,7 +58,8 @@ public class Photo {
     }
 
     // Overloaded constructor without datetime parameter.
-    public Photo(String filePath, String photoName, String caption) throws TravelDiaryException, ImageProcessingException, IOException {
+    public Photo(String filePath, String photoName, String caption) throws TravelDiaryException,
+            ImageProcessingException, IOException {
         this(filePath, photoName, caption, null);
     }
 

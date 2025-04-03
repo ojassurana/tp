@@ -5,7 +5,6 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
-import exception.TravelDiaryException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,7 +36,6 @@ public class PhotoMetadataExtractor {
      */
     public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException {
         File imageFile = new File(filepath);
-//        try {
         Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
         ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
@@ -69,13 +67,6 @@ public class PhotoMetadataExtractor {
         } else{
             throw new ImageProcessingException("No Metadata Found");
         }
-//        } catch (IOException e) {
-////            System.err.println("Error reading file: " + filepath);
-//            throw e;
-//        } catch (ImageProcessingException e) {
-////            System.out.println("Error in metadata file: " + filepath);
-//            throw e;
-//        }
     }
 
     /**

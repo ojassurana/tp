@@ -19,7 +19,7 @@ class AlbumTest {
         Album album = new Album();
         LocalDateTime dt = LocalDateTime.of(2023, 1, 1, 12, 0);
         // Removed location parameter from addPhoto call
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto",
+        assertDoesNotThrow(() -> album.addPhoto("./data/photos/group_photo.jpg", "MyPhoto",
                 "A beautiful scene", dt));
 
         // Capture the output from viewPhotos
@@ -40,7 +40,7 @@ class AlbumTest {
         // Test adding a photo using the overload without specifying a datetime
         Album album = new Album();
         // Removed location parameter from addPhoto call
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo2.jpg", "Photo2", "Sunset"));
+        assertDoesNotThrow(() -> album.addPhoto("./data/photos/samurai.jpg", "Photo2", "Sunset"));
         // Capture the output from viewPhotos
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -59,7 +59,7 @@ class AlbumTest {
     void deletePhoto() {
         Album album = new Album();
         // Removed location parameter from addPhoto call
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption",
+        assertDoesNotThrow(() -> album.addPhoto("./data/photos/group_photo.jpg", "MyPhoto", "Caption",
                 LocalDateTime.of(2023, 1, 1, 12, 0)));
         // Capture output for valid deletion
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -98,9 +98,9 @@ class AlbumTest {
 
         // Test viewPhotos on a non-empty album
         // Removed location parameter from addPhoto calls
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo1.jpg", "Photo1",
+        assertDoesNotThrow(() -> album.addPhoto("./data/photos/group_photo.jpg", "Photo1",
                 "Caption1", LocalDateTime.of(2023, 2, 2, 15, 0)));
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo2.jpg", "Photo2",
+        assertDoesNotThrow(() -> album.addPhoto("./data/photos/samurai.jpg", "Photo2",
                 "Caption2", LocalDateTime.of(2023, 3, 3, 16, 0)));
         outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -116,7 +116,7 @@ class AlbumTest {
     void selectPhoto() {
         Album album = new Album();
         // Removed location parameter from addPhoto call
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption",
+        assertDoesNotThrow(() -> album.addPhoto("./data/photos/group_photo.jpg", "MyPhoto", "Caption",
                 LocalDateTime.of(2023, 1, 1, 12, 0)));
         // Capture output for valid photo selection
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
