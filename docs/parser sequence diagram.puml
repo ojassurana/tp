@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant ":Main" as Main
+participant ":Ui" as ui
+participant ":Parser" as parser
+participant ":CommandFactory" as factory
+participant ":Command" as command
+participant ":TripManager" as tripManager
+participant ":Storage" as storage
+
+== Main enters a command ==
+Main -> ui: input command
+ui -> parser: getCommandDetails()
+activate parser
+parser -> ui: readInput()
+note right: Reads and processes Main input
+parser --> ui: parsedCommand (Map)
+deactivate parser
+
+== Command creation and execution ==
+ui -> factory: getCommand(parsedCommand, fsmValue)
+activate factory
+factory --> command: command
+deactivate factory
+
+ui -> command: execute(tripManager, ui, fsmValue)
+activate command
+command -> ui: update fsmValue
+deactivate command
+
+@enduml
+
+@enduml
+

@@ -1,0 +1,47 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+
+class Parser {
+    - <u>COMMAND_ARRAY: String[]</u>
+    - ui: Ui
+    + <u>getCommandDetails(): Map<String, String></u>
+    + <u>processInput(input: String): Map<String, String></u>
+    - <u>splitCommandAndArguments(input: String): String[]</u>
+    + <u>convertToHashmap(command: String, rest: String): Map<String, String></u>
+    - <u>parseAddTrip(rest: String): Map<String, String></u>
+    - <u>parseAddPhoto(rest: String): Map<String, String></u>
+    - <u>parseHelp(rest: String): Map<String, String></u>
+}
+
+class Ui {
+    - scanner: Scanner
+    + readInput(): String
+}
+
+class TravelDiaryException {
+}
+
+class CommandNotRecogniseException {
+}
+
+class InvalidIndexException {
+}
+
+class ParserException {
+}
+
+class TagException {
+}
+
+class MissingTagsException {
+}
+
+Parser --> Ui : Uses
+Parser --> TravelDiaryException : Throws
+Parser --> CommandNotRecogniseException : Throws
+Parser --> InvalidIndexException : Throws
+Parser --> ParserException : Throws
+Parser --> TagException : Throws
+TagException <|-- MissingTagsException
+@enduml
