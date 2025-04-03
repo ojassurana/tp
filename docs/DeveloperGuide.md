@@ -56,7 +56,7 @@ The main responsibilities of the Storage component are:
 ##### Saving Data
 The saving process converts in-memory objects into a text representation and writes them to a file. The `saveTasks` method handles this process.
 
-![Sequence diagram for saving data](pump_pics/StorageSaveTrip.png)
+![Sequence diagram for saving data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/pump_pics/StorageSaveTrip.png)
 
 The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
 
@@ -68,7 +68,7 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 ##### Parsing Input 
 The parsing process convert input and return hashmap which will be processed by CommandFactory.
 
-![Sequence diagram for parsing data](Parser sequence diagram.png)
+![Sequence diagram for parsing data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/Parser%20sequence%20diagram.png)
 
 The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
 
@@ -79,7 +79,7 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 ##### Command Sequence
 The hashmap will be process based on its Command key value in the hashmap
 
-![Sequence diagram for command process](command sequence diagram.png)
+![Sequence diagram for command process](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/command%20sequence%20diagram.png)
 
 The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
 
@@ -90,7 +90,7 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 ##### Loading Data
 The loading process reads the text file line by line and reconstructs the in-memory objects. The `loadTrips` method handles this process.
 
-![Sequence diagram for loading data](pump_pics/StorageLoadTrip.png)
+![Sequence diagram for loading data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/puml_pics/StorageLoadTrip.png)
 
 The sequence diagram above shows how the `loadTrips` method works:
 
@@ -153,7 +153,7 @@ These specialized exceptions provide detailed information about what went wrong 
 - The photo is added to the album's list.
 
 ### Parser
-![Parser](parser_class_diagram.png)
+![Parser](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/parser_class_diagram.png)
 ####
 - Contains static classes
 - Parse input based on tags
