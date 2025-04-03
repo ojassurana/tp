@@ -26,7 +26,7 @@ public class CommandFactory {
             return new ListCommand();
         }
         if ("delete".equals(cmd)) {
-            int index = Integer.parseInt(parsedCommand.get("index"));
+            int index = Integer.parseInt(parsedCommand.get("index")) - 1;
             return new DeleteCommand(index); // Insert index in
         }
 
@@ -66,8 +66,7 @@ public class CommandFactory {
             String filepath = parsedCommand.get("filepath");
             String photoname = parsedCommand.get("photoname");
             String caption = parsedCommand.get("caption");
-            String location = parsedCommand.get("location");
-            return new AddPhotoCommand(filepath, photoname, caption, location);
+            return new AddPhotoCommand(filepath, photoname, caption);
         }
         if ("menu".equals(cmd)) {
             // Assuming MenuCommand resets FSM state and performs any required housekeeping.

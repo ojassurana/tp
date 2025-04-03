@@ -2,7 +2,6 @@ package parser;
 
 import org.junit.jupiter.api.Test;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,8 +9,8 @@ class ParserTest {
 
     @Test
     public void addTripParsingTest() {
-        Map<String, String> parsedCommand = assertDoesNotThrow(() -> Parser.processInput("add_trip n#2025 Great " +
-                "Barrier Reef d#Summer break with family"));
+        Map<String, String> parsedCommand = assertDoesNotThrow(() ->
+                Parser.processInput("add_trip n#2025 Great Barrier Reef d#Summer break with family"));
         // Verify the parsed result
         assertEquals("add_trip", parsedCommand.get("command"));
         assertEquals("2025 Great Barrier Reef", parsedCommand.get("name"));
@@ -20,14 +19,16 @@ class ParserTest {
 
     @Test
     public void addPhotoParsingTest() {
-        Map<String, String> parsedCommand = assertDoesNotThrow(() -> Parser.processInput("add_photo f#./data/photos/" +
-                "sample1.jpg n#Osaka photo c#Friends l#Osaka street"));
+        // Remove the location tag from the command since it's no longer required
+        Map<String, String> parsedCommand = assertDoesNotThrow(() ->
+                Parser.processInput("add_photo f#./data/photos/sample1.jpg n#Osaka photo c#Friends"));
         // Verify the parsed result
         assertEquals("add_photo", parsedCommand.get("command"));
         assertEquals("./data/photos/sample1.jpg", parsedCommand.get("filepath"));
         assertEquals("Osaka photo", parsedCommand.get("photoname"));
         assertEquals("Friends", parsedCommand.get("caption"));
-        assertEquals("Osaka street", parsedCommand.get("location"));
+        // Location is optional and should be absent or null.
+        assertEquals(null, parsedCommand.get("location"));
     }
 
     @Test
