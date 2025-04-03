@@ -133,7 +133,6 @@ public class Storage {
      * @param tripManager The trip manager to add trips to
      * @param filePath The path to the file containing trip data
      * @param silentMode Whether to suppress console output during loading
-     * @return List of loaded trips
      */
     public static void loadTrips(TripManager tripManager, String filePath, boolean silentMode)
             throws FileReadException, FileFormatException {
@@ -314,9 +313,6 @@ public class Storage {
         // Currently, the album name (parts[1]) is not used further
     }
 
-    /**
-     * Adds a photo to a trip from a line
-     */
     /**
      * Adds a photo to a trip from a line
      */
