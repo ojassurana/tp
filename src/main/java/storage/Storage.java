@@ -1,5 +1,6 @@
 package storage;
 
+import com.drew.imaging.ImageProcessingException;
 import trip.Trip;
 import trip.TripManager;
 import photo.Photo;
@@ -64,8 +65,7 @@ public class Storage {
     private static String formatTripLine(Trip trip) {
         return TRIP_MARKER + " | " +
                 encodeString(trip.name) + " | " +
-                encodeString(trip.description) + " | " +
-                encodeString(trip.location);
+                encodeString(trip.description);
     }
 
     /**
@@ -117,7 +117,6 @@ public class Storage {
                 if (parts.length == 0) {
                     throw new FileFormatException(filePath, line);
                 }
-
                 if (isNewTripMarker(parts)) {
                     currentTrip = handleTripCreation(parts, tripManager, currentTrip, trips, filePath, lineNumber);
                 } else if (isAlbumMarker(parts, currentTrip)) {
@@ -172,20 +171,16 @@ public class Storage {
         }
 
         try {
-            if (parts.length < 4) {
+            if (parts.length < 3) {
                 throw new FileFormatException(filePath, String.join(" | ", parts));
             }
-
             String name = decodeString(parts[1]);
             String description = decodeString(parts[2]);
-            String location = decodeString(parts[3]);
 
             // Use the existing addTrip method
-            tripManager.addTrip(name, description, location);
-
+            tripManager.addTrip(name, description);
             // Get the last added trip
             Trip currentTrip = tripManager.getTrips().get(tripManager.getTrips().size() - 1);
-
             // Ensure the trip has an album
             if (currentTrip.album == null) {
                 currentTrip.album = new Album();
@@ -204,6 +199,7 @@ public class Storage {
         }
 
         String albumName = decodeString(parts[1]);
+        // Currently, the album name is not used further.
     }
 
     private static void handlePhotoAddition(String[] parts, Trip currentTrip, String filePath, int lineNumber)
@@ -225,23 +221,22 @@ public class Storage {
                 throw new FileFormatException(filePath, lineNumber, e);
             }
 
+            // Note: The location parameter has been removed from the addPhoto calls.
             if (photoTime != null) {
                 currentTrip.album.addPhoto(
                         photoPath,
                         photoName,
                         caption,
-                        "",
                         photoTime
                 );
             } else {
                 currentTrip.album.addPhoto(
                         photoPath,
                         photoName,
-                        caption,
-                        ""
+                        caption
                 );
             }
-        } catch (TravelDiaryException e) {
+        } catch (TravelDiaryException | ImageProcessingException | IOException e) {
             throw new PhotoLoadException(
                     parts.length > 2 ? decodeString(parts[2]) : "unknown",
                     parts.length > 1 ? decodeString(parts[1]) : "unknown",

@@ -1,9 +1,12 @@
 package command;
 
+import com.drew.imaging.ImageProcessingException;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import trip.TripManager;
 import ui.Ui;
+
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class AddPhotoCommand extends Command {
@@ -11,24 +14,21 @@ public class AddPhotoCommand extends Command {
     private String filepath;
     private String photoname;
     private String caption;
-    private String location;
 
-    public AddPhotoCommand(String filepath, String photoname, String caption, String location) {
+    public AddPhotoCommand(String filepath, String photoname, String caption) {
         logger.info("Creating AddPhotoCommand instance");
         this.filepath = filepath;
         this.photoname = photoname;
         this.caption = caption;
-        this.location = location;
         // Assertions to ensure non-null parameters
         assert this.filepath != null : "Photoname should not be null";
         assert this.photoname != null : "Photo description should not be null";
         assert this.caption != null : "Photo caption should not be null";
-        assert this.location != null : "Photo location should not be null";
     }
 
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
-            TravelDiaryException, MissingCompulsoryParameter {
+            TravelDiaryException, MissingCompulsoryParameter, IOException, ImageProcessingException {
         logger.info("Executing AddPhotoCommand");
 
         if (tripManager == null) {
@@ -44,7 +44,7 @@ public class AddPhotoCommand extends Command {
             logger.warning("UI instance is null");
         }
 
-        tripManager.getSelectedTrip().album.addPhoto(this.filepath, this.photoname, this.caption, this.location);
+        tripManager.getSelectedTrip().album.addPhoto(this.filepath, this.photoname, this.caption);
         this.fsmValue =fsmValue;
     }
 

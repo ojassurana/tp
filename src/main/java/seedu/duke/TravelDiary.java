@@ -1,21 +1,24 @@
 package seedu.duke;
 
+import com.drew.imaging.ImageProcessingException;
 import command.Command;
 import command.CommandFactory;
-import exception.MissingCompulsoryParameter;
-import exception.TravelDiaryException;
-import exception.FileReadException;
+import exception.InvalidIndexException;
+import exception.CommandNotRecogniseException;
+import exception.TripNotSelectedException;
+import exception.ParserException;
 import exception.FileFormatException;
+import exception.FileReadException;
 import exception.FileWriteException;
+import exception.TravelDiaryException;
+import exception.MissingCompulsoryParameter;
 import parser.Parser;
 import photo.PhotoPrinter;
 import storage.Storage;
 import trip.TripManager;
 import ui.Ui;
-import exception.InvalidIndexException;
-import exception.CommandNotRecogniseException;
-import exception.TripNotSelectedException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -68,10 +71,10 @@ public class TravelDiary {
     }
 
     private static boolean processCommand(Ui ui, TripManager tripManager) throws InvalidIndexException {
-        Map parsedCommand;
+        Map<String, String> parsedCommand;
         try {
             parsedCommand = Parser.getCommandDetails();
-        } catch (TravelDiaryException | CommandNotRecogniseException e) {
+        } catch (TravelDiaryException | CommandNotRecogniseException | ParserException e) {
             ui.showToUser(e.getMessage());
             return false;
         }
@@ -92,6 +95,8 @@ public class TravelDiary {
         } catch (TravelDiaryException |
                  NumberFormatException |
                  MissingCompulsoryParameter |
+                 ImageProcessingException |
+                 IOException |
                  TripNotSelectedException e) {
             ui.showToUser(e.getMessage());
             return false;

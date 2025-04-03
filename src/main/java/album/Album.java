@@ -1,11 +1,13 @@
 package album;
 
+import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
 import exception.InvalidIndexException;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +16,15 @@ public class Album {
     public final List<Photo> photos = new ArrayList<>();
     public Photo selectedPhoto = null;
 
-
-    public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
-            throws TravelDiaryException {
-        photos.add(new Photo(filePath, photoName, caption, location, datetime));
-
+    public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
+            throws TravelDiaryException, ImageProcessingException, IOException {
+        photos.add(new Photo(filePath, photoName, caption, datetime));
+        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
 
-    public void addPhoto(String filePath, String photoName, String caption, String location)
-            throws TravelDiaryException {
-        photos.add(new Photo(filePath, photoName, caption, location));
+    public void addPhoto(String filePath, String photoName, String caption)
+            throws TravelDiaryException, ImageProcessingException, IOException {
+        photos.add(new Photo(filePath, photoName, caption));
         System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
 
@@ -69,8 +70,8 @@ public class Album {
         StringBuilder albumDetails = new StringBuilder();
         for (int i = 0; i < photos.size(); i++) {
             albumDetails.append("\t").append(i + 1).append(") ")
-                    .append(photos.get(i).toString()).append("\n"); // Append details
+                    .append(photos.get(i).toString()).append("\n");
         }
-        return albumDetails.toString(); // Convert StringBuilder to String
+        return albumDetails.toString();
     }
 }
