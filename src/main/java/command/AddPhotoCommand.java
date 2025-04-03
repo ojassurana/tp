@@ -1,9 +1,12 @@
 package command;
 
+import com.drew.imaging.ImageProcessingException;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import trip.TripManager;
 import ui.Ui;
+
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class AddPhotoCommand extends Command {
@@ -25,7 +28,7 @@ public class AddPhotoCommand extends Command {
 
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
-            TravelDiaryException, MissingCompulsoryParameter {
+            TravelDiaryException, MissingCompulsoryParameter, IOException, ImageProcessingException {
         logger.info("Executing AddPhotoCommand");
 
         if (tripManager == null) {

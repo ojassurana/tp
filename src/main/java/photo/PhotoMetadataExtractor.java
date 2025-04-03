@@ -1,6 +1,7 @@
 package photo;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
@@ -33,39 +34,38 @@ public class PhotoMetadataExtractor {
      *
      * @param filepath the path to the image file
      */
-    public PhotoMetadataExtractor(String filepath) {
+    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException {
         File imageFile = new File(filepath);
-        try {
-            Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
-            ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
+        ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
-            if (exifDirectory != null) {
-                // Extract original datetime from metadata
-                Date originalDate = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                if (originalDate != null) {
-                    LocalDateTime localDate = originalDate.toInstant()
-                            .atZone(ZoneId.of("Asia/Singapore"))
-                            .toLocalDateTime();
-                    this.datetime = localDate;
-                } else {
-                    System.out.println("No DateTime metadata found.");
-                }
-
-                GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-                if (gpsDirectory != null
-                        && gpsDirectory.containsTag(GpsDirectory.TAG_LATITUDE)
-                        && gpsDirectory.containsTag(GpsDirectory.TAG_LONGITUDE)) {
-                    double extractedLat = gpsDirectory.getGeoLocation().getLatitude();
-                    double extractedLon = gpsDirectory.getGeoLocation().getLongitude();
-                    this.latitude = extractedLat;
-                    this.longitude = extractedLon;
-                    this.location = getLocationFromCoordinates(extractedLat, extractedLon);
-                } else {
-                    System.out.println("No GPS Data Found");
-                }
+        if (exifDirectory != null) {
+            // Extract original datetime from metadata
+            Date originalDate = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            if (originalDate != null) {
+                LocalDateTime localDate = originalDate.toInstant()
+                        .atZone(ZoneId.of("Asia/Singapore"))
+                        .toLocalDateTime();
+                this.datetime = localDate;
+            } else {
+                throw new ImageProcessingException("No DateTime metadata found.");
             }
-        } catch (Exception e) {
-            System.err.println("Error reading metadata: " + e.getMessage());
+
+            GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+            if (gpsDirectory != null
+                    && gpsDirectory.containsTag(GpsDirectory.TAG_LATITUDE)
+                    && gpsDirectory.containsTag(GpsDirectory.TAG_LONGITUDE)) {
+                double extractedLat = gpsDirectory.getGeoLocation().getLatitude();
+                double extractedLon = gpsDirectory.getGeoLocation().getLongitude();
+                this.latitude = extractedLat;
+                this.longitude = extractedLon;
+                this.location = getLocationFromCoordinates(extractedLat, extractedLon);
+            } else {
+                throw new ImageProcessingException("No GPS Data Found \n" +
+                        "please insert photo with GPS metadata");
+            }
+        } else{
+            throw new ImageProcessingException("No Metadata Found");
         }
     }
 
@@ -133,7 +133,7 @@ public class PhotoMetadataExtractor {
     /**
      * Loads cities from a semicolon-delimited CSV file.
      * Expects the CSV format:
-     *   Geoname ID;Name;ASCII Name;Alternate Names;...;Country name EN;...;Coordinates
+     * Geoname ID;Name;ASCII Name;Alternate Names;...;Country name EN;...;Coordinates
      * where "Name" is at index 1, "Country name EN" is at index 7, and "Coordinates" is at index 19
      * in the format "lat, lon".
      *
@@ -218,12 +218,12 @@ public class PhotoMetadataExtractor {
     /**
      * Recursively searches the KD-Tree for the nearest city to (lat, lon).
      *
-     * @param node      the current KDNode
-     * @param lat       target latitude
-     * @param lon       target longitude
-     * @param depth     current depth (to pick lat or lon as the axis)
-     * @param best      the current best City
-     * @param bestDist  the distance to the current best City
+     * @param node     the current KDNode
+     * @param lat      target latitude
+     * @param lon      target longitude
+     * @param depth    current depth (to pick lat or lon as the axis)
+     * @param best     the current best City
+     * @param bestDist the distance to the current best City
      * @return the nearest City
      */
     private static City searchKDTree(KDNode node, double lat, double lon,

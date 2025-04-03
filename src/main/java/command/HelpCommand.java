@@ -82,7 +82,7 @@ public class HelpCommand extends Command {
         if (fsm == 0) {
             System.out.println("  add_trip n#Paris Trip d#Vacation in Paris");
         } else if (fsm == 1) {
-            System.out.println("  add_photo f#path/to/image.jpg n#Eiffel Tower c#View from Trocadero l#Paris");
+            System.out.println("  add_photo f#path/to/image.jpg n#Eiffel Tower c#View from Trocadero");
         }
 
         System.out.println("======================");

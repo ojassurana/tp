@@ -1,11 +1,13 @@
 package album;
 
+import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
 import exception.InvalidIndexException;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +17,13 @@ public class Album {
     public Photo selectedPhoto = null;
 
     public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
-            throws TravelDiaryException {
+            throws TravelDiaryException, ImageProcessingException, IOException {
         photos.add(new Photo(filePath, photoName, caption, datetime));
         System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
 
     public void addPhoto(String filePath, String photoName, String caption)
-            throws TravelDiaryException {
+            throws TravelDiaryException, ImageProcessingException, IOException {
         photos.add(new Photo(filePath, photoName, caption));
         System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
