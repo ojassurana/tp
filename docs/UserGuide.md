@@ -34,14 +34,14 @@ Adds a new trip to the collection.
 #### Format:
 
 ```sh
-add_trip n#NAME d#DESCRIPTION l#LOCATION
+add_trip n#NAME d#DESCRIPTION
 ```
 
 #### Examples:
 
 ```sh
-add_trip n#2025 Great Barrier Reef d#Summer break with family l#Australia
-add_trip n#2025 Kyoto Tour d#Winter exchange l#Japan, Kyoto
+add_trip n#2025 Great Barrier Reef d#Summer break with family
+add_trip n#2025 Kyoto Tour d#Winter exchange
 ```
 
 ### Deleting a Trip
@@ -74,9 +74,12 @@ trip
 #### Example Output:
 
 ```
-Trip to Bali
-Trip to SG
-Summer break with family
+*********
+Trip Page
+*********
+Enter: list
+1: Hong Kong Trip
+		hk with my frens~!!~ (2024-11-15 3:00AM - 2024-12-21 12:19PM)
 ```
 
 ### Selecting a Trip
@@ -92,8 +95,8 @@ trip [ID]
 #### Examples:
 
 ```sh
-trip 1
-trip 2
+select 1
+select 2
 ```
 
 ---
@@ -107,14 +110,14 @@ After selecting a trip, users can add a new photo to the trip.
 #### Format:
 
 ```sh
-add_photo f#FILENAME n#PHOTONAME c#CAPTION l#LOCATION
+add_photo f#FILENAME n#PHOTONAME c#CAPTION
 ```
 
 #### Examples:
 
 ```sh
-add_photo f#desktop/bali.jpg n#Dog c#Wow l#Nusa Penida
-add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun l#Phi Phi
+add_photo f#desktop/bali.jpg n#Dog c#Wow
+add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 ```
 
 ### Selecting a Photo
@@ -165,9 +168,19 @@ list
 #### Example Output:
 
 ```
-Lunch in Bali
-Bali temple
-Beach photo
+	Here are all your photos:
+
+	1) AIRPORT (Tung Chung, Hong Kong, China) 2024-11-14 7:00PM 
+		Just landed in HK!
+				|	11.0 km
+	2) Olaf (Hong Kong Disneyland Resort, Hong Kong, China) 2024-11-15 9:16PM 
+		i saw olaf?
+				|	2584.0 km
+	3) SINGAPORE RAIN! (Singapore, Singapore) 2024-12-20 8:19PM 
+		raining in singapore.
+				|	0.0 km
+	4) Mirror (Singapore, Singapore) 2024-12-21 4:19AM 
+		mirror mirror on the wall
 ```
 
 ---
