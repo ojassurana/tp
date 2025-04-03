@@ -49,8 +49,10 @@ public class TravelDiary {
             return;  // Exit if there's an error loading trips
         }
 
+
         boolean exitProgram = false;
         while (!exitProgram) {
+            ui.showFsmState(fsmValue);
             try {
                 exitProgram = processCommand(ui, tripManager);
             } catch (InvalidIndexException e) {
@@ -58,7 +60,6 @@ public class TravelDiary {
             }
             ui.showLine();
         }
-
         // Save trips before exiting
         try {
             Storage.saveTasks(tripManager.getTrips(), FILE_PATH);

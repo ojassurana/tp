@@ -4,6 +4,7 @@ import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class Photo {
@@ -90,6 +91,7 @@ public class Photo {
         } else {
             extractedDateTime = LocalDateTime.now();
         }
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
         this.datetime = extractedDateTime.minusHours(8); // Convert to GMT +8.
 
         // Store longitude, latitude and locationname as Location class.
@@ -98,6 +100,7 @@ public class Photo {
 
     @Override
     public String toString() {
-        return String.format("%s (%s) %s \n\t\t%s", photoName, locationName, datetime, caption);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+        return String.format("%s (%s) %s \n\t\t%s", photoName, locationName, datetime.format(outputFormatter), caption);
     }
 }

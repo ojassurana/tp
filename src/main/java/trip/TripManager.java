@@ -1,4 +1,5 @@
 package trip;
+
 import exception.TravelDiaryException;
 import exception.IndexOutOfRangeException;
 
