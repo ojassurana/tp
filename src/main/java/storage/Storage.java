@@ -165,7 +165,6 @@ public class Storage {
                                            String filePath,
                                            int lineNumber) throws TripLoadException, FileFormatException {
         // Add previous trip to the list if it exists
-
         if (previousTrip != null) {
             trips.add(previousTrip);
         }
@@ -199,6 +198,7 @@ public class Storage {
         }
 
         String albumName = decodeString(parts[1]);
+        // Currently, the album name is not used further.
     }
 
     private static void handlePhotoAddition(String[] parts, Trip currentTrip, String filePath, int lineNumber)
@@ -220,20 +220,19 @@ public class Storage {
                 throw new FileFormatException(filePath, lineNumber, e);
             }
 
+            // Note: The location parameter has been removed from the addPhoto calls.
             if (photoTime != null) {
                 currentTrip.album.addPhoto(
                         photoPath,
                         photoName,
                         caption,
-                        "",
                         photoTime
                 );
             } else {
                 currentTrip.album.addPhoto(
                         photoPath,
                         photoName,
-                        caption,
-                        ""
+                        caption
                 );
             }
         } catch (TravelDiaryException e) {

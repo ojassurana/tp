@@ -98,20 +98,30 @@ public class Parser {
     private static Map<String, String> parseAddPhoto(String rest) throws TravelDiaryException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_photo");
-        String[] parts = rest.split(" (?=[ndlcf]#)");
-        Set<String> allowedTags = new HashSet<>(Arrays.asList("f#", "n#", "c#", "l#"));
+        // Split on spaces before any tag that starts with n, d, c, f or l
+        String[] parts = rest.split(" (?=[fnc]#)");
+        // Allowed tags now only for f#, n#, and c# (l# is optional)
+        Set<String> allowedTags = new HashSet<>(Arrays.asList("f#", "n#", "c#"));
         Map<String, String> tagsMap = processTags(parts, allowedTags);
+
+        // Required tags:
         map.put("filepath", tagsMap.get("f#"));
         map.put("photoname", tagsMap.get("n#"));
         map.put("caption", tagsMap.get("c#"));
-        map.put("location", tagsMap.get("l#"));
-        if (map.get("filepath") == null || map.get("photoname") == null ||
-                map.get("caption") == null || map.get("location") == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# " +
-                    "(photoname), c# (caption), l# (location).");
+
+        // Optional location tag if provided
+        if (tagsMap.containsKey("l#")) {
+            map.put("location", tagsMap.get("l#"));
+        }
+
+        // Only check required tags
+        if (map.get("filepath") == null || map.get("photoname") == null || map.get("caption") == null) {
+            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
+                    "n# (photoname), c# (caption)");
         }
         return map;
     }
+
 
     private static Map<String, String> processTags(String[] parts, Set<String> allowedTags)
             throws TravelDiaryException {

@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
- * PhotoPrinter class creates a PhotoFrame with Jlabels based on Photo details.
+ * PhotoPrinter class creates a PhotoFrame with JLabels based on Photo details.
  * It can display the PhotoFrame in a GUI window.
  * It loads an image, displays its caption, location, and formatted date.
  */
@@ -27,11 +27,12 @@ public class PhotoPrinter {
 
     private static final String locationPinIconPath = "./data/assets/photo_Location_Pin.png";
     private static final Logger logger = Logger.getLogger(PhotoPrinter.class.getName());
+
     /**
-     * Returns a PhotoFrame object with Jlabels based on Photo details.
+     * Returns a PhotoFrame object with JLabels based on Photo details.
      *
-     * @param photo The photo containing image path, caption, location, and datetime.
-     * @return PhotoFrame object containing Jlabels and Jframe of the printed photo.
+     * @param photo The photo containing image path, caption, extracted location, and datetime.
+     * @return PhotoFrame object containing JLabels and JFrame of the printed photo.
      */
     public static PhotoFrame createFrame(Photo photo) throws FileNotFoundException {
         String filePath = photo.getFilePath();
@@ -61,7 +62,7 @@ public class PhotoPrinter {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
         String formattedDate = dateTime.format(outputFormatter);
 
-        // LocationDateTime label
+        // Create a label for location and datetime
         String locationAndDateText = photo.getLocation() + " | " + formattedDate;
         JLabel locationLabel = new JLabel(locationAndDateText, locationIcon, SwingConstants.CENTER);
         locationLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
@@ -83,38 +84,17 @@ public class PhotoPrinter {
     }
 
     /**
-     * Display the Photo in a JFrame window with its Jlabels.
+     * Display the Photo in a JFrame window with its JLabels.
      *
-     * @param photoFrame photoFrame object containing the Jframe to be displayed.
+     * @param photoFrame photoFrame object containing the JFrame to be displayed.
      */
     public static void display(PhotoFrame photoFrame) {
         JFrame frame = photoFrame.getFrame();
-        assert frame != null : "Jframe should not be null";
+        assert frame != null : "JFrame should not be null";
         frame.setVisible(true);
         logger.info(String.format("Photo displayed: %s", photoFrame.getTitle()));
     }
 
-    public static void main(String[] args) throws TravelDiaryException {
-        LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
-        String filePath = "./data/photos/sample1.jpg";
-        String photoName = "First night in Osaka";
-        String caption = "This is a photo of my friends and I in Osaka.";
-        String location = "Dotonbori River";
-        // Creates Photo
-        Photo photo = new Photo(filePath, photoName, caption, location, datetime);
-
-        try {
-            // Create PhotoFrame
-            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
-            // Display PhotoFrame
-            PhotoPrinter.display(photoFrame);
-            //photoFrame.closeOperation(); // Exit program when Jframe window is closed
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-    }
     public static void closeAllWindows() {
         Window[] windows = Window.getWindows();
         int numOfWindows = windows.length;
@@ -129,4 +109,23 @@ public class PhotoPrinter {
         }
     }
 
+    // Updated main method for testing purposes.
+    // Note: In production, you would invoke PhotoPrinter from another class rather than using main here.
+    public static void main(String[] args) throws TravelDiaryException {
+        LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
+                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
+        String filePath = "./data/photos/sample1.jpg";
+        String photoName = "First night in Osaka";
+        String caption = "This is a photo of my friends and I in Osaka.";
+        // Create Photo using the updated constructor (location is extracted automatically)
+        Photo photo = new Photo(filePath, photoName, caption, datetime);
+
+        try {
+            // Create PhotoFrame and display it
+            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
+            PhotoPrinter.display(photoFrame);
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

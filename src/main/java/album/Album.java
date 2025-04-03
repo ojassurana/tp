@@ -14,16 +14,15 @@ public class Album {
     public final List<Photo> photos = new ArrayList<>();
     public Photo selectedPhoto = null;
 
-
-    public void addPhoto(String filePath, String photoName, String caption, String location, LocalDateTime datetime)
+    public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
             throws TravelDiaryException {
-        photos.add(new Photo(filePath, photoName, caption, location, datetime));
-
+        photos.add(new Photo(filePath, photoName, caption, datetime));
+        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
 
-    public void addPhoto(String filePath, String photoName, String caption, String location)
+    public void addPhoto(String filePath, String photoName, String caption)
             throws TravelDiaryException {
-        photos.add(new Photo(filePath, photoName, caption, location));
+        photos.add(new Photo(filePath, photoName, caption));
         System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
     }
 
@@ -69,8 +68,8 @@ public class Album {
         StringBuilder albumDetails = new StringBuilder();
         for (int i = 0; i < photos.size(); i++) {
             albumDetails.append("\t").append(i + 1).append(") ")
-                    .append(photos.get(i).toString()).append("\n"); // Append details
+                    .append(photos.get(i).toString()).append("\n");
         }
-        return albumDetails.toString(); // Convert StringBuilder to String
+        return albumDetails.toString();
     }
 }
