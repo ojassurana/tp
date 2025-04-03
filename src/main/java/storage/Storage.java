@@ -300,6 +300,10 @@ public class Storage {
         }
 
         try {
+            if (parts.length < 4) {
+                throw new FileFormatException(filePath, String.join(" | ", parts));
+            }
+
             String photoPath = decodeString(parts[1]);
             String photoName = decodeString(parts[2]);
             String caption = decodeString(parts[3]);
@@ -337,6 +341,9 @@ public class Storage {
 
     /**
      * Encodes a string to handle special characters.
+     *
+     * @param input String to encode
+     * @return Encoded string
      */
     private static String encodeString(String input) {
         if (input == null) {
