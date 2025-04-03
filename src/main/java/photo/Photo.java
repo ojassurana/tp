@@ -2,19 +2,18 @@ package photo;
 
 import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class Photo {
     private String filePath;
     private String photoName;
     private String caption;
-    private String location;
+    private String locationName;
     private LocalDateTime datetime;
-    private double latitude;
-    private double longitude;
+    private Location location;
 
     /**
      * Constructs a Photo object.
@@ -35,26 +34,7 @@ public class Photo {
         this.filePath = filePath;
         this.photoName = photoName;
         this.caption = caption;
-
-        // Use PhotoMetadataExtractor to extract metadata from the image.
-        PhotoMetadataExtractor extractor = new PhotoMetadataExtractor(filePath);
-        Map<String, Object> metadata = extractor.getMetadataMap();
-
-        // Set location (as a string), latitude, and longitude.
-        this.location = (String) metadata.get("location");
-        Object latObj = metadata.get("latitude");
-        Object lonObj = metadata.get("longitude");
-        this.latitude = (latObj instanceof Number) ? ((Number) latObj).doubleValue() : 0.0;
-        this.longitude = (lonObj instanceof Number) ? ((Number) lonObj).doubleValue() : 0.0;
-
-        // Set the datetime: use provided datetime if non-null, otherwise fallback to metadata or current time.
-        if (datetime != null) {
-            this.datetime = datetime;
-        } else if (metadata.get("datetime") != null) {
-            this.datetime = (LocalDateTime) metadata.get("datetime");
-        } else {
-            this.datetime = LocalDateTime.now();
-        }
+        extractData(filePath, datetime);
     }
 
     // Overloaded constructor without datetime parameter.
@@ -75,7 +55,7 @@ public class Photo {
         return this.caption;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return this.location;
     }
 
@@ -83,30 +63,44 @@ public class Photo {
         return this.datetime;
     }
 
-    public double getLatitude() {
-        return this.latitude;
-    }
-
-    public double getLongitude() {
-        return this.longitude;
-    }
-
-    /**
-     * Returns true if either latitude or longitude is non-zero.
-     */
-    public boolean hasCoordinates() {
-        return latitude != 0 || longitude != 0;
-    }
 
     /**
      * Returns true if the extracted location name is valid (not null, not empty, and not "Location not found").
      */
     public boolean hasLocationName() {
-        return location != null && !location.isEmpty() && !location.equals("Location not found");
+        return locationName != null && !locationName.isEmpty() && !locationName.equals("Location not found");
+    }
+
+    private void extractData(String filePath, LocalDateTime datetime) throws ImageProcessingException, IOException {
+        // Use PhotoMetadataExtractor to extract metadata from the image.
+        PhotoMetadataExtractor extractor = new PhotoMetadataExtractor(filePath);
+        Map<String, Object> metadata = extractor.getMetadataMap();
+
+        // Set location (as a string), latitude, and longitude.
+        this.locationName = (String) metadata.get("location");
+        Object latObj = metadata.get("latitude");
+        Object lonObj = metadata.get("longitude");
+        double latitude = (latObj instanceof Number) ? ((Number) latObj).doubleValue() : 0.0;
+        double longitude = (lonObj instanceof Number) ? ((Number) lonObj).doubleValue() : 0.0;
+        LocalDateTime extractedDateTime;
+        // Set the datetime: use provided datetime if non-null, otherwise fallback to metadata or current time.
+        if (datetime != null) {
+            extractedDateTime = datetime;
+        } else if (metadata.get("datetime") != null) {
+            extractedDateTime = (LocalDateTime) metadata.get("datetime");
+        } else {
+            extractedDateTime = LocalDateTime.now();
+        }
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+        this.datetime = extractedDateTime.minusHours(8); // Convert to GMT +8.
+
+        // Store longitude, latitude and locationname as Location class.
+        this.location = new Location(latitude, longitude, locationName);
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s) %s \n\t\t%s", photoName, location, datetime, caption);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+        return String.format("%s (%s) %s \n\t\t%s", photoName, locationName, datetime.format(outputFormatter), caption);
     }
 }

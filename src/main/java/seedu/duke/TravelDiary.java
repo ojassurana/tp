@@ -19,7 +19,6 @@ import trip.TripManager;
 import ui.Ui;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -42,7 +41,7 @@ public class TravelDiary {
 
         // Load existing trips from storage
         try {
-            List savedTrips = Storage.loadTrips(tripManager, FILE_PATH);
+            Storage.loadTrips(tripManager, FILE_PATH);
             ui.showWelcome();  // Show welcome message only after successful load
         } catch (FileReadException | FileFormatException e) {
             ui.showToUser("Error loading saved trips: " + e.getMessage());
@@ -50,8 +49,10 @@ public class TravelDiary {
             return;  // Exit if there's an error loading trips
         }
 
+
         boolean exitProgram = false;
         while (!exitProgram) {
+            ui.showFsmState(fsmValue);
             try {
                 exitProgram = processCommand(ui, tripManager);
             } catch (InvalidIndexException e) {
@@ -59,7 +60,6 @@ public class TravelDiary {
             }
             ui.showLine();
         }
-
         // Save trips before exiting
         try {
             Storage.saveTasks(tripManager.getTrips(), FILE_PATH);

@@ -1,6 +1,7 @@
 package ui;
 
 import java.util.Scanner;
+
 import parser.Parser;
 
 public class Ui {
@@ -19,6 +20,7 @@ public class Ui {
     public void showWelcome() {
         System.out.println("Welcome to your Travel Diary Management System!");
         System.out.println("Capture and manage your travel memories with ease!\n");
+        System.out.println("Please type \"help\" if you need instructions \n");
     }
 
     public void showLine() {
@@ -27,6 +29,26 @@ public class Ui {
 
     public void showToUser(String message) {
         System.out.println(message);
+    }
+
+    public void showFsmState(int fsmState) {
+        if ((fsmState == 0)) {
+            this.showTripPage();
+        } else {
+            this.showPhotoPage();
+        }
+    }
+
+    public void showTripPage() {
+        System.out.println("*********");
+        System.out.println("Trip Page");
+        System.out.println("*********");
+    }
+
+    public void showPhotoPage() {
+        System.out.println("**********");
+        System.out.println("Photo Page");
+        System.out.println("**********");
     }
 
     public void close() {

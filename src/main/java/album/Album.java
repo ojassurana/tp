@@ -6,26 +6,46 @@ import exception.InvalidIndexException;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
-
+import tracker.Tracker;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Album {
+
     public final List<Photo> photos = new ArrayList<>();
     public Photo selectedPhoto = null;
+    private boolean silentMode = false;
+
+    /**
+     * Enable or disable silent mode to prevent console output during operations
+     */
+    public void setSilentMode(boolean silentMode) {
+        this.silentMode = silentMode;
+    }
+
+    /**
+     * Returns current silent mode state
+     */
+    public boolean isSilentMode() {
+        return silentMode;
+    }
 
     public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
             throws TravelDiaryException, ImageProcessingException, IOException {
         photos.add(new Photo(filePath, photoName, caption, datetime));
-        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        if (!silentMode) {
+            System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        }
     }
 
     public void addPhoto(String filePath, String photoName, String caption)
             throws TravelDiaryException, ImageProcessingException, IOException {
         photos.add(new Photo(filePath, photoName, caption));
-        System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        if (!silentMode) {
+            System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
+        }
     }
 
     public void deletePhoto(int index) {
@@ -45,6 +65,10 @@ public class Album {
             System.out.println("\n\tHere are all your photos:");
             System.out.println(this);
         }
+    }
+
+    public List<Photo> getPhotos() {
+        return this.photos;
     }
 
     public void setSelectedPhoto(Photo selectedPhoto) {
@@ -67,11 +91,15 @@ public class Album {
 
     @Override
     public String toString() {
-        StringBuilder albumDetails = new StringBuilder();
+        Tracker.sortPhotosByDate(photos);
+        String albumDetails = "\n";
         for (int i = 0; i < photos.size(); i++) {
-            albumDetails.append("\t").append(i + 1).append(") ")
-                    .append(photos.get(i).toString()).append("\n");
+            if (i > 0) {
+                albumDetails += String.format("\t\t\t\t|\t%s km%n",
+                        Tracker.calculateDist(photos.get(i-1), photos.get(i)));
+            }
+            albumDetails += String.format("\t%d) %s%n", i + 1, photos.get(i));
         }
-        return albumDetails.toString();
+        return albumDetails;
     }
 }
