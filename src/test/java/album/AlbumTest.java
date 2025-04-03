@@ -128,11 +128,9 @@ class AlbumTest {
         assertTrue(output.contains("MyPhoto"), "Selected photo details should be printed.");
         assertTrue(output.contains("Caption"), "Selected photo caption should be printed.");
         // Since location is extracted from metadata, we simply check that some location info is printed.
-        assertTrue(output.matches(".*\\(.*\\).*"), "Selected photo location should be printed " +
-                "within parentheses.");
+        assertTrue(output.contains("Paris"), "Selected photo location should be printed within parentheses.");
 
         // Test selecting a photo with an invalid index.
-        assertThrows(InvalidIndexException.class, () -> album.selectPhoto(5), "Selecting photo with" +
-                " an invalid index should throw an IndexOutOfBoundsException.");
+        assertThrows(InvalidIndexException.class, () -> album.selectPhoto(5), "Selecting photo with an invalid index should throw an InvalidIndexException.");
     }
 }

@@ -83,13 +83,6 @@ public class PhotoMetadataExtractor {
         return metadataMap;
     }
 
-    /**
-     * Returns the nearest city in the format "<City>, <Country>" for the given latitude and longitude.
-     *
-     * @param latitude  the latitude
-     * @param longitude the longitude
-     * @return a string representing the nearest city and country
-     */
     public static String getLocationFromCoordinates(double latitude, double longitude) {
         if (kdTree == null) {
             try {
