@@ -56,7 +56,7 @@ The main responsibilities of the Storage component are:
 ##### Saving Data
 The saving process converts in-memory objects into a text representation and writes them to a file. The `saveTasks` method handles this process.
 
-![Sequence diagram for saving data](StorageSaveTrip.png)
+![Sequence diagram for saving data](pump_pics/StorageSaveTrip.png)
 
 The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
 
@@ -68,7 +68,7 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 ##### Loading Data
 The loading process reads the text file line by line and reconstructs the in-memory objects. The `loadTrips` method handles this process.
 
-![Sequence diagram for loading data](StorageLoadTrip.png)
+![Sequence diagram for loading data](pump_pics/StorageLoadTrip.png)
 
 The sequence diagram above shows how the `loadTrips` method works:
 
@@ -99,12 +99,35 @@ The component implements a comprehensive exception hierarchy to handle various e
 
 These specialized exceptions provide detailed information about what went wrong and where, making debugging easier.
 
-### PhotoPrinter
-![PhotoPrinter](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/16bbdd2e8a63af5e7aecbf1fc662e6bd7f0c7c35/photo_printerdraft.png)
+### Photo
+![Photo](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/photo.png)
 ####
-- Creates a **PhotoFrame** for displaying a **Photo**.
-- Displays photos with captions, locations, and timestamps.
-- Depends on **PhotoFrame** to handle the graphical display.
-- Depends on **Photo** for retrieving image data and metadata.
+- Stores image data with file paths and captions.
+
+- Extracts metadata from image files using PhotoMetadataExtractor.
+
+- Links each photo to a specific Location.
+
+- Supports comparison of photos by datetime using PhotoDateTimeComparator.
+
+- Can be displayed using PhotoPrinter.
+
+
+
+### Add Photo Process Sequence Diagram
+![Add Photo Process Sequence Diagram](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/team/AddPhotoProcess.png)
+####
+
+- AddPhotoCommand calls execute(tripManager, ui, fsmValue).
+
+- TripManager getSelectedTrip() retrieves the current trip and its album.
+
+- Album addPhoto(filepath, photoname, caption) creates a new Photo.
+
+- Photo#extractData(filepath, datetime) extracts metadata.
+
+- If metadata includes coordinates, a Location object is created.
+
+- The photo is added to the album's list.
 
 
