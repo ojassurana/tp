@@ -1,5 +1,6 @@
+package photo;
 import java.util.Comparator;
-import photo.Photo;
+
 
 public class PhotoDateTimeComparator implements Comparator<Photo> {
     @Override

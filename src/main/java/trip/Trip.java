@@ -58,6 +58,10 @@ public class Trip {
         return minMaxDates;
     }
 
+    public Album getAlbum() {
+        return this.album;
+    }
+
     @Override
     public String toString() {
         return String.format("%s\n\t\t%s (%s - %s)\n", name, description, periodTracker().get(0),
