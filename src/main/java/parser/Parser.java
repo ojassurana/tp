@@ -116,7 +116,8 @@ public class Parser {
 
         // Only check required tags
         if (map.get("filepath") == null || map.get("photoname") == null || map.get("caption") == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# (photoname), c# (caption)");
+            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
+                    "n# (photoname), c# (caption)");
         }
         return map;
     }

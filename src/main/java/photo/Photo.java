@@ -26,7 +26,8 @@ public class Photo {
     public Photo(String filePath, String photoName, String caption, LocalDateTime datetime)
             throws TravelDiaryException {
         if (filePath == null || photoName == null || caption == null) {
-            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# (photoname), c# (caption).");
+            throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
+                    "n# (photoname), c# (caption).");
         }
         this.filePath = filePath;
         this.photoName = photoName;
