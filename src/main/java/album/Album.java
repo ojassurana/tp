@@ -6,7 +6,7 @@ import exception.InvalidIndexException;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
-
+import tracker.Tracker;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,6 +47,10 @@ public class Album {
         }
     }
 
+    public List<Photo> getPhotos() {
+        return this.photos;
+    }
+
     public void setSelectedPhoto(Photo selectedPhoto) {
         this.selectedPhoto = selectedPhoto;
     }
@@ -67,11 +71,15 @@ public class Album {
 
     @Override
     public String toString() {
-        StringBuilder albumDetails = new StringBuilder();
+        Tracker.sortPhotosByDate(photos);
+        String albumDetails = "\n";
         for (int i = 0; i < photos.size(); i++) {
-            albumDetails.append("\t").append(i + 1).append(") ")
-                    .append(photos.get(i).toString()).append("\n");
+            if (i > 0) {
+                albumDetails += String.format("\t\t\t\t|\t%s km%n",
+                        Tracker.calculateDist(photos.get(i-1), photos.get(i)));
+            }
+            albumDetails += String.format("\t%d) %s%n", i + 1, photos.get(i));
         }
-        return albumDetails.toString();
+        return albumDetails;
     }
 }
