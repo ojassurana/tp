@@ -1,4 +1,5 @@
 package trip;
+
 import exception.TravelDiaryException;
 import exception.IndexOutOfRangeException;
 
@@ -17,6 +18,16 @@ public class TripManager {
         logger.info("Trip added successfully: " + name);
         System.out.printf("\tTrip [%s] has been added successfully.\n", name);
         viewTrips();
+    }
+
+    public void addTrip(String name, String description, boolean isViewTripNeeded) throws TravelDiaryException {
+        logger.info("Adding a new trip: " + name);
+        trips.add(new Trip(name, description));
+        logger.info("Trip added successfully: " + name);
+        System.out.printf("\tTrip [%s] has been added successfully.\n", name);
+        if (isViewTripNeeded) {
+            viewTrips();
+        }
     }
 
     public void setSelectedTrip(Trip selectedTrip) {
