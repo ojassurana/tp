@@ -65,6 +65,28 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 3. For each Photo in the Album, its details are formatted with the "P" marker
 4. The formatted lines are written to the file
 
+##### Parsing Input 
+The parsing process convert input and return hashmap which will be processed by CommandFactory.
+
+![Sequence diagram for parsing data](Parser sequence diagram.png)
+
+The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+
+1. The parsing will be split by space and tags
+2. The return value for this parsing will be a hashmap <String, String> 
+3. The hashmap will be process to CommandFactory which will return the corresponding command
+
+##### Command Sequence
+The hashmap will be process based on its Command key value in the hashmap
+
+![Sequence diagram for command process](command sequence diagram.png)
+
+The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+
+1. The hashmap will always have a key `"command"` 
+2. The value of hashmap.get(`"command"`) will be the commandName eg. `"list"`  
+3. This value will be used to get the corresponding command eg. `ListCommand`
+
 ##### Loading Data
 The loading process reads the text file line by line and reconstructs the in-memory objects. The `loadTrips` method handles this process.
 
@@ -106,5 +128,12 @@ These specialized exceptions provide detailed information about what went wrong 
 - Displays photos with captions, locations, and timestamps.
 - Depends on **PhotoFrame** to handle the graphical display.
 - Depends on **Photo** for retrieving image data and metadata.
+
+### Parser
+![Parser](parser_class_diagram.png)
+####
+- Contains static classes
+- Parse input based on tags
+- Return hashmap based on command name and tags
 
 
