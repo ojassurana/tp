@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
@@ -19,7 +18,8 @@ class AlbumTest {
         // Test adding a photo using the overload with datetime
         Album album = new Album();
         LocalDateTime dt = LocalDateTime.of(2023, 1, 1, 12, 0);
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "A beautiful scene", "Paris", dt));
+        // Removed location parameter from addPhoto call
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "A beautiful scene", dt));
 
         // Capture the output from viewPhotos
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -38,7 +38,8 @@ class AlbumTest {
     void testAddPhoto() {
         // Test adding a photo using the overload without specifying a datetime
         Album album = new Album();
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo2.jpg", "Photo2", "Sunset", "New York"));
+        // Removed location parameter from addPhoto call
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo2.jpg", "Photo2", "Sunset"));
         // Capture the output from viewPhotos
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -55,8 +56,8 @@ class AlbumTest {
     @Test
     void deletePhoto() {
         Album album = new Album();
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption",
-                "Paris", LocalDateTime.of(2023, 1, 1, 12, 0)));
+        // Removed location parameter from addPhoto call
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption", LocalDateTime.of(2023, 1, 1, 12, 0)));
         // Capture output for valid deletion
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -68,8 +69,7 @@ class AlbumTest {
         String output = outContent.toString().trim();
         assertTrue(output.contains("deleted"), "Photo should be deleted successfully.");
 
-        // Test deletion with an invalid index. Since the album is now empty,
-        // deleting index 0 should print an error message.
+        // Test deletion with an invalid index.
         outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         album.deletePhoto(0);
@@ -93,11 +93,9 @@ class AlbumTest {
         assertTrue(output.contains("No photos are found."), "View photos should indicate no photos found.");
 
         // Test viewPhotos on a non-empty album
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo1.jpg", "Photo1", "Caption1",
-                "London", LocalDateTime.of(2023, 2, 2, 15, 0)));
-        assertDoesNotThrow(() ->
-            album.addPhoto("path/to/photo2.jpg", "Photo2", "Caption2",
-                    "Tokyo", LocalDateTime.of(2023, 3, 3, 16, 0)));
+        // Removed location parameter from addPhoto calls
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo1.jpg", "Photo1", "Caption1", LocalDateTime.of(2023, 2, 2, 15, 0)));
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo2.jpg", "Photo2", "Caption2", LocalDateTime.of(2023, 3, 3, 16, 0)));
         outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         album.viewPhotos();
@@ -111,25 +109,22 @@ class AlbumTest {
     @Test
     void selectPhoto() {
         Album album = new Album();
-        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption",
-                "Paris", LocalDateTime.of(2023, 1, 1, 12, 0)));
+        // Removed location parameter from addPhoto call
+        assertDoesNotThrow(() -> album.addPhoto("path/to/photo.jpg", "MyPhoto", "Caption", LocalDateTime.of(2023, 1, 1, 12, 0)));
         // Capture output for valid photo selection
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outContent));
 
-        assertDoesNotThrow(()-> album.selectPhoto(0));
+        assertDoesNotThrow(() -> album.selectPhoto(0));
         System.setOut(originalOut);
         String output = outContent.toString().trim();
         assertTrue(output.contains("MyPhoto"), "Selected photo details should be printed.");
         assertTrue(output.contains("Caption"), "Selected photo caption should be printed.");
-        assertTrue(output.contains("Paris"), "Selected photo location should be printed.");
+        // Since location is extracted from metadata, we simply check that some location info is printed.
+        assertTrue(output.matches(".*\\(.*\\).*"), "Selected photo location should be printed within parentheses.");
 
         // Test selecting a photo with an invalid index.
-        // Since the selectPhoto method doesn't return after printing an error message,
-        // it will eventually try to access an invalid index and throw an IndexOutOfBoundsException.
-        assertThrows(InvalidIndexException.class, () -> {
-            album.selectPhoto(5);
-        }, "Selecting photo with an invalid index should throw an IndexOutOfBoundsException.");
+        assertThrows(InvalidIndexException.class, () -> album.selectPhoto(5), "Selecting photo with an invalid index should throw an IndexOutOfBoundsException.");
     }
 }
