@@ -98,17 +98,17 @@ public class Parser {
     private static Map<String, String> parseAddPhoto(String rest) throws TravelDiaryException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_photo");
-        String[] parts = rest.split(" (?=[ndlcf]#)");
+        String[] parts = rest.split(" (?=[ndcf]#)");
         Set<String> allowedTags = new HashSet<>(Arrays.asList("f#", "n#", "c#", "l#"));
         Map<String, String> tagsMap = processTags(parts, allowedTags);
         map.put("filepath", tagsMap.get("f#"));
         map.put("photoname", tagsMap.get("n#"));
         map.put("caption", tagsMap.get("c#"));
-        map.put("location", tagsMap.get("l#"));
+        map.put("location", tagsMap.get(""));
         if (map.get("filepath") == null || map.get("photoname") == null ||
                 map.get("caption") == null || map.get("location") == null) {
             throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), n# " +
-                    "(photoname), c# (caption), l# (location).");
+                    "(photoname), c# (caption)");
         }
         return map;
     }
