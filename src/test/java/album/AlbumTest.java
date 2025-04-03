@@ -131,6 +131,7 @@ class AlbumTest {
         assertTrue(output.contains("Paris"), "Selected photo location should be printed within parentheses.");
 
         // Test selecting a photo with an invalid index.
-        assertThrows(InvalidIndexException.class, () -> album.selectPhoto(5), "Selecting photo with an invalid index should throw an InvalidIndexException.");
+        assertThrows(InvalidIndexException.class, () -> album.selectPhoto(5), "Selecting photo " +
+                "with an invalid index should throw an InvalidIndexException.");
     }
 }
