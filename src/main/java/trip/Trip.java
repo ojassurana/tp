@@ -2,11 +2,7 @@ package trip;
 
 import album.Album;
 import exception.TravelDiaryException;
-import photo.Photo;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import tracker.Tracker;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -43,28 +39,14 @@ public class Trip {
         return this.album.toString();
     }
 
-    public List<String> periodTracker(){
-        List<LocalDateTime> dateTimes = new ArrayList<>(List.of());
-        for (Photo photo : this.album.photos){
-            dateTimes.add(photo.getDatetime());
-        }
-        // Find the minimum date-time
-        LocalDateTime minDateTime = dateTimes.stream().min(LocalDateTime::compareTo).orElse(null);
-        LocalDateTime maxDateTime = dateTimes.stream().max(LocalDateTime::compareTo).orElse(null);
-        List<String> minMaxDates = new ArrayList<>(List.of());
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
-        minMaxDates.add((minDateTime != null) ? minDateTime.format(outputFormatter) : "No Date Available");
-        minMaxDates.add((maxDateTime != null) ? maxDateTime.format(outputFormatter) : "No Date Available");
-        return minMaxDates;
-    }
-
     public Album getAlbum() {
         return this.album;
     }
 
     @Override
     public String toString() {
-        return String.format("%s\n\t\t%s (%s - %s)\n", name, description, periodTracker().get(0),
-                periodTracker().get(1));
+        List<String> period = Tracker.getPeriod(this.album);
+        return String.format("%s\n\t\t%s (%s - %s)\n", name, description, period.get(0),
+                period.get(1));
     }
 }

@@ -2,6 +2,10 @@ package tracker;
 import photo.Location;
 import photo.Photo;
 import photo.PhotoDateTimeComparator;
+import album.Album;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.List;
 
@@ -12,7 +16,7 @@ public class Tracker {
         photoList.sort(new PhotoDateTimeComparator());
     }
 
-    public static double calculateDist(Photo p1, Photo p2) {
+    public static double getDist(Photo p1, Photo p2) {
         Location l1 = p1.getLocation();
         Location l2 = p2.getLocation();
         double lat1 = l1.getLatitude();
@@ -30,5 +34,20 @@ public class Tracker {
         double dist = Math.round(EARTH_RADIUS * c);
         logger.info(String.format("Distance between %s and %s: %skm", p1.getPhotoName(), p2.getPhotoName(), dist));
         return dist;
+    }
+
+    public static List<String> getPeriod(Album album){
+        List<LocalDateTime> dateTimes = new ArrayList<>(List.of());
+        for (Photo photo : album.getPhotos()){
+            dateTimes.add(photo.getDatetime());
+        }
+        // Find the minimum date-time
+        LocalDateTime minDateTime = dateTimes.stream().min(LocalDateTime::compareTo).orElse(null);
+        LocalDateTime maxDateTime = dateTimes.stream().max(LocalDateTime::compareTo).orElse(null);
+        List<String> minMaxDates = new ArrayList<>(List.of());
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+        minMaxDates.add((minDateTime != null) ? minDateTime.format(outputFormatter) : "No Date Available");
+        minMaxDates.add((maxDateTime != null) ? maxDateTime.format(outputFormatter) : "No Date Available");
+        return minMaxDates;
     }
 }
