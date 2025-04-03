@@ -1,9 +1,11 @@
 package photo;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
+import exception.TravelDiaryException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +35,7 @@ public class PhotoMetadataExtractor {
      *
      * @param filepath the path to the image file
      */
-    public PhotoMetadataExtractor(String filepath) {
+    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException {
         File imageFile = new File(filepath);
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
@@ -48,7 +50,7 @@ public class PhotoMetadataExtractor {
                             .toLocalDateTime();
                     this.datetime = localDate;
                 } else {
-                    System.out.println("No DateTime metadata found.");
+                    throw new ImageProcessingException("No DateTime metadata found.");
                 }
 
                 GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
@@ -61,11 +63,16 @@ public class PhotoMetadataExtractor {
                     this.longitude = extractedLon;
                     this.location = getLocationFromCoordinates(extractedLat, extractedLon);
                 } else {
-                    System.out.println("No GPS Data Found");
+                    throw new ImageProcessingException("No GPS Data Found \n" +
+                            "please insert photo with GPS metadata");
                 }
             }
-        } catch (Exception e) {
-            System.err.println("Error reading metadata: " + e.getMessage());
+        } catch (IOException e) {
+//            System.err.println("Error reading file: " + filepath);
+            throw e;
+        } catch (ImageProcessingException e) {
+//            System.out.println("Error in metadata file: " + filepath);
+            throw e;
         }
     }
 
@@ -133,7 +140,7 @@ public class PhotoMetadataExtractor {
     /**
      * Loads cities from a semicolon-delimited CSV file.
      * Expects the CSV format:
-     *   Geoname ID;Name;ASCII Name;Alternate Names;...;Country name EN;...;Coordinates
+     * Geoname ID;Name;ASCII Name;Alternate Names;...;Country name EN;...;Coordinates
      * where "Name" is at index 1, "Country name EN" is at index 7, and "Coordinates" is at index 19
      * in the format "lat, lon".
      *
@@ -218,12 +225,12 @@ public class PhotoMetadataExtractor {
     /**
      * Recursively searches the KD-Tree for the nearest city to (lat, lon).
      *
-     * @param node      the current KDNode
-     * @param lat       target latitude
-     * @param lon       target longitude
-     * @param depth     current depth (to pick lat or lon as the axis)
-     * @param best      the current best City
-     * @param bestDist  the distance to the current best City
+     * @param node     the current KDNode
+     * @param lat      target latitude
+     * @param lon      target longitude
+     * @param depth    current depth (to pick lat or lon as the axis)
+     * @param best     the current best City
+     * @param bestDist the distance to the current best City
      * @return the nearest City
      */
     private static City searchKDTree(KDNode node, double lat, double lon,

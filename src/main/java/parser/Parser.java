@@ -110,9 +110,10 @@ public class Parser {
         map.put("caption", tagsMap.get("c#"));
 
         // Optional location tag if provided
-        if (tagsMap.containsKey("l#")) {
-            map.put("location", tagsMap.get("l#"));
-        }
+//        if (tagsMap.containsKey("l#")) {
+//            System.out.println(tagsMap.get("l#"));
+//            map.put("location", tagsMap.get("l#"));
+//        }
 
         // Only check required tags
         if (map.get("filepath") == null || map.get("photoname") == null || map.get("caption") == null) {

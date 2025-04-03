@@ -1,5 +1,6 @@
 package photo;
 
+import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,6 +13,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Window;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
@@ -111,7 +113,7 @@ public class PhotoPrinter {
 
     // Updated main method for testing purposes.
     // Note: In production, you would invoke PhotoPrinter from another class rather than using main here.
-    public static void main(String[] args) throws TravelDiaryException {
+    public static void main(String[] args) throws TravelDiaryException, ImageProcessingException, IOException {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
         String filePath = "./data/photos/sample1.jpg";

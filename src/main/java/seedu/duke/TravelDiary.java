@@ -1,5 +1,6 @@
 package seedu.duke;
 
+import com.drew.imaging.ImageProcessingException;
 import command.Command;
 import command.CommandFactory;
 import exception.MissingCompulsoryParameter;
@@ -16,6 +17,7 @@ import exception.InvalidIndexException;
 import exception.CommandNotRecogniseException;
 import exception.TripNotSelectedException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -92,6 +94,8 @@ public class TravelDiary {
         } catch (TravelDiaryException |
                  NumberFormatException |
                  MissingCompulsoryParameter |
+                 ImageProcessingException |
+                 IOException |
                  TripNotSelectedException e) {
             ui.showToUser(e.getMessage());
             return false;

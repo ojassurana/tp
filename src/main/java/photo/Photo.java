@@ -1,6 +1,9 @@
 package photo;
 
+import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -24,7 +27,7 @@ public class Photo {
      * The location and coordinates are extracted from the photo file via PhotoMetadataExtractor.
      */
     public Photo(String filePath, String photoName, String caption, LocalDateTime datetime)
-            throws TravelDiaryException {
+            throws TravelDiaryException, IOException, ImageProcessingException {
         if (filePath == null || photoName == null || caption == null) {
             throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
                     "n# (photoname), c# (caption).");
@@ -55,7 +58,7 @@ public class Photo {
     }
 
     // Overloaded constructor without datetime parameter.
-    public Photo(String filePath, String photoName, String caption) throws TravelDiaryException {
+    public Photo(String filePath, String photoName, String caption) throws TravelDiaryException, ImageProcessingException, IOException {
         this(filePath, photoName, caption, null);
     }
 

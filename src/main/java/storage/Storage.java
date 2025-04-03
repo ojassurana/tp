@@ -1,5 +1,6 @@
 package storage;
 
+import com.drew.imaging.ImageProcessingException;
 import trip.Trip;
 import trip.TripManager;
 import photo.Photo;
@@ -235,7 +236,7 @@ public class Storage {
                         caption
                 );
             }
-        } catch (TravelDiaryException e) {
+        } catch (TravelDiaryException | ImageProcessingException | IOException e) {
             throw new PhotoLoadException(
                     parts.length > 2 ? decodeString(parts[2]) : "unknown",
                     parts.length > 1 ? decodeString(parts[1]) : "unknown",

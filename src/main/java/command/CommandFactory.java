@@ -26,7 +26,7 @@ public class CommandFactory {
             return new ListCommand();
         }
         if ("delete".equals(cmd)) {
-            int index = Integer.parseInt(parsedCommand.get("index"));
+            int index = Integer.parseInt(parsedCommand.get("index")) - 1;
             return new DeleteCommand(index); // Insert index in
         }
 
