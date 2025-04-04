@@ -13,6 +13,21 @@ Travel Diary consists of two main pages:
 
 ---
 
+## Quick Start
+1. Ensure you have Java 17 or later installed on your computer.
+2. Download the latest `.jar` file for Travel Diary.
+3. Open a terminal, navigate to the folder containing the `.jar` file, and run the application using the following command:
+   ```
+   java -jar Travel_Diary.jar
+   ```
+4. Start using the commands listed below.
+
+## Viewing Help: `help`
+Displays information about available commands in current page.
+```sh 
+help
+```
+
 ## Exiting the Application
 
 To exit Travel Diary, use the following command:
@@ -182,7 +197,12 @@ list
 	4) Mirror (Singapore, Singapore) 2024-12-21 4:19AM 
 		mirror mirror on the wall
 ```
-
+### Closing a Photo: `close`
+Closes the currently opened photo.
+- **Format:**:
+```sh
+close
+```
 ---
 
 ## Navigation
@@ -195,3 +215,38 @@ To return to the main menu:
 menu
 ```
 
+## Storage
+Trip data is automatically saved to a local file after every change. No manual saving is required.
+
+### File Location
+Data is stored in `/data/travel_diary.txt` within the application directory.
+
+### Editing the Data File
+Advanced users can modify the JSON file directly.  
+⚠️ **Warning**: Editing the file incorrectly may cause data loss or unexpected behavior.
+
+## Command Summary
+
+### General Commands
+| Action            | Format                      |
+|------------------|---------------------------|
+| View Help        | `help`                     |
+| Exit Application | `bye`                      |
+| Return to Menu   | `menu`                     |
+
+### Managing Trips
+| Action       | Format                                   |
+|-------------|------------------------------------------|
+| Add Trip    | `add_trip n#NAME d#DESCRIPTION`         |
+| List Trips  | `list`                                  |
+| Select Trip | `select INDEX`                          |
+| Delete Trip | `delete INDEX`                          |
+
+### Managing Photos
+| Action        | Format                                                  |
+|--------------|----------------------------------------------------------|
+| Add Photo    | `add_photo f#FILE_PATH n#PHOTO_NAME c#CAPTION`          |
+| List Photos  | `list`                                                   |
+| Select Photo | `select INDEX`                                           |
+| Delete Photo | `delete INDEX`                                           |
+| Close Photo  | `close`                                                  |
