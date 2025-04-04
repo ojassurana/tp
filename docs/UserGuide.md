@@ -9,7 +9,16 @@ Travel Diary consists of two main pages:
 1. **Trip Page**: The main page where users can manage trips.
 2. **Photo Page**: A secondary page accessed after selecting a trip, where users can manage photos.
 
+## Additional Features
 
+### Command Overview
+The application uses a command pattern to execute various actions. Commands like `AddPhotoCommand`, `AddTripCommand`, and `HelpCommand` are available to perform specific tasks. Use the `help` command to view all available commands.
+
+### Error Handling
+The application includes robust error handling with custom exceptions such as `MissingTagsException` and `StorageException`. If you encounter an error, refer to the error message for guidance on resolving the issue.
+
+### Data Storage
+All data is managed by the `Storage` class, ensuring that your trips and photos are saved and loaded efficiently. Make sure to save your work frequently to avoid data loss.
 
 ---
 
@@ -78,7 +87,7 @@ delete 2
 
 ### Listing All Trips
 
-Shows a list of all trips and prints each trip’s name.
+Shows a list of all trips and prints each trip's name.
 
 #### Format:
 
@@ -172,7 +181,7 @@ delete 2
 
 ### Listing All Photos
 
-Shows a list of all photos in the selected trip’s folder.
+Shows a list of all photos in the selected trip's folder.
 
 #### Format:
 
