@@ -1,0 +1,11 @@
+@startuml
+class Storage {
+    + saveTasks(trips, filePath)
+    + loadTrips(tripManager, filePath, silentMode)
+    + loadTrips(tripManager, filePath)
+}
+
+Storage -> StorageWriter : uses
+Storage -> StorageReader : uses
+
+@enduml

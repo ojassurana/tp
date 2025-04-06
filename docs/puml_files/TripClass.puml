@@ -1,0 +1,11 @@
+@startuml Trip
+class Trip {
+    - String name
+    - String description
+    - Album album
+    + Trip(String name, String description) throws TravelDiaryException
+    + String getAlbumDetails()
+    + Album getAlbum()
+    + String toString()
+}
+@enduml

@@ -1,0 +1,52 @@
+@startuml TravelDiarySequenceDiagram
+
+actor User
+participant TravelDiary as Main
+participant Ui
+participant Parser
+participant CommandFactory
+participant "Command\nImplementation" as Command
+participant TripManager
+participant Storage
+
+User -> Ui : enters command
+activate Ui
+Ui -> Main : passes user input
+activate Main
+Main -> Parser : parse command
+activate Parser
+Parser --> Main : return command details map
+deactivate Parser
+
+Main -> CommandFactory : getCommand(parsedCommand, fsmValue)
+activate CommandFactory
+CommandFactory --> Main : return Command instance
+deactivate CommandFactory
+
+Main -> Command : execute(tripManager, ui, fsmValue)
+activate Command
+Command -> TripManager : execute command-specific operations
+activate TripManager
+TripManager --> Command : return operation results
+deactivate TripManager
+
+Command -> Ui : show results
+activate Ui
+Ui --> Command :
+deactivate Ui
+
+Command --> Main : return updated fsmValue
+deactivate Command
+
+Main -> Storage : saveTasks(tripManager.getTrips(), FILE_PATH)
+activate Storage
+Storage --> Main :
+deactivate Storage
+
+Main --> Ui : continue command loop
+deactivate Main
+
+Ui --> User : show prompt for next command
+deactivate Ui
+
+@enduml
