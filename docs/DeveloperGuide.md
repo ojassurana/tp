@@ -56,7 +56,7 @@ The main responsibilities of the Storage component are:
 ##### Saving Data
 The saving process converts in-memory objects into a text representation and writes them to a file. The `saveTasks` method handles this process.
 
-![Sequence diagram for saving data](StorageSaveTrip.png)
+![Sequence diagram for saving data](puml_pics/StorageSaveTrip.png)
 
 The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
 
@@ -65,10 +65,32 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 3. For each Photo in the Album, its details are formatted with the "P" marker
 4. The formatted lines are written to the file
 
+##### Parsing Input 
+The parsing process convert input and return hashmap which will be processed by CommandFactory.
+
+![Sequence diagram for parsing data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/Parser%20sequence%20diagram.png)
+
+The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+
+1. The parsing will be split by space and tags
+2. The return value for this parsing will be a hashmap <String, String> 
+3. The hashmap will be process to CommandFactory which will return the corresponding command
+
+##### Command Sequence
+The hashmap will be process based on its Command key value in the hashmap
+
+![Sequence diagram for command process](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/command%20sequence%20diagram.png)
+
+The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+
+1. The hashmap will always have a key `"command"` 
+2. The value of hashmap.get(`"command"`) will be the commandName eg. `"list"`  
+3. This value will be used to get the corresponding command eg. `ListCommand`
+
 ##### Loading Data
 The loading process reads the text file line by line and reconstructs the in-memory objects. The `loadTrips` method handles this process.
 
-![Sequence diagram for loading data](StorageLoadTrip.png)
+![Sequence diagram for loading data](puml_pics/StorageLoadTrip.png)
 
 The sequence diagram above shows how the `loadTrips` method works:
 
@@ -99,12 +121,42 @@ The component implements a comprehensive exception hierarchy to handle various e
 
 These specialized exceptions provide detailed information about what went wrong and where, making debugging easier.
 
-### PhotoPrinter
-![PhotoPrinter](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/16bbdd2e8a63af5e7aecbf1fc662e6bd7f0c7c35/photo_printerdraft.png)
+### Photo
+![Photo](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/photo.png)
 ####
-- Creates a **PhotoFrame** for displaying a **Photo**.
-- Displays photos with captions, locations, and timestamps.
-- Depends on **PhotoFrame** to handle the graphical display.
-- Depends on **Photo** for retrieving image data and metadata.
+- Stores image data with file paths and captions.
+
+- Extracts metadata from image files using PhotoMetadataExtractor.
+
+- Links each photo to a specific Location.
+
+- Supports comparison of photos by datetime using PhotoDateTimeComparator.
+
+- Can be displayed using PhotoPrinter.
+
+
+
+### Add Photo Process Sequence Diagram
+![Add Photo Process Sequence Diagram](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/team/AddPhotoProcess.png)
+####
+
+- AddPhotoCommand calls execute(tripManager, ui, fsmValue).
+
+- TripManager getSelectedTrip() retrieves the current trip and its album.
+
+- Album addPhoto(filepath, photoname, caption) creates a new Photo.
+
+- Photo#extractData(filepath, datetime) extracts metadata.
+
+- If metadata includes coordinates, a Location object is created.
+
+- The photo is added to the album's list.
+
+### Parser
+![Parser](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/parser_class_diagram.png)
+####
+- Contains static classes
+- Parse input based on tags
+- Return hashmap based on command name and tags
 
 

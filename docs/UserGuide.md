@@ -9,9 +9,33 @@ Travel Diary consists of two main pages:
 1. **Trip Page**: The main page where users can manage trips.
 2. **Photo Page**: A secondary page accessed after selecting a trip, where users can manage photos.
 
+## Additional Features
 
+### Command Overview
+The application uses a command pattern to execute various actions. Commands like `AddPhotoCommand`, `AddTripCommand`, and `HelpCommand` are available to perform specific tasks. Use the `help` command to view all available commands.
+
+### Error Handling
+The application includes robust error handling with custom exceptions such as `MissingTagsException` and `StorageException`. If you encounter an error, refer to the error message for guidance on resolving the issue.
+
+### Data Storage
+All data is managed by the `Storage` class, ensuring that your trips and photos are saved and loaded efficiently. Make sure to save your work frequently to avoid data loss.
 
 ---
+
+## Quick Start
+1. Ensure you have Java 17 or later installed on your computer.
+2. Download the latest `.jar` file for Travel Diary.
+3. Open a terminal, navigate to the folder containing the `.jar` file, and run the application using the following command:
+   ```
+   java -jar Travel_Diary.jar
+   ```
+4. Start using the commands listed below.
+
+## Viewing Help: `help`
+Displays information about available commands in current page.
+```sh 
+help
+```
 
 ## Exiting the Application
 
@@ -34,14 +58,14 @@ Adds a new trip to the collection.
 #### Format:
 
 ```sh
-add_trip n#NAME d#DESCRIPTION l#LOCATION
+add_trip n#NAME d#DESCRIPTION
 ```
 
 #### Examples:
 
 ```sh
-add_trip n#2025 Great Barrier Reef d#Summer break with family l#Australia
-add_trip n#2025 Kyoto Tour d#Winter exchange l#Japan, Kyoto
+add_trip n#2025 Great Barrier Reef d#Summer break with family
+add_trip n#2025 Kyoto Tour d#Winter exchange
 ```
 
 ### Deleting a Trip
@@ -63,7 +87,7 @@ delete 2
 
 ### Listing All Trips
 
-Shows a list of all trips and prints each trip’s name.
+Shows a list of all trips and prints each trip's name.
 
 #### Format:
 
@@ -74,9 +98,12 @@ trip
 #### Example Output:
 
 ```
-Trip to Bali
-Trip to SG
-Summer break with family
+*********
+Trip Page
+*********
+Enter: list
+1: Hong Kong Trip
+		hk with my frens~!!~ (2024-11-15 3:00AM - 2024-12-21 12:19PM)
 ```
 
 ### Selecting a Trip
@@ -92,8 +119,8 @@ trip [ID]
 #### Examples:
 
 ```sh
-trip 1
-trip 2
+select 1
+select 2
 ```
 
 ---
@@ -107,14 +134,14 @@ After selecting a trip, users can add a new photo to the trip.
 #### Format:
 
 ```sh
-add_photo f#FILENAME n#PHOTONAME c#CAPTION l#LOCATION
+add_photo f#FILENAME n#PHOTONAME c#CAPTION
 ```
 
 #### Examples:
 
 ```sh
-add_photo f#desktop/bali.jpg n#Dog c#Wow l#Nusa Penida
-add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun l#Phi Phi
+add_photo f#desktop/bali.jpg n#Dog c#Wow
+add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 ```
 
 ### Selecting a Photo
@@ -154,7 +181,7 @@ delete 2
 
 ### Listing All Photos
 
-Shows a list of all photos in the selected trip’s folder.
+Shows a list of all photos in the selected trip's folder.
 
 #### Format:
 
@@ -165,11 +192,26 @@ list
 #### Example Output:
 
 ```
-Lunch in Bali
-Bali temple
-Beach photo
-```
+	Here are all your photos:
 
+	1) AIRPORT (Tung Chung, Hong Kong, China) 2024-11-14 7:00PM 
+		Just landed in HK!
+				|	11.0 km
+	2) Olaf (Hong Kong Disneyland Resort, Hong Kong, China) 2024-11-15 9:16PM 
+		i saw olaf?
+				|	2584.0 km
+	3) SINGAPORE RAIN! (Singapore, Singapore) 2024-12-20 8:19PM 
+		raining in singapore.
+				|	0.0 km
+	4) Mirror (Singapore, Singapore) 2024-12-21 4:19AM 
+		mirror mirror on the wall
+```
+### Closing a Photo: `close`
+Closes the currently opened photo.
+- **Format:**:
+```sh
+close
+```
 ---
 
 ## Navigation
@@ -182,3 +224,38 @@ To return to the main menu:
 menu
 ```
 
+## Storage
+Trip data is automatically saved to a local file after every change. No manual saving is required.
+
+### File Location
+Data is stored in `/data/travel_diary.txt` within the application directory.
+
+### Editing the Data File
+Advanced users can modify the JSON file directly.  
+⚠️ **Warning**: Editing the file incorrectly may cause data loss or unexpected behavior.
+
+## Command Summary
+
+### General Commands
+| Action            | Format                      |
+|------------------|---------------------------|
+| View Help        | `help`                     |
+| Exit Application | `bye`                      |
+| Return to Menu   | `menu`                     |
+
+### Managing Trips
+| Action       | Format                                   |
+|-------------|------------------------------------------|
+| Add Trip    | `add_trip n#NAME d#DESCRIPTION`         |
+| List Trips  | `list`                                  |
+| Select Trip | `select INDEX`                          |
+| Delete Trip | `delete INDEX`                          |
+
+### Managing Photos
+| Action        | Format                                                  |
+|--------------|----------------------------------------------------------|
+| Add Photo    | `add_photo f#FILE_PATH n#PHOTO_NAME c#CAPTION`          |
+| List Photos  | `list`                                                   |
+| Select Photo | `select INDEX`                                           |
+| Delete Photo | `delete INDEX`                                           |
+| Close Photo  | `close`                                                  |

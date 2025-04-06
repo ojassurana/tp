@@ -1,0 +1,54 @@
+@startuml
+actor User
+
+
+participant ":AddPhotoCommand" as AddPhotoCommand
+participant ":Trip" as Trip
+participant ":TripManager" as TripManager
+participant ":Album" as Album
+participant ":Photo" as Photo
+participant ":PhotoMetadataExtractor" as PhotoMetadataExtractor
+participant ":Metadata" as Metadata
+participant ":Location" as location
+
+User     -> AddPhotoCommand: AddPhotoCommand(filepath, photoname, caption)
+activate AddPhotoCommand
+
+AddPhotoCommand -> AddPhotoCommand: execute(tripManager, ui, fsmValue)
+alt TripManager is null
+    AddPhotoCommand -> AddPhotoCommand: log("TripManager is null")
+    AddPhotoCommand -> AddPhotoCommand: throw TravelDiaryException("TripManager cannot be null")
+else TripManager is not null
+    AddPhotoCommand -> TripManager: getSelectedTrip()
+    activate TripManager
+    TripManager -> Trip: getAlbum()
+    activate Trip
+
+    Trip -> Album: addPhoto(filepath, photoname, caption)
+    activate Album
+
+    Album -> Photo: new Photo(filepath, photoname, caption)
+    activate Photo
+    Photo -> PhotoMetadataExtractor: extractData(filepath, datetime)
+    activate PhotoMetadataExtractor
+    PhotoMetadataExtractor -> Metadata: readMetadata(imageFile)
+    deactivate PhotoMetadataExtractor
+
+    Photo -> Location: fromCoordinates(latitude, longitude)
+    activate Location
+    deactivate Location
+
+    Album -> Album: photos.add(new Photo)
+    deactivate Photo
+    deactivate Album
+
+    TripManager -> TripManager: addTrip(name, description)
+    activate TripManager
+    TripManager -> Trip: new Trip(name, description)
+    deactivate Trip
+    deactivate TripManager
+
+end
+deactivate AddPhotoCommand
+
+@enduml
