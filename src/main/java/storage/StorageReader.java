@@ -6,7 +6,6 @@ import exception.FileFormatException;
 import exception.PhotoLoadException;
 import exception.TravelDiaryException;
 import exception.TripLoadException;
-import photo.Photo;
 import trip.Trip;
 import trip.TripManager;
 
