@@ -1,0 +1,28 @@
+@startuml
+actor User
+
+participant StorageReader
+participant TripManager
+participant Trip
+participant Album
+participant Photo
+participant BufferedReader
+participant FileReader
+participant FileFormatException
+
+User -> StorageReader : readTripsFromFile(tripManager, dataFile, filePath)
+StorageReader -> BufferedReader : new BufferedReader(FileReader(dataFile))
+StorageReader -> StorageReader : processFileLines(reader, tripManager, filePath)
+StorageReader -> BufferedReader : readLine()
+StorageReader -> StorageReader : splitByDelimiter(line, DELIMITER)
+StorageReader -> StorageReader : createTrip(parts, tripManager, filePath)
+StorageReader -> TripManager : addTripSilently(name, description)
+StorageReader -> StorageReader : addPhotoToTrip(parts, currentTrip, filePath, lineNumber)
+StorageReader -> Photo : createPhoto(photoPath, photoName, caption, photoTime)
+StorageReader -> Album : addPhoto(photo)
+StorageReader -> StorageReader : validateAlbumMarker(parts, filePath)
+StorageReader -> StorageReader : extractPhotoTime(parts)
+StorageReader -> TripManager : restoreSilentMode()
+StorageReader -> FileFormatException : throwException(filePath, line)
+
+@enduml

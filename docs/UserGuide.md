@@ -92,7 +92,7 @@ Shows a list of all trips and prints each trip's name.
 #### Format:
 
 ```sh
-trip
+list
 ```
 
 #### Example Output:
@@ -113,7 +113,7 @@ Select an existing trip to perform operations on it.
 #### Format:
 
 ```sh
-trip [ID]
+select [ID]
 ```
 
 #### Examples:

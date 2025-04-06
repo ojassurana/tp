@@ -1,0 +1,23 @@
+@startuml
+actor User
+
+participant StorageWriter
+participant BufferedWriter
+participant FileWriter
+participant Trip
+participant Photo
+
+User -> StorageWriter : writeTripsToFile(trips, dataFile, filePath)
+StorageWriter -> BufferedWriter : new BufferedWriter(FileWriter(dataFile))
+StorageWriter -> StorageWriter : writeTrip(writer, trip, filePath)
+StorageWriter -> StorageWriter : formatTripLine(trip)
+StorageWriter -> BufferedWriter : write(formattedTripLine)
+StorageWriter -> StorageWriter : writeAlbum(writer, trip.album)
+StorageWriter -> BufferedWriter : write(formattedAlbumLine)
+StorageWriter -> StorageWriter : writePhoto(writer, photo)
+StorageWriter -> StorageWriter : formatPhotoLine(photo)
+StorageWriter -> BufferedWriter : write(formattedPhotoLine)
+BufferedWriter -> StorageWriter : flush()
+StorageWriter -> BufferedWriter : close()
+
+@enduml

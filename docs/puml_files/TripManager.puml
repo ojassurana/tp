@@ -1,0 +1,15 @@
+@startuml
+class TripManager {
+    - trips: List<Trip>
+    + addTrip(name: String, description: String): void
+    + addTripSilently(name: String, description: String): Trip
+    + setSelectedTrip(selectedTrip: Trip): void
+    + deleteTrip(index: int): void
+    + viewTrips(): void
+    + selectTrip(index: int): void
+    + getSelectedTrip(): Trip
+    + getTrips(): List<Trip>
+}
+
+TripManager --> Trip: manages >
+@enduml
