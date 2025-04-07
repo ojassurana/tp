@@ -1,5 +1,4 @@
 # Developer Guide
-
 ## Setting up, getting started
 
 ### Prerequisites
