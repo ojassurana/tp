@@ -1,6 +1,5 @@
-import photo.Photo;
-import photo.PhotoFrame;
-import photo.PhotoPrinter;
+package photo;
+
 import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
