@@ -1,5 +1,6 @@
 package command;
 
+import exception.DuplicateNameException;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import trip.TripManager;
@@ -49,7 +50,7 @@ public class AddTripCommand extends Command {
      */
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
-            TravelDiaryException, MissingCompulsoryParameter {
+            TravelDiaryException, MissingCompulsoryParameter, DuplicateNameException {
         logger.info("Executing AddTripCommand");
 
         if (tripManager == null) {
@@ -59,7 +60,6 @@ public class AddTripCommand extends Command {
         if (ui == null) {
             logger.warning("UI instance is null");
         }
-
         tripManager.addTrip(this.name, this.description);
         this.fsmValue = fsmValue;
 

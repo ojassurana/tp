@@ -1,6 +1,8 @@
 package trip;
 
+import exception.DuplicateNameException;
 import exception.IndexOutOfRangeException;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ class TripManagerTest {
     }
 
     @Test
-    void testDeleteTrip() throws TravelDiaryException {
+    void testDeleteTrip() throws TravelDiaryException, DuplicateNameException, MissingCompulsoryParameter {
         tripManager.addTrip("Japan Trip", "Skiing in Hokkaido");
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> tripManager.deleteTrip(0));
         org.junit.jupiter.api.Assertions.assertEquals(0, tripManager.getTrips().size());
@@ -37,7 +39,7 @@ class TripManagerTest {
     }
 
     @Test
-    void testSelectTrip() throws TravelDiaryException {
+    void testSelectTrip() throws TravelDiaryException, DuplicateNameException, MissingCompulsoryParameter {
         tripManager.addTrip("Japan Trip", "Skiing in Hokkaido");
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> tripManager.selectTrip(0));
         org.junit.jupiter.api.Assertions.assertEquals("Japan Trip", tripManager.getSelectedTrip().name);
@@ -50,7 +52,7 @@ class TripManagerTest {
     }
 
     @Test
-    void testAddTripSilently() throws TravelDiaryException {
+    void testAddTripSilently() throws TravelDiaryException, MissingCompulsoryParameter {
         Trip trip = tripManager.addTripSilently("Korea Trip", "Cherry Blossoms in Seoul");
         org.junit.jupiter.api.Assertions.assertNotNull(trip);
         org.junit.jupiter.api.Assertions.assertEquals("Korea Trip", trip.name);
@@ -58,7 +60,7 @@ class TripManagerTest {
     }
 
     @Test
-    void testSilentModePreventsOutput() throws TravelDiaryException {
+    void testSilentModePreventsOutput() throws TravelDiaryException, DuplicateNameException, MissingCompulsoryParameter {
         tripManager.setSilentMode(true);
         tripManager.addTrip("Bali Trip", "Relaxing by the beach");
         // We assume no output is shown in silent mode, but we can still check the list size
@@ -66,7 +68,7 @@ class TripManagerTest {
     }
 
     @Test
-    void testToStringNotEmptyAfterAdd() throws TravelDiaryException {
+    void testToStringNotEmptyAfterAdd() throws TravelDiaryException, DuplicateNameException, MissingCompulsoryParameter {
         tripManager.addTrip("Italy Trip", "Exploring Rome");
         String output = tripManager.toString();
         org.junit.jupiter.api.Assertions.assertTrue(output.contains("Italy Trip"));

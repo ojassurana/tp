@@ -1,6 +1,7 @@
 package album;
 
 import com.drew.imaging.ImageProcessingException;
+import exception.MetadataFilepathNotFound;
 import exception.NoMetaDataException;
 import exception.TravelDiaryException;
 import exception.InvalidIndexException;
@@ -60,7 +61,7 @@ public class Album {
      * @throws NoMetaDataException if the photo has no metadata
      */
     public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
-            throws TravelDiaryException, ImageProcessingException, IOException, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException {
         photos.add(new Photo(filePath, photoName, caption, datetime));
         if (!silentMode) {
             System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
@@ -80,7 +81,7 @@ public class Album {
      * @throws NoMetaDataException if the photo has no metadata
      */
     public void addPhoto(String filePath, String photoName, String caption)
-            throws TravelDiaryException, ImageProcessingException, IOException, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, NoMetaDataException, MetadataFilepathNotFound {
         photos.add(new Photo(filePath, photoName, caption));
         if (!silentMode) {
             System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);

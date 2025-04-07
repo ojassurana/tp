@@ -1,11 +1,7 @@
 package storage;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.FileFormatException;
-import exception.FileReadException;
-import exception.FileWriteException;
-import exception.NoMetaDataException;
-import exception.TravelDiaryException;
+import exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -58,7 +54,7 @@ class StorageTest {
 
     @Test
     void saveAndLoadTrips() throws TravelDiaryException, FileWriteException, FileReadException, FileFormatException,
-            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException {
+            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException, DuplicateNameException, MissingCompulsoryParameter {
         // Create some test trips
         tripManager.addTrip("Test Trip 1", "Test Description 1");
         tripManager.addTrip("Test Trip 2", "Test Description 2");
@@ -186,7 +182,7 @@ class StorageTest {
     }
 
     @Test
-    void saveTripsToNonExistentParentDirectory() throws FileWriteException, TravelDiaryException {
+    void saveTripsToNonExistentParentDirectory() throws FileWriteException, TravelDiaryException, DuplicateNameException, MissingCompulsoryParameter {
         // Create a file path with a non-existent parent directory
         String nonExistentParentPath = tempDir.resolve("nonexistentParentDir/test_trips.dat").toString();
 

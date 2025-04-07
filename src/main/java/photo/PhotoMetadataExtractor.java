@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import exception.MetadataFilepathNotFound;
 import exception.NoDateTimeMetaDataException;
 import exception.NoGPSMetaDataException;
 import exception.NoMetaDataException;
@@ -39,37 +40,42 @@ public class PhotoMetadataExtractor {
      *
      * @param filepath the path to the image file
      */
-    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException, NoMetaDataException {
+    public PhotoMetadataExtractor(String filepath) throws ImageProcessingException, NoMetaDataException,
+            MetadataFilepathNotFound {
         File imageFile = new File(filepath);
-        Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
-        ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
+            ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
-        if (exifDirectory != null) {
-            // Extract original datetime from metadata
-            Date originalDate = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-            if (originalDate != null) {
-                LocalDateTime localDate = originalDate.toInstant()
-                        .atZone(ZoneId.of("Asia/Singapore"))
-                        .toLocalDateTime();
-                this.datetime = localDate;
-            } else {
-                throw new NoDateTimeMetaDataException();
-            }
+            if (exifDirectory != null) {
+                // Extract original datetime from metadata
+                Date originalDate = exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                if (originalDate != null) {
+                    LocalDateTime localDate = originalDate.toInstant()
+                            .atZone(ZoneId.of("Asia/Singapore"))
+                            .toLocalDateTime();
+                    this.datetime = localDate;
+                } else {
+                    throw new NoDateTimeMetaDataException();
+                }
 
-            GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-            if (gpsDirectory != null
-                    && gpsDirectory.containsTag(GpsDirectory.TAG_LATITUDE)
-                    && gpsDirectory.containsTag(GpsDirectory.TAG_LONGITUDE)) {
-                double extractedLat = gpsDirectory.getGeoLocation().getLatitude();
-                double extractedLon = gpsDirectory.getGeoLocation().getLongitude();
-                this.latitude = extractedLat;
-                this.longitude = extractedLon;
-                this.location = getLocationFromCoordinates(extractedLat, extractedLon);
+                GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+                if (gpsDirectory != null
+                        && gpsDirectory.containsTag(GpsDirectory.TAG_LATITUDE)
+                        && gpsDirectory.containsTag(GpsDirectory.TAG_LONGITUDE)) {
+                    double extractedLat = gpsDirectory.getGeoLocation().getLatitude();
+                    double extractedLon = gpsDirectory.getGeoLocation().getLongitude();
+                    this.latitude = extractedLat;
+                    this.longitude = extractedLon;
+                    this.location = getLocationFromCoordinates(extractedLat, extractedLon);
+                } else {
+                    throw new NoGPSMetaDataException();
+                }
             } else {
-                throw new NoGPSMetaDataException();
+                throw new NoMetaDataException();
             }
-        } else{
-            throw new NoMetaDataException();
+        } catch (IOException e) {
+            throw new MetadataFilepathNotFound(filepath);
         }
     }
 

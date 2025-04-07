@@ -7,6 +7,9 @@ import exception.NoMetaDataException;
 import exception.PhotoLoadException;
 import exception.TravelDiaryException;
 import exception.TripLoadException;
+import exception.MetadataFilepathNotFound;
+import exception.DuplicateNameException;
+import exception.MissingCompulsoryParameter;
 import trip.Trip;
 import trip.TripManager;
 
@@ -42,7 +45,7 @@ public class StorageReader {
      * Process all lines in the file
      */
     private static void processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
-            throws IOException, FileFormatException, NoMetaDataException {
+            throws FileFormatException, IOException , NoMetaDataException {
         List<Trip> trips = new ArrayList<>();
         String line;
         Trip currentTrip = null;
@@ -196,14 +199,16 @@ public class StorageReader {
         validateTripFormat(parts, filePath);
 
         try {
+            System.out.println(1);
             String name = StringEncoder.decodeString(parts[1]);
             String description = StringEncoder.decodeString(parts[2]);
+            System.out.println(2);
 
             // Use the existing addTripSilently method to respect silent mode flag
             Trip newTrip = tripManager.addTripSilently(name, description);
             ensureTripHasAlbum(newTrip);
             return newTrip;
-        } catch (TravelDiaryException e) {
+        } catch (TravelDiaryException|MissingCompulsoryParameter|DuplicateNameException e) {
             String tripName = "unknown";
             if (parts.length > 1) {
                 tripName = StringEncoder.decodeString(parts[1]);
@@ -246,7 +251,7 @@ public class StorageReader {
             addPhotoWithSilentMode(currentTrip, photoPath, photoName, caption, photoTime);
         } catch (DateTimeParseException e) {
             throw new FileFormatException(filePath, lineNumber, e);
-        } catch (TravelDiaryException | ImageProcessingException | IOException e) {
+        } catch (TravelDiaryException | ImageProcessingException | MetadataFilepathNotFound e) {
             String photoName = extractPhotoNameForError(parts, 2);
             String photoPath = extractPhotoNameForError(parts, 1);
             throw new PhotoLoadException(photoName, photoPath, e);
@@ -258,7 +263,7 @@ public class StorageReader {
      */
     private static void addPhotoWithSilentMode(Trip trip, String photoPath, String photoName,
                                                String caption, LocalDateTime photoTime)
-            throws TravelDiaryException, ImageProcessingException, IOException, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException {
         // Get current album silent mode setting before adding photo
         boolean originalSilentMode = trip.album.isSilentMode();
         // Use silent mode during loading
