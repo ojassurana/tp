@@ -1,5 +1,37 @@
 # Travel Diary - User Guide
 
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Additional Features](#additional-features)
+   - [Command Overview](#command-overview)
+   - [Error Handling](#error-handling)
+   - [Data Storage](#data-storage)
+3. [Quick Start](#quick-start)
+4. [Viewing Help](#viewing-help-help)
+5. [Exiting the Application](#exiting-the-application)
+6. [Managing Trips](#managing-trips)
+   - [Adding a Trip](#adding-a-trip)
+   - [Deleting a Trip](#deleting-a-trip)
+   - [Listing All Trips](#listing-all-trips)
+   - [Selecting a Trip](#selecting-a-trip)
+7. [Managing Photos](#managing-photos)
+   - [Adding a Photo](#adding-a-photo)
+   - [Selecting a Photo](#selecting-a-photo)
+   - [Deleting a Photo](#deleting-a-photo)
+   - [Listing All Photos](#listing-all-photos)
+   - [Closing a Photo: `close`](#closing-a-photo-close)
+8. [Navigation](#navigation)
+   - [Returning to Main Menu](#returning-to-main-menu)
+9. [Storage](#storage)
+   - [File Location](#file-location)
+   - [Editing the Data File](#editing-the-data-file)
+10. [Command Summary](#command-summary)
+    - [General Commands](#general-commands)
+    - [Managing Trips](#managing-trips-1)
+    - [Managing Photos](#managing-photos-1)
+
+---
+
 ## Introduction
 
 Travel Diary is a desktop app for managing trips and travel memories, designed for use via a Command Line Interface (CLI). Travel Diary helps you log and organize trips, photos, and experiences more efficiently than traditional travel journaling apps.

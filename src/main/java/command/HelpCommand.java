@@ -94,9 +94,9 @@ public class HelpCommand extends Command {
         System.out.println("• The application automatically extracts date, time, and location from photos if possible");
 
         if (fsm == 0) {
-            System.out.println("  • Select a trip to add and manage photos within that trip");
+            System.out.println("• Select a trip to add and manage photos within that trip");
         } else if (fsm == 1) {
-            System.out.println("  • Use 'menu' to return to trip management");
+            System.out.println("• Use 'menu' to return to trip management");
         }
 
         System.out.println("==========================================");

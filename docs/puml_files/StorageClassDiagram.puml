@@ -1,11 +1,52 @@
 @startuml
 class Storage {
-    + saveTasks(trips, filePath)
-    + loadTrips(tripManager, filePath, silentMode)
-    + loadTrips(tripManager, filePath)
+    + {static} TRIP_MARKER: String
+    + {static} PHOTO_MARKER: String
+    + {static} ALBUM_MARKER: String
+    + {static} DELIMITER: String
+    + {static} LOGGER: Logger
+
+    + {static} saveTasks(trips: List<Trip>, filePath: String) throws FileWriteException
+    + {static} loadTrips(tripManager: TripManager, filePath: String, silentMode: boolean) throws FileReadException, FileFormatException
+    + {static} loadTrips(tripManager: TripManager, filePath: String) throws FileReadException, FileFormatException
+    - {static} validateFileFormat(dataFile: File, filePath: String) throws FileFormatException
+    - {static} ensureFileExists(dataFile: File, filePath: String): boolean
 }
 
-Storage -> StorageWriter : uses
-Storage -> StorageReader : uses
+class StorageWriter {
+    + {static} writeTripsToFile(trips: List<Trip>, dataFile: File, filePath: String) throws FileWriteException
+}
 
+class StorageReader {
+    + {static} readTripsFromFile(tripManager: TripManager, dataFile: File, filePath: String) throws FileFormatException
+}
+
+class TripManager {
+    + isSilentMode(): boolean
+    + setSilentMode(silentMode: boolean): void
+}
+
+class Trip {
+}
+
+class FileFormatException {
+}
+
+class FileReadException {
+}
+
+class FileWriteException {
+}
+
+Storage --> StorageWriter: uses
+Storage --> StorageReader: uses
+Storage --> TripManager: references
+Storage --> Trip: manages
+Storage ..> FileFormatException: throws
+Storage ..> FileReadException: throws
+Storage ..> FileWriteException: throws
+
+StorageWriter --> Trip: processes
+StorageReader --> TripManager: updates
+StorageReader --> Trip: creates
 @enduml
