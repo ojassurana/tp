@@ -1,0 +1,40 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+
+package ui {
+    class Ui {
+        - static final String SEPARATOR_LINE
+        - static final int PADDING
+        - static final String FILE_PATH
+        + static final String[] COMMAND_ARRAY
+        - final Scanner scanner
+
+        + Ui()
+        + String readInput()
+        + void showWelcome()
+        + void showLine()
+        + void showToUser(String message)
+        + void showFsmState(int fsmState)
+        + void showTripPage()
+        + void showPhotoPage()
+        + void showLogo()
+        + void close()
+    }
+}
+
+' Define external classes/interfaces
+class java.util.Scanner
+class java.io.File
+class java.io.FileNotFoundException
+package parser {
+    class Parser
+}
+
+' Define relationships
+Ui --> "1" java.util.Scanner : uses >
+Ui ..> java.io.File : creates >
+Ui ..> java.io.FileNotFoundException : catches >
+Ui ..> parser.Parser : uses >
+
+@enduml
