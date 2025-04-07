@@ -1,28 +1,54 @@
 @startuml
-actor User
-
+participant Storage
 participant StorageReader
 participant TripManager
 participant Trip
 participant Album
-participant Photo
 participant BufferedReader
-participant FileReader
 participant FileFormatException
+participant StringEncoder
 
-User -> StorageReader : readTripsFromFile(tripManager, dataFile, filePath)
-StorageReader -> BufferedReader : new BufferedReader(FileReader(dataFile))
-StorageReader -> StorageReader : processFileLines(reader, tripManager, filePath)
-StorageReader -> BufferedReader : readLine()
-StorageReader -> StorageReader : splitByDelimiter(line, DELIMITER)
-StorageReader -> StorageReader : createTrip(parts, tripManager, filePath)
-StorageReader -> TripManager : addTripSilently(name, description)
-StorageReader -> StorageReader : addPhotoToTrip(parts, currentTrip, filePath, lineNumber)
-StorageReader -> Photo : createPhoto(photoPath, photoName, caption, photoTime)
-StorageReader -> Album : addPhoto(photo)
-StorageReader -> StorageReader : validateAlbumMarker(parts, filePath)
-StorageReader -> StorageReader : extractPhotoTime(parts)
-StorageReader -> TripManager : restoreSilentMode()
-StorageReader -> FileFormatException : throwException(filePath, line)
+Storage -> StorageReader: readTripsFromFile(tripManager, dataFile, filePath)
+StorageReader -> BufferedReader: new BufferedReader(FileReader(dataFile))
+StorageReader -> StorageReader: processFileLines(reader, tripManager, filePath)
+
+loop while (line = reader.readLine()) != null
+    StorageReader -> BufferedReader: readLine()
+    StorageReader -> StorageReader: splitByDelimiter(line, DELIMITER)
+
+    alt marker == TRIP_MARKER
+        StorageReader -> StorageReader: processTripMarker(parts, tripManager, filePath, currentTrip, trips)
+        StorageReader -> StorageReader: validateTripFormat(parts, filePath)
+        StorageReader -> StringEncoder: decodeString(parts[1]) // name
+        StorageReader -> StringEncoder: decodeString(parts[2]) // description
+        StorageReader -> TripManager: addTripSilently(name, description)
+        StorageReader -> StorageReader: ensureTripHasAlbum(newTrip)
+
+    else marker == ALBUM_MARKER
+        StorageReader -> StorageReader: validateAlbumAndMarker(currentTrip, parts, filePath)
+
+    else marker == PHOTO_MARKER
+        StorageReader -> StorageReader: validatePhotoContext(currentTrip, filePath)
+        StorageReader -> StorageReader: validatePhotoLineFormat(parts, filePath)
+        StorageReader -> StringEncoder: decodeString(parts[1]) // photoPath
+        StorageReader -> StringEncoder: decodeString(parts[2]) // photoName
+        StorageReader -> StringEncoder: decodeString(parts[3]) // caption
+        StorageReader -> StorageReader: extractPhotoTime(parts)
+        StorageReader -> StorageReader: addPhotoWithSilentMode(currentTrip, photoPath, photoName, caption, photoTime)
+        StorageReader -> Album: setSilentMode(true)
+        alt photoTime != null
+            StorageReader -> Album: addPhoto(photoPath, photoName, caption, photoTime)
+        else
+            StorageReader -> Album: addPhoto(photoPath, photoName, caption)
+        end
+        StorageReader -> Album: setSilentMode(originalSilentMode)
+
+    else
+        StorageReader -> FileFormatException: new FileFormatException(filePath, "Unknown marker")
+    end
+end
+
+StorageReader -> StorageReader: addRemainingTrip(currentTrip, trips)
+StorageReader --> Storage: return trips
 
 @enduml

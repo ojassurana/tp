@@ -2,49 +2,43 @@
 
 ## Acknowledgements
 
-## Product scope
-### Target user profile
+## Setting up, getting started
 
-Roadtrippers, van lifers, backpackers, and long-distance drivers who want to document their journeys efficiently. These users value convenience, real-time tracking, and the ability to relive their trips through route history.
+### Prerequisites
 
+- **JDK 17**
+- **Gradle 7.6.2 or higher**
 
-### Value proposition
-The app enables roadtrippers to seamlessly track their journeys on the go. It automatically logs their geographical location, records mileage between stops, and helps them organize rest stops and key travel moments. By reducing manual input, it ensures that travelers can focus on their experience while still capturing essential trip details effortlessly.
+> ⚠️ **Caution:** Follow the steps in this guide **precisely**. Deviating from the instructions may result in setup failure.
+---
+### 1. Fork and Clone
+First, fork this repository to your GitHub account. Then, clone **your fork** to your local machine.
+---
+### 2. IntelliJ IDEA Setup (Highly Recommended)
+#### 2.1 Configure the JDK
 
-## User Stories
+Follow the guide below to ensure IntelliJ IDEA is properly configured to use **JDK 17**:
 
-| Version | As a ...      | I want to ...                                        | So that I can ...                                               |
-|---------|---------------|------------------------------------------------------|------------------------------------------------------------------|
-| v1.0    | new user      | see usage instructions                              | refer to them when I forget how to use the application          |
-| v1.0    | user          | add a trip with a name and description              | record and organize my travel plans                             |
-| v1.0    | user          | list all my trips                                   | view all the trips I’ve recorded                                |
-| v1.0    | user          | select a trip                                       | manage the photos associated with that trip                     |
-| v1.0    | user          | delete a trip                                       | remove trips I no longer want to keep                           |
-| v1.0    | user          | add a photo with details                            | store visual memories along with meaningful captions            |
-| v1.0    | user          | list all photos in a trip                           | review all my memories from a particular trip                   |
-| v1.0    | user          | view details of a selected photo                    | see information like location, time, and caption                |
-| v1.0    | user          | delete a photo from a trip                          | clean up photos I no longer want                                |
-| v1.0    | user          | return to the main menu                             | navigate easily back to manage other trips                      |
-| v2.0    | user          | get help on commands                                | learn how to use specific features                              |
-| v1.0    | user          | exit the application                                | close the program when I'm done                                 |
-| v2.0    | advanced user | access and edit the saved data file manually        | make bulk edits or backups directly from the storage file       |
-| v2.0    | user          | get notified about missing fields when adding items | fix input errors immediately and avoid confusion                |
+➡️ [se-edu/guides: IDEA - Configuring the JDK](https://se-education.org/guides/tutorials/intellijJdk.html)
 
-## Non-Functional Requirements
+---
 
-This application works on any computers that are Windows, macOS or Unix that has Java17.
+#### 2.2 Import the Project as a Gradle Project
 
-## Glossary
-* Trip - A user-defined journey or travel event that includes details such as start/end points, duration, and associated albums or photos.
-* Album - A collection of photos linked to a specific trip, used to organize visual memories captured during the journey.
-* Photo - An image file with metadata (e.g., caption, location, timestamp) that documents a specific moment within a trip.
-* PhotoFrame - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
-* TripManager - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
+Importing as a Gradle project is different from a normal Java project. Be sure to follow this guide carefully:
 
-## Instructions for manual testing
+➡️ [se-edu/guides: IDEA - Importing a Gradle Project](https://se-education.org/guides/tutorials/intellijImportGradleProject.html)
 
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+> ⚠️ **Note:** Importing a Gradle project requires different steps from importing a standard Java project. Do not skip this step.
 
+---
+
+### 3. Verify the Setup
+
+- Run `seedu.address.TravelDiary` and try out a few commands.
+- Run the tests and ensure **all tests pass**.
+
+✅ If both tasks succeed, your setup is complete!
 
 ## Design
 
@@ -301,4 +295,284 @@ The exception handling system addresses various error scenarios during file oper
 - The photo is added to the album's list.
 
 
+## Apendix: Requirements
+### Product scope
+#### Target user profile
 
+Roadtrippers, van lifers, backpackers, and long-distance drivers who want to document their journeys efficiently. These users value convenience, real-time tracking, and the ability to relive their trips through route history.
+
+
+#### Value proposition
+The app enables roadtrippers to seamlessly track their journeys on the go. It automatically logs their geographical location, records mileage between stops, and helps them organize rest stops and key travel moments. By reducing manual input, it ensures that travelers can focus on their experience while still capturing essential trip details effortlessly.
+
+### User Stories
+
+| Version | As a ...      | I want to ...                                        | So that I can ...                                               |
+|---------|---------------|------------------------------------------------------|------------------------------------------------------------------|
+| v1.0    | new user      | see usage instructions                              | refer to them when I forget how to use the application          |
+| v1.0    | user          | add a trip with a name and description              | record and organize my travel plans                             |
+| v1.0    | user          | list all my trips                                   | view all the trips I’ve recorded                                |
+| v1.0    | user          | select a trip                                       | manage the photos associated with that trip                     |
+| v1.0    | user          | delete a trip                                       | remove trips I no longer want to keep                           |
+| v1.0    | user          | add a photo with details                            | store visual memories along with meaningful captions            |
+| v1.0    | user          | list all photos in a trip                           | review all my memories from a particular trip                   |
+| v1.0    | user          | view details of a selected photo                    | see information like location, time, and caption                |
+| v1.0    | user          | delete a photo from a trip                          | clean up photos I no longer want                                |
+| v1.0    | user          | return to the main menu                             | navigate easily back to manage other trips                      |
+| v2.0    | user          | get help on commands                                | learn how to use specific features                              |
+| v1.0    | user          | exit the application                                | close the program when I'm done                                 |
+| v2.0    | advanced user | access and edit the saved data file manually        | make bulk edits or backups directly from the storage file       |
+| v2.0    | user          | get notified about missing fields when adding items | fix input errors immediately and avoid confusion                |
+
+### Non-Functional Requirements
+
+This application works on any computers that are Windows, macOS or Unix that has Java17.
+
+### Glossary
+* Trip - A user-defined journey or travel event that includes details such as start/end points, duration, and associated albums or photos.
+* Album - A collection of photos linked to a specific trip, used to organize visual memories captured during the journey.
+* Photo - An image file with metadata (e.g., caption, location, timestamp) that documents a specific moment within a trip.
+* PhotoFrame - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
+* TripManager - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
+
+## Appendix: Instructions for manual testing
+
+## Appendix: Instructions for Manual Testing
+
+These instructions provide a systematic approach to manually test the Travel Diary application. Each test case describes the steps to perform and the expected outcome.
+
+---
+
+### Launch and Shutdown
+
+#### Initial launch
+
+1. Download the jar file and copy it into an empty folder
+2. Run the command `java -jar Travel_Diary.jar` in your terminal or command prompt  
+   **Expected:** The CLI displays the welcome message and shows the Trip Page interface with empty trip list or sample trips
+
+#### Shutdown
+
+- Type `bye` and press Enter  
+  **Expected:** The application terminates and closes the terminal window or returns to command prompt
+
+---
+
+### Trip Management
+
+#### Adding a trip
+
+**Prerequisites:** Be on the Trip Page
+
+- **Test case:** `add_trip n#Bali Trip d#Summer vacation`  
+  **Expected:** A new trip is added. Success message shows the trip details. Trip list is updated with the new trip.
+
+- **Test case:** `add_trip n#Weekend Getaway`  
+  **Expected:** No trip is added. Error message indicates missing description tag.
+
+- **Test case:** `add_trip d#Solo trip`  
+  **Expected:** No trip is added. Error message indicates missing name tag.
+
+- **Other incorrect commands to try:** `add_trip`, `add_trip n#`, `add_trip d#`, `add_trip n# d#`  
+  **Expected:** Error messages explaining the correct format.
+
+#### Listing trips
+
+**Prerequisites:** At least one trip added
+
+- **Test case:** `list`  
+  **Expected:** All trips are displayed with their IDs, names, and brief descriptions.
+
+- **Test case:** Execute `list` after adding multiple trips  
+  **Expected:** The newly added trips appear in the list in the order they were added.
+
+#### Selecting a trip
+
+**Prerequisites:** List all trips using the `list` command. Multiple trips in the list.
+
+- **Test case:** `select 1`  
+  **Expected:** First trip is selected. Application navigates to the Photo Page. Trip details are shown at the top.
+
+- **Test case:** `select 0`  
+  **Expected:** No trip is selected. Error message indicates invalid index.
+
+- **Test case:** `select [index larger than list size]`  
+  **Expected:** No trip is selected. Error message indicates invalid index.
+
+- **Other incorrect commands to try:** `select`, `select x` (where x is not a number)  
+  **Expected:** Error messages explaining the correct format.
+
+#### Deleting a trip
+
+**Prerequisites:** List all trips using the `list` command. Multiple trips in the list.
+
+- **Test case:** `delete 1`  
+  **Expected:** First trip is deleted from the list. Success message shows deleted trip details.
+
+- **Test case:** `delete 0`  
+  **Expected:** No trip is deleted. Error message indicates invalid index.
+
+- **Test case:** `delete [index larger than list size]`  
+  **Expected:** No trip is deleted. Error message indicates invalid index.
+
+- **Other incorrect commands to try:** `delete`, `delete x` (where x is not a number)  
+  **Expected:** Error messages explaining the correct format.
+
+---
+
+### Photo Management
+
+#### Adding a photo
+
+**Prerequisites:** Select a trip and be on the Photo Page
+
+- **Test case:** `add_photo f#/path/to/existing/photo.jpg n#Beach Day c#Beautiful sunset`  
+  **Expected:** A new photo is added to the trip. Success message shows the photo details.
+
+- **Test case:** `add_photo f#/path/to/nonexistent/file.jpg n#Beach Day c#Beautiful sunset`  
+  **Expected:** No photo is added. Error message indicates file not found.
+
+- **Test case:** `add_photo n#Beach Day c#Beautiful sunset`  
+  **Expected:** No photo is added. Error message indicates missing file path tag.
+
+- **Other incorrect commands to try:** `add_photo`, `add_photo f#`, `add_photo n#`, `add_photo c#`  
+  **Expected:** Error messages explaining the correct format.
+
+#### Listing photos
+
+**Prerequisites:** Be on the Photo Page with at least one photo added
+
+- **Test case:** `list`  
+  **Expected:** All photos in the current trip are displayed with their IDs, names, captions, and locations.
+
+- **Test case:** Execute `list` after adding multiple photos  
+  **Expected:** The newly added photos appear in the list in the order they were added.
+
+#### Selecting a photo
+
+**Prerequisites:** List all photos using the `list` command. Multiple photos in the list.
+
+- **Test case:** `select 1`  
+  **Expected:** First photo is selected. Photo details are displayed, including name, caption, and location.
+
+- **Test case:** `select 0`  
+  **Expected:** No photo is selected. Error message indicates invalid index.
+
+- **Test case:** `select [index larger than list size]`  
+  **Expected:** No photo is selected. Error message indicates invalid index.
+
+- **Other incorrect commands to try:** `select`, `select x` (where x is not a number)  
+  **Expected:** Error messages explaining the correct format.
+
+#### Deleting a photo
+
+**Prerequisites:** List all photos using the `list` command. Multiple photos in the list.
+
+- **Test case:** `delete 1`  
+  **Expected:** First photo is deleted from the trip. Success message shows deleted photo details.
+
+- **Test case:** `delete 0`  
+  **Expected:** No photo is deleted. Error message indicates invalid index.
+
+- **Test case:** `delete [index larger than list size]`  
+  **Expected:** No photo is deleted. Error message indicates invalid index.
+
+- **Other incorrect commands to try:** `delete`, `delete x` (where x is not a number)  
+  **Expected:** Error messages explaining the correct format.
+
+#### Closing a photo
+
+**Prerequisites:** Select a photo using the `select [INDEX]` command
+
+- **Test case:** `close`  
+  **Expected:** The photo view is closed, returning to the photo list view.
+
+- **Test case:** Execute `close` without selecting a photo  
+  **Expected:** Error message indicates no photo is currently selected.
+
+---
+
+### Navigation
+
+#### Returning to main menu
+
+**Prerequisites:** Be on the Photo Page
+
+- **Test case:** `menu`  
+  **Expected:** Application navigates back to the Trip Page. Trip list is displayed.
+
+- **Test case:** Execute `menu` while already on the Trip Page  
+  **Expected:** Error message indicates you are already on the Trip Page.
+
+#### Help command
+
+- **Test case:** `help` on Trip Page  
+  **Expected:** Displays all available commands for the Trip Page.
+
+- **Test case:** `help` on Photo Page  
+  **Expected:** Displays all available commands for the Photo Page.
+
+---
+
+### Data Persistence
+
+#### Saving data
+
+**Prerequisites:** Add several trips and photos
+
+- **Test case:** Exit the application using `bye` and restart it  
+  **Expected:** All previously added trips and photos are loaded and displayed.
+
+#### Dealing with missing/corrupted data files
+
+**To simulate a missing data file:**
+
+1. Run the application once to generate the data file
+2. Exit the application
+3. Delete or rename the data file in the `/data` folder
+4. Restart the application  
+   **Expected:** A new empty data file is created. Application starts with no trips.
+
+**To simulate a corrupted data file:**
+
+1. Run the application once to generate the data file
+2. Exit the application
+3. Open the data file in a text editor and modify it to make it invalid JSON
+4. Restart the application  
+   **Expected:** Application attempts to load the file, detects corruption, and either creates a new empty data file or displays an error message explaining the issue with the data file.
+
+---
+
+### Edge Cases
+
+#### Long inputs
+
+- **Test case:** Add a trip with an extremely long name and description  
+  `add_trip n#[300 character name] d#[500 character description]`  
+  **Expected:** Trip is added successfully, with text potentially truncated in the display.
+
+#### Special characters
+
+- **Test case:** Add a trip with special characters in the name and description  
+  `add_trip n#My Trip!@#$%^&*() d#Special chars: !@#$%^&*()`  
+  **Expected:** Trip is added successfully with all special characters preserved.
+
+#### Case sensitivity
+
+- **Test case:** Try commands with different capitalization  
+  `ADD_TRIP n#Test Trip d#Test Description`  
+  `Add_Trip n#Test Trip d#Test Description`  
+  **Expected:** Commands are recognized regardless of case.
+
+#### Empty list operations
+
+- **Test case:** Execute `list`, `select 1`, and `delete 1` on an empty trip list  
+  **Expected:** `list` shows empty list message, `select` and `delete` show error messages.
+
+#### Concurrent modification
+
+- **Test case:** Modify the data file while the application is running
+    1. Run the application
+    2. Manually edit the data file in a text editor
+    3. Perform operations in the application  
+       **Expected:** Changes made in the application overwrite manual changes to the file.

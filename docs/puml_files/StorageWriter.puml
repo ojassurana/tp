@@ -1,23 +1,59 @@
 @startuml
-actor User
-
+participant Storage
 participant StorageWriter
 participant BufferedWriter
-participant FileWriter
-participant Trip
-participant Photo
+participant StringEncoder
 
-User -> StorageWriter : writeTripsToFile(trips, dataFile, filePath)
+Storage -> StorageWriter : writeTripsToFile(trips, dataFile, filePath)
+activate StorageWriter
+
 StorageWriter -> BufferedWriter : new BufferedWriter(FileWriter(dataFile))
-StorageWriter -> StorageWriter : writeTrip(writer, trip, filePath)
-StorageWriter -> StorageWriter : formatTripLine(trip)
-StorageWriter -> BufferedWriter : write(formattedTripLine)
-StorageWriter -> StorageWriter : writeAlbum(writer, trip.album)
-StorageWriter -> BufferedWriter : write(formattedAlbumLine)
-StorageWriter -> StorageWriter : writePhoto(writer, photo)
-StorageWriter -> StorageWriter : formatPhotoLine(photo)
-StorageWriter -> BufferedWriter : write(formattedPhotoLine)
-BufferedWriter -> StorageWriter : flush()
-StorageWriter -> BufferedWriter : close()
+activate BufferedWriter
 
+loop for each trip in trips
+    StorageWriter -> StorageWriter : formatTripLine(trip)
+    activate StorageWriter #DarkSalmon
+
+    StorageWriter -> StringEncoder : encodeString(trip.name)
+    StorageWriter -> StringEncoder : encodeString(trip.description)
+
+    StorageWriter --> StorageWriter : formattedTripLine
+    deactivate StorageWriter
+
+    StorageWriter -> BufferedWriter : write(formattedTripLine)
+    StorageWriter -> BufferedWriter : newLine()
+
+    alt trip.album != null
+        StorageWriter -> StringEncoder : encodeString(trip.name)
+        StorageWriter -> BufferedWriter : write(ALBUM_MARKER + DELIMITER + encodedTripName)
+        StorageWriter -> BufferedWriter : newLine()
+
+        alt trip.album.photos != null && !trip.album.photos.isEmpty()
+            loop for each photo in trip.album.photos
+                StorageWriter -> StorageWriter : formatPhotoLine(photo)
+                activate StorageWriter #DarkSalmon
+
+                StorageWriter -> StringEncoder : encodeString(photo.getFilePath())
+                StorageWriter -> StringEncoder : encodeString(photo.getPhotoName())
+                StorageWriter -> StringEncoder : encodeString(photo.getCaption())
+                StorageWriter -> StringEncoder : encodeString(locationName)
+
+                StorageWriter --> StorageWriter : formattedPhotoLine
+                deactivate StorageWriter
+
+                StorageWriter -> BufferedWriter : write(formattedPhotoLine)
+                StorageWriter -> BufferedWriter : newLine()
+            end
+        end
+    end
+end
+
+StorageWriter -> BufferedWriter : close()
+deactivate BufferedWriter
+
+alt exception occurs
+    StorageWriter --> Storage : throw FileWriteException or PhotoSaveException
+end
+
+deactivate StorageWriter
 @enduml
