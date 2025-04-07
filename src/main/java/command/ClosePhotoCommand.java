@@ -18,6 +18,8 @@ public class ClosePhotoCommand extends Command {
      */
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue)  {
+
         PhotoPrinter.closeAllWindows();
+        this.fsmValue = fsmValue;
     }
 }

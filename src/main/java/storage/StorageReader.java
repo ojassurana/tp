@@ -15,11 +15,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class StorageReader {
     private static final Logger logger = Logger.getLogger(StorageReader.class.getName());
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static boolean isTripCorrupted = false;
 
     /**
      * Reads trips from a file and adds them to the trip manager
@@ -46,9 +48,15 @@ public class StorageReader {
 
         while ((line = reader.readLine()) != null) {
             lineNumber++;
+            String[] parts = splitByDelimiter(line, Storage.DELIMITER);
+            // if a trip is corrupted, skip the photos and album inside the corrupted trip until a
+            // new trip is encountered
+            if (isTripCorrupted && !parts[0].equals(Storage.TRIP_MARKER)){
+                continue;
+            }
+            isTripCorrupted = false;
             try {
                 // Improved splitting logic to handle DELIMITER correctly
-                String[] parts = splitByDelimiter(line, Storage.DELIMITER);
 
                 if (parts.length == 0) {
                     throw new FileFormatException(filePath, line);
@@ -69,15 +77,20 @@ public class StorageReader {
                 default:
                     throw new FileFormatException(filePath, "Unknown marker: " + marker);
                 }
-            } catch (TripLoadException | PhotoLoadException e) {
+            } catch (TripLoadException  e) {
                 // Propagate these exceptions without wrapping
-                throw e;
+                System.out.println(10);
+                isTripCorrupted = true;
+            } catch (PhotoLoadException e) {
+                // Propagate these exceptions without wrapping
+                System.out.println(11);
             } catch (Exception e) {
                 // Only wrap if it's not already a FileFormatException
                 if (!(e instanceof FileFormatException)) {
                     throw new FileFormatException(filePath, lineNumber, e);
                 }
-                throw e;
+                System.out.println(e.getMessage());
+//                throw e;
             }
         }
 
@@ -184,18 +197,23 @@ public class StorageReader {
         return line.substring(position, position + delimiter.length()).equals(delimiter);
     }
 
+
     /**
-     * Creates a trip from a line
+     * create trips from a line
+     * @param parts
+     * @param tripManager
+     * @param filePath
+     * @return
+     * @throws TripLoadException error that stems when creating trip object
+     * @throws FileFormatException error that stems when the txt file is not valid
      */
     private static Trip createTrip(String[] parts, TripManager tripManager, String filePath)
             throws TripLoadException, FileFormatException {
         validateTripFormat(parts, filePath);
 
         try {
-            System.out.println(1);
             String name = StringEncoder.decodeString(parts[1]);
             String description = StringEncoder.decodeString(parts[2]);
-            System.out.println(2);
 
             // Use the existing addTripSilently method to respect silent mode flag
             Trip newTrip = tripManager.addTripSilently(name, description);
@@ -215,6 +233,7 @@ public class StorageReader {
      */
     private static void validateTripFormat(String[] parts, String filePath) throws FileFormatException {
         if (parts.length < 3) {
+            isTripCorrupted = true;
             throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
         }
     }

@@ -1,6 +1,6 @@
 package trip;
 
-import exception.TravelDiaryException;
+import exception.MissingCompulsoryParameter;
 import org.junit.jupiter.api.Test;
 
 public class TripTest {
@@ -30,19 +30,19 @@ public class TripTest {
 
     @Test
     void testConstructorThrowsExceptionForNullName() {
-        Exception e = org.junit.jupiter.api.Assertions.assertThrows(TravelDiaryException.class, () ->
+        Exception e = org.junit.jupiter.api.Assertions.assertThrows(MissingCompulsoryParameter.class, () ->
                 new Trip(null, "Description"));
         org.junit.jupiter.api.Assertions.assertEquals(
-                "Missing required tag(s) for add_trip. Required: n# (name), d# (description). ",
+                "missing compulsory parameters for trip: name, description",
                 e.getMessage());
     }
 
     @Test
     void testConstructorThrowsExceptionForNullDescription() {
-        Exception e = org.junit.jupiter.api.Assertions.assertThrows(TravelDiaryException.class, () ->
+        Exception e = org.junit.jupiter.api.Assertions.assertThrows(MissingCompulsoryParameter.class, () ->
                 new Trip("Trip", null));
         org.junit.jupiter.api.Assertions.assertEquals(
-                "Missing required tag(s) for add_trip. Required: n# (name), d# (description). ",
+                "missing compulsory parameters for trip: name, description",
                 e.getMessage());
     }
 }

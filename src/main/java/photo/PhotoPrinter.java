@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.util.logging.Logger;
-
 /**
  * PhotoPrinter class creates a PhotoFrame with JLabels based on Photo details.
  * It can display the PhotoFrame in a GUI window.
