@@ -60,22 +60,13 @@ public class StorageReader {
                 String marker = parts[0];
                 switch (marker) {
                 case Storage.TRIP_MARKER:
-                    // Add previous trip to list before creating a new one
-                    if (currentTrip != null) {
-                        trips.add(currentTrip);
-                    }
-                    currentTrip = createTrip(parts, tripManager, filePath);
+                    currentTrip = processTripMarker(parts, tripManager, filePath, currentTrip, trips);
                     break;
                 case Storage.ALBUM_MARKER:
-                    if (currentTrip == null) {
-                        throw new FileFormatException(filePath, "Album marker found without a trip");
-                    }
-                    validateAlbumMarker(parts, filePath);
+                    validateAlbumAndMarker(currentTrip, parts, filePath);
                     break;
                 case Storage.PHOTO_MARKER:
-                    if (currentTrip == null || currentTrip.album == null) {
-                        throw new FileFormatException(filePath, "Photo marker found without a trip or album");
-                    }
+                    validatePhotoContext(currentTrip, filePath);
                     addPhotoToTrip(parts, currentTrip, filePath, lineNumber);
                     break;
                 default:
@@ -85,21 +76,66 @@ public class StorageReader {
                 // Propagate these exceptions without wrapping
                 throw e;
             } catch (Exception e) {
-                // Wrap any other exceptions
+                // Only wrap if it's not already a FileFormatException
                 if (!(e instanceof FileFormatException)) {
                     throw new FileFormatException(filePath, lineNumber, e);
-                } else {
-                    throw e;
                 }
+                throw e;
             }
         }
 
-        // Add the last trip to the list
+        // Add the last trip to the list if there is one
+        addRemainingTrip(currentTrip, trips);
+        return trips;
+    }
+
+    /**
+     * Process trip marker line and manage trip collection
+     */
+    private static Trip processTripMarker(String[] parts, TripManager tripManager, String filePath,
+                                          Trip currentTrip, List<Trip> trips)
+            throws TripLoadException, FileFormatException {
+        // Add previous trip to list before creating a new one
+        addRemainingTrip(currentTrip, trips);
+        return createTrip(parts, tripManager, filePath);
+    }
+
+    /**
+     * Adds the current trip to the list if it exists
+     */
+    private static void addRemainingTrip(Trip currentTrip, List<Trip> trips) {
         if (currentTrip != null) {
             trips.add(currentTrip);
         }
+    }
 
-        return trips;
+    /**
+     * Validates that we have a trip when processing an album marker
+     */
+    private static void validateAlbumAndMarker(Trip currentTrip, String[] parts, String filePath)
+            throws FileFormatException {
+        if (currentTrip == null) {
+            throw new FileFormatException(filePath, "Album marker found without a trip");
+        }
+
+        if (parts.length <= 1) {
+            throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
+        }
+        // Currently, the album name (parts[1]) is not used further
+    }
+
+    /**
+     * Validates that we have proper context for adding a photo
+     */
+    private static void validatePhotoContext(Trip currentTrip, String filePath)
+            throws FileFormatException {
+        if (currentTrip == null) {
+            throw new FileFormatException(filePath, "Photo marker found without a trip");
+        }
+
+        if (currentTrip.album == null) {
+            throw new FileFormatException(filePath, "Photo marker found without an album");
+        }
     }
 
     /**
@@ -124,9 +160,9 @@ public class StorageReader {
                 continue;
             }
 
-            // Check if we're at the start of a delimiter
-            if (i <= line.length() - delimiter.length() &&
-                    line.substring(i, i + delimiter.length()).equals(delimiter)) {
+            // Check if this is the start of a delimiter
+            boolean isDelimiter = checkDelimiter(line, i, delimiter);
+            if (isDelimiter) {
                 parts.add(currentPart.toString());
                 currentPart = new StringBuilder();
                 i += delimiter.length() - 1; // Skip the delimiter
@@ -138,8 +174,18 @@ public class StorageReader {
 
         // Add the last part
         parts.add(currentPart.toString());
-
         return parts.toArray(new String[0]);
+    }
+
+    /**
+     * Check if the current position in the string is a delimiter
+     */
+    private static boolean checkDelimiter(String line, int position, String delimiter) {
+        if (position > line.length() - delimiter.length()) {
+            return false;
+        }
+
+        return line.substring(position, position + delimiter.length()).equals(delimiter);
     }
 
     /**
@@ -147,36 +193,41 @@ public class StorageReader {
      */
     private static Trip createTrip(String[] parts, TripManager tripManager, String filePath)
             throws TripLoadException, FileFormatException {
-        if (parts.length < 3) {
-            throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
-        }
+        validateTripFormat(parts, filePath);
 
         try {
             String name = StringEncoder.decodeString(parts[1]);
             String description = StringEncoder.decodeString(parts[2]);
 
             // Use the existing addTripSilently method to respect silent mode flag
-            Trip currentTrip = tripManager.addTripSilently(name, description);
-
-            // Ensure the trip has an album
-            if (currentTrip.album == null) {
-                currentTrip.album = new Album();
-            }
-
-            return currentTrip;
+            Trip newTrip = tripManager.addTripSilently(name, description);
+            ensureTripHasAlbum(newTrip);
+            return newTrip;
         } catch (TravelDiaryException e) {
-            throw new TripLoadException(parts.length > 1 ? StringEncoder.decodeString(parts[1]) : "unknown", e);
+            String tripName = "unknown";
+            if (parts.length > 1) {
+                tripName = StringEncoder.decodeString(parts[1]);
+            }
+            throw new TripLoadException(tripName, e);
         }
     }
 
     /**
-     * Validates album marker format
+     * Validates trip marker format has required fields
      */
-    private static void validateAlbumMarker(String[] parts, String filePath) throws FileFormatException {
-        if (parts.length <= 1) {
+    private static void validateTripFormat(String[] parts, String filePath) throws FileFormatException {
+        if (parts.length < 3) {
             throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
         }
-        // Currently, the album name (parts[1]) is not used further
+    }
+
+    /**
+     * Ensures the trip has an album
+     */
+    private static void ensureTripHasAlbum(Trip trip) {
+        if (trip.album == null) {
+            trip.album = new Album();
+        }
     }
 
     /**
@@ -184,52 +235,64 @@ public class StorageReader {
      */
     private static void addPhotoToTrip(String[] parts, Trip currentTrip, String filePath, int lineNumber)
             throws PhotoLoadException, FileFormatException {
-        if (parts.length < 4) {
-            throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
-        }
+        validatePhotoLineFormat(parts, filePath);
 
         try {
-            if (parts.length < 4) {
-                throw new FileFormatException(filePath, String.join(" | ", parts));
-            }
-
             String photoPath = StringEncoder.decodeString(parts[1]);
             String photoName = StringEncoder.decodeString(parts[2]);
             String caption = StringEncoder.decodeString(parts[3]);
-
-            // Extract photo timestamp
             LocalDateTime photoTime = extractPhotoTime(parts);
 
-            // Get current album silent mode setting before adding photo
-            boolean originalSilentMode = false;
-            if (currentTrip.album != null) {
-                originalSilentMode = currentTrip.album.isSilentMode();
-                // Use the trip's silent mode setting for the album during loading
-                currentTrip.album.setSilentMode(true);
-            }
-
-            try {
-                // Create the photo with all available data
-                if (photoTime != null) {
-                    currentTrip.album.addPhoto(photoPath, photoName, caption, photoTime);
-                } else {
-                    currentTrip.album.addPhoto(photoPath, photoName, caption);
-                }
-            } finally {
-                // Restore the original silent mode setting
-                if (currentTrip.album != null) {
-                    currentTrip.album.setSilentMode(originalSilentMode);
-                }
-            }
-
+            addPhotoWithSilentMode(currentTrip, photoPath, photoName, caption, photoTime);
         } catch (DateTimeParseException e) {
             throw new FileFormatException(filePath, lineNumber, e);
         } catch (TravelDiaryException | ImageProcessingException | IOException e) {
-            throw new PhotoLoadException(
-                    parts.length > 2 ? StringEncoder.decodeString(parts[2]) : "unknown",
-                    parts.length > 1 ? StringEncoder.decodeString(parts[1]) : "unknown",
-                    e
-            );
+            String photoName = extractPhotoNameForError(parts, 2);
+            String photoPath = extractPhotoNameForError(parts, 1);
+            throw new PhotoLoadException(photoName, photoPath, e);
+        }
+    }
+
+    /**
+     * Adds a photo to an album with preserved silent mode
+     */
+    private static void addPhotoWithSilentMode(Trip trip, String photoPath, String photoName,
+                                               String caption, LocalDateTime photoTime)
+            throws TravelDiaryException, ImageProcessingException, IOException {
+        // Get current album silent mode setting before adding photo
+        boolean originalSilentMode = trip.album.isSilentMode();
+        // Use silent mode during loading
+        trip.album.setSilentMode(true);
+
+        try {
+            // Create the photo with all available data
+            if (photoTime != null) {
+                trip.album.addPhoto(photoPath, photoName, caption, photoTime);
+            } else {
+                trip.album.addPhoto(photoPath, photoName, caption);
+            }
+        } finally {
+            // Restore the original silent mode setting
+            trip.album.setSilentMode(originalSilentMode);
+        }
+    }
+
+    /**
+     * Extracts a field for error reporting, handling missing fields gracefully
+     */
+    private static String extractPhotoNameForError(String[] parts, int index) {
+        if (parts.length > index) {
+            return StringEncoder.decodeString(parts[index]);
+        }
+        return "unknown";
+    }
+
+    /**
+     * Validates the photo line format has the minimum required fields
+     */
+    private static void validatePhotoLineFormat(String[] parts, String filePath) throws FileFormatException {
+        if (parts.length < 4) {
+            throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
         }
     }
 
@@ -237,9 +300,15 @@ public class StorageReader {
      * Extracts photo timestamp from parts
      */
     private static LocalDateTime extractPhotoTime(String[] parts) throws DateTimeParseException {
-        if (parts.length <= 4 || parts[4] == null || parts[4].isEmpty()) {
+        if (parts.length <= 4) {
             return null;
         }
-        return LocalDateTime.parse(parts[4], DATETIME_FORMAT);
+
+        String timeStr = parts[4];
+        if (timeStr == null || timeStr.isEmpty()) {
+            return null;
+        }
+
+        return LocalDateTime.parse(timeStr, DATETIME_FORMAT);
     }
 }
