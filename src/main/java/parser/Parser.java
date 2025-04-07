@@ -90,6 +90,12 @@ public class Parser {
     private static Map<String, String> parseAddTrip(String rest) throws TravelDiaryException, ParserException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_trip");
+        
+        // Check if rest is empty and throw a more descriptive exception
+        if (rest.isEmpty()) {
+            throw new MissingTagsException("add_trip", "n# (name) d# (description).");
+        }
+        
         String[] parts = rest.split(" (?=[nd]#)");
         Set<String> allowedTags = new HashSet<>(Arrays.asList("n#", "d#"));
         Map<String, String> tagsMap = processTags(parts, allowedTags);
@@ -104,6 +110,12 @@ public class Parser {
     private static Map<String, String> parseAddPhoto(String rest) throws TravelDiaryException, ParserException {
         Map<String, String> map = new HashMap<>();
         map.put("command", "add_photo");
+        
+        // Check if rest is empty and throw a more descriptive exception
+        if (rest.isEmpty()) {
+            throw new MissingTagsException("add_photo", "f# (filepath) n# (photoname) c# (caption).");
+        }
+        
         // Split on spaces before any tag that starts with n, d, c, f or l
         String[] parts = rest.split(" (?=[fnc]#)");
         // Allowed tags now only for f#, n#, and c# (l# is optional)
@@ -145,12 +157,11 @@ public class Parser {
         for (String tag : allowedTags) {
             if (part.startsWith(tag)) {
                 if (!seenTags.add(tag)) {
-                    throw new TagException("\tMissing required tag(s) for ", tag);
+                    throw new TagException("\tDuplicate tag: ", tag);
                 }
                 String value = part.substring(tag.length()).trim();
                 if (value.contains("#")) {
-                    String unrecogniseTag = value.substring(value.indexOf("#") - 1, value.indexOf("#") + 1);
-                    throw new TagException("\tUnrecognised tag: ", unrecogniseTag);
+                    throw new TagException("\tUnrecognised tag: ", "#");
                 }
                 if (value.isEmpty()) {
                     throw new TagException("\tEmpty value provided for tag: ", tag);
@@ -158,7 +169,14 @@ public class Parser {
                 return new AbstractMap.SimpleEntry<>(tag, value);
             }
         }
-        throw new TagException("\tEmpty value provided for tag: ", part);
+        
+        // If we got here, the part doesn't start with any allowed tag
+        // Make a more helpful error message showing what tags are expected
+        StringBuilder allowedTagsStr = new StringBuilder();
+        for (String tag : allowedTags) {
+            allowedTagsStr.append(tag).append(" ");
+        }
+        throw new TagException("\tUnrecognized tag format. Expected tags: ", allowedTagsStr.toString().trim());
     }
 
     private static Map<String, String> parseHelp(String rest) {

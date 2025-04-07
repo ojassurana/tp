@@ -45,6 +45,11 @@ public class Trip {
 
     @Override
     public String toString() {
+        // Check if there are no photos in the trip directly
+        if (this.album.getPhotos().isEmpty()) {
+            return String.format("%s\n\t\t%s (No Photos in trip)\n", name, description);
+        }
+        
         List<String> period = Tracker.getPeriod(this.album);
         return String.format("%s\n\t\t%s (%s - %s)\n", name, description, period.get(0),
                 period.get(1));

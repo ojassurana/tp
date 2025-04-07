@@ -19,7 +19,7 @@ public class TripTest {
     void testToStringFormat() {
         Trip trip = assertDoesNotThrow(() -> new Trip("Japan Trip", "Skiing in Hokkaido"));
         String expected = "Japan Trip\n" +
-                "\t\tSkiing in Hokkaido (No Date Available - No Date Available)\n";
+                "\t\tSkiing in Hokkaido (No Photos in trip)\n";
         assertEquals(expected, trip.toString());
     }
 }
