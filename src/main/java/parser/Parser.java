@@ -149,8 +149,7 @@ public class Parser {
                 }
                 String value = part.substring(tag.length()).trim();
                 if (value.contains("#")) {
-                    String unrecogniseTag = value.substring(value.indexOf("#") - 1, value.indexOf("#") + 1);
-                    throw new TagException("\tUnrecognised tag: ", unrecogniseTag);
+                    throw new TagException("\tUnrecognised tag: ", "#");
                 }
                 if (value.isEmpty()) {
                     throw new TagException("\tEmpty value provided for tag: ", tag);
