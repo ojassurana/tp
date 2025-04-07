@@ -68,7 +68,7 @@ public class HelpCommand extends Command {
             System.out.println("  list                - List all your saved trips");
             System.out.println("  add_trip n# d#      - Add a new trip to your collection");
             System.out.println("                         n# - Trip name (required)");
-            System.out.println("                         d# - Trip description (optional)");
+            System.out.println("                         d# - Trip description (required)");
             System.out.println("                         Example: add_trip n#Paris Vacation d#Summer trip to France");
             System.out.println("  select <index>      - Select a trip to view and manage its photos");
             System.out.println("                         Example: select 2");
