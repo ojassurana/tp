@@ -143,4 +143,63 @@ class StorageTest {
             return null;
         }
     }
+
+    @Test
+    void saveEmptyTripListCreatesFile() throws FileWriteException {
+        List<Trip> emptyTrips = List.of();
+        Storage.saveTasks(emptyTrips, testFilePath);
+
+        File file = new File(testFilePath);
+        assertTrue(file.exists());
+        assertEquals(0, file.length()); // File should be empty
+    }
+
+    @Test
+    void loadFromEmptyFileDoesNotThrow() throws Exception {
+        Files.createFile(Path.of(testFilePath)); // Create empty file
+
+        Storage.loadTrips(tripManager, testFilePath, true);
+        assertEquals(0, tripManager.getTrips().size());
+    }
+
+    @Test
+    void ensureDirectoryCreatedWhenMissing() throws IOException {
+        // Create a file path with a missing directory
+        String filePathWithMissingDirectory = tempDir.resolve("missingDirectory/test_trips.dat").toString();
+        File testFile = new File(filePathWithMissingDirectory);
+
+        // Use reflection to access private method
+        try {
+            java.lang.reflect.Method method = Storage.class
+                    .getDeclaredMethod("ensureFileExists", File.class, String.class);
+            method.setAccessible(true);
+
+            // Invoke the method to ensure the file is created
+            boolean result = (boolean) method.invoke(null, testFile, filePathWithMissingDirectory);
+
+            // Assert that the directory is created, and the file is created
+            assertTrue(testFile.exists());
+            assertTrue(testFile.getParentFile().exists());  // Check if the directory was created
+        } catch (Exception e) {
+            fail("Failed to invoke ensureFileExists method: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void saveTripsToNonExistentParentDirectory() throws FileWriteException, TravelDiaryException {
+        // Create a file path with a non-existent parent directory
+        String nonExistentParentPath = tempDir.resolve("nonexistentParentDir/test_trips.dat").toString();
+
+        // Create some test trips
+        tripManager.addTrip("Test Trip 1", "Test Description 1");
+        tripManager.addTrip("Test Trip 2", "Test Description 2");
+
+        // Save trips to the file
+        Storage.saveTasks(tripManager.getTrips(), nonExistentParentPath);
+
+        // Verify that the file was created
+        File file = new File(nonExistentParentPath);
+        assertTrue(file.exists());
+        assertTrue(file.length() > 0); // The file should not be empty
+    }
 }

@@ -41,7 +41,7 @@ public class StorageReader {
     /**
      * Process all lines in the file
      */
-    private static List<Trip> processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
+    private static void processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
             throws IOException, FileFormatException, NoMetaDataException {
         List<Trip> trips = new ArrayList<>();
         String line;
@@ -87,7 +87,6 @@ public class StorageReader {
 
         // Add the last trip to the list if there is one
         addRemainingTrip(currentTrip, trips);
-        return trips;
     }
 
     /**
