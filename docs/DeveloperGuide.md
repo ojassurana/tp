@@ -108,6 +108,23 @@ The `Ui` class:
 * Presents welcome messages and command results
 * Displays formatting elements like divider lines
 
+![UI Component Class Diagram](puml_pics/Ui.png)
+
+The UI component:
+* Handles all interactions with the user through a command-line interface
+* Uses a Scanner to read user input and parse commands
+* Maintains consistent display formatting with defined constants like SEPARATOR_LINE and PADDING
+* Shows different interfaces based on FSM state (Trip Page or Photo Page)
+* Displays a custom ASCII art logo stored in a text file
+
+The UI follows a strict separation of concerns pattern:
+* It only displays information and collects input
+* It doesn't perform any processing of commands or business logic
+* It receives formatted results from Command executions to display to the user
+* It provides methods for both general display (`showToUser()`) and context-specific display (`showTripPage()`, `showPhotoPage()`)
+
+This design ensures that UI changes can be made without affecting the core application logic.
+
 ### Logic Component
 
 The Logic component consists of:
@@ -311,7 +328,7 @@ The app enables roadtrippers to seamlessly track their journeys on the go. It au
 |---------|---------------|------------------------------------------------------|------------------------------------------------------------------|
 | v1.0    | new user      | see usage instructions                              | refer to them when I forget how to use the application          |
 | v1.0    | user          | add a trip with a name and description              | record and organize my travel plans                             |
-| v1.0    | user          | list all my trips                                   | view all the trips I’ve recorded                                |
+| v1.0    | user          | list all my trips                                   | view all the trips I've recorded                                |
 | v1.0    | user          | select a trip                                       | manage the photos associated with that trip                     |
 | v1.0    | user          | delete a trip                                       | remove trips I no longer want to keep                           |
 | v1.0    | user          | add a photo with details                            | store visual memories along with meaningful captions            |
