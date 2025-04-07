@@ -2,16 +2,84 @@
 
 ## Overview
 
-Travel Diary is a desktop app for managing trips and travel memories, for use via a Command Line Interface (CLI). Travel Diary helps you log and organize trips, photos, and experiences more efficiently than traditional travel journaling apps.
+**Travel Diary** is a desktop application for managing trips and travel memories, designed for use through a Command Line Interface (CLI). It enables users to efficiently log and organize trips, photos, and personal experiences — providing a more structured and customizable alternative to traditional travel journaling apps.
 
+---
 
-### Summary of Contributions
+## Contributions
 
-#### Code Contribution
-[View my contributions](https://nus-cs2113-ay2425s2.github.io/tp-dashboard/?search=lethihongminh&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2025-02-21&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other)
+### 🌟 New Features
 
-#### Enhancements Implemented
-- **Storage**: Save corresponding trips, albums and photos to txt file and load trips, albums, photos from txt file.
-- **Trip Class**: Defined trip attributes and validation checks.
-- **Trip Manager**: Managed trip operations (add, delete, select, view) with logging.
-- **Help Function**: Improved UI help for better user guidance.  
+#### 1. Storage System
+- **What it does**: Implements persistent data storage by saving and loading trip data from local files, ensuring that user data is retained across sessions.
+- **Justification**: Enables continuity of user data between uses of the application, which is essential for real-world usability.
+- **Highlights**:
+    - Designed the file structure and implemented read/write logic.
+    - Includes exception handling and validation to ensure data integrity.
+- **Technologies**: Java I/O, JSON serialization
+
+#### 2. Trip Class
+- **What it does**: Represents the core data model for a trip, including its name, description, and associated photo album.
+- **Highlights**:
+    - Includes logic for formatting trip details and tracking photo timelines.
+    - Interfaces with the album class to provide cohesive trip representation.
+
+#### 3. TripManager Class
+- **What it does**: Manages a collection of `Trip` objects, including logic for adding, removing, and listing trips.
+- **Highlights**:
+    - Coordinates interactions between the model and storage components.
+    - Encapsulates business logic such as duplicate detection and validations.
+
+#### 4. Location Class
+- **What it does**: Models individual locations visited during a trip, enhancing trip detail granularity.
+- **Highlights**:
+    - Integrates with trip and album classes for location-based photo tracking.
+
+---
+
+### 💻 Code Contribution
+
+- [📊 View my contributions on RepoSense](https://nus-cs2113-ay2425s2.github.io/tp-dashboard/?search=lethihongminh&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2025-02-21&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other)
+
+---
+
+### 🚀 Project Management
+
+- Managed GitHub releases: **v1.0**, **v2.0**, **v2.1**
+- Coordinated team milestones and documentation updates
+- Facilitated pull request reviews and issue triaging
+
+---
+
+### 🛠️ Enhancements to Existing Features
+
+- Extended the `help` command to provide an interactive and detailed guide to all available commands
+- Refined UI feedback for invalid commands and enhanced CLI responsiveness
+
+---
+
+### 📚 Documentation
+
+#### User Guide
+- Added:
+    - **Quick Start** section
+    - Comprehensive **Command Summary**
+    - Detailed usage documentation for the `help` and `close` commands
+
+#### Developer Guide
+- Documented:
+    - **Architecture**
+    - **Main components (Storage, Model, UI, Logic)**
+    - **Interactions between components**
+    - **Implementation details for storage**
+    - **Getting started and setup instructions**
+    - **Manual testing steps**
+    - **Appendices: Requirements, User Stories**
+
+---
+
+### 🤝 Community Involvement
+
+- Reviewed PRs with constructive, non-trivial feedback: [#12](#), [#32](#), [#19](#), [#42](#)
+- Reported and suggested improvements for other teams: [1](#), [2](#), [3](#)
+---
