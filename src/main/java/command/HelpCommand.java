@@ -48,7 +48,11 @@ public class HelpCommand extends Command {
      * @param fsm The current state of the finite state machine
      */
     private void showHelp(int fsm) {
-        System.out.println("============ TRAVEL DIARY HELP ============");
+        if (fsm == 0) {
+            System.out.println("============ TRAVEL DIARY HELP: TRIP MODE ============");
+        } else if (fsm == 1) {
+            System.out.println("============ TRAVEL DIARY HELP: PHOTO MODE ============");
+        }
 
         // General commands - always available
         System.out.println("\n📋 GENERAL COMMANDS:");
@@ -61,7 +65,6 @@ public class HelpCommand extends Command {
         // State-specific commands
         if (fsm == 0) {
             // Trip management commands
-            System.out.println("\n🧳 TRIP MANAGEMENT:");
             System.out.println("  list                - List all your saved trips");
             System.out.println("  add_trip n# d#      - Add a new trip to your collection");
             System.out.println("                         n# - Trip name (required)");
@@ -73,7 +76,6 @@ public class HelpCommand extends Command {
             System.out.println("                         Example: delete 3");
         } else if (fsm == 1) {
             // Photo management commands
-            System.out.println("\n📸 PHOTO MANAGEMENT:");
             System.out.println("  list                - List all photos in the current trip");
             System.out.println("  add_photo f# n# c#  - Add a new photo to the current trip");
             System.out.println("                         f# - File path (required)");
