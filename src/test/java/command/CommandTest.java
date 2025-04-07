@@ -2,18 +2,17 @@ package command;
 
 import exception.IndexOutOfRangeException;
 import exception.InvalidIndexException;
-import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import trip.Trip;
 import trip.TripManager;
 import ui.Ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Contains test cases for various Command implementations.

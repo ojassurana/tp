@@ -1,20 +1,13 @@
 package command;
 
-import com.drew.imaging.ImageProcessingException;
 import exception.IndexOutOfRangeException;
-import exception.InvalidIndexException;
-import exception.MissingCompulsoryParameter;
-import exception.NoMetaDataException;
 import exception.TravelDiaryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import trip.Trip;
 import trip.TripManager;
 import ui.Ui;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Contains test cases for the AddPhotoCommand class.
@@ -51,12 +44,10 @@ public class AddPhotoCommandTest {
     }
 
     /**
-     * Since we can't test with actual photo files in a unit test environment,
-     * we'll focus on testing the command's behavior with exception handling
-     */
-
-    /**
      * Tests that AddPhotoCommand throws exception with null TripManager.
+     * 
+     * Since we can't test with actual photo files in a unit test environment,
+     * we'll focus on testing the command's behavior with exception handling.
      */
     @Test
     void testAddPhotoCommandNullTripManagerShouldThrowException() {
