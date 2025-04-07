@@ -1,4 +1,7 @@
 @startuml
+hide circle
+skinparam classAttributeIconSize 0
+
 package ui {
     class Ui {
         - static final String SEPARATOR_LINE
