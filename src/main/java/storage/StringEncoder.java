@@ -22,6 +22,9 @@ public class StringEncoder {
 
     /**
      * Decodes a string to restore original characters.
+     *
+     * @param input String to decode
+     * @return Decoded string
      */
     protected static String decodeString(String input) {
         if (input == null) {
@@ -34,30 +37,60 @@ public class StringEncoder {
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
-            if (escaped) {
-                if (c == '|') {
-                    result.append('|');
-                } else if (c == 'n') {
-                    result.append('\n');
-                } else if (c == '\\') {
-                    result.append('\\');
-                } else {
-                    // If not a special character, keep the backslash and the character
-                    result.append('\\').append(c);
-                }
-                escaped = false;
-            } else if (c == '\\') {
+            if (!escaped && c == '\\') {
                 escaped = true;
-            } else {
-                result.append(c);
+                continue;
             }
+
+            if (escaped) {
+                appendEscapedCharacter(result, c);
+                escaped = false;
+                continue;
+            }
+
+            // Normal character case
+            result.append(c);
         }
 
-        // If there's a trailing backslash, add it
-        if (escaped) {
-            result.append('\\');
-        }
+        // Handle trailing backslash if present
+        appendTrailingBackslash(result, escaped);
 
         return result.toString();
+    }
+
+    /**
+     * Appends the appropriate character for an escaped sequence
+     *
+     * @param builder StringBuilder to append to
+     * @param c The character after the escape character
+     */
+    private static void appendEscapedCharacter(StringBuilder builder, char c) {
+        switch (c) {
+        case '|':
+            builder.append('|');
+            break;
+        case 'n':
+            builder.append('\n');
+            break;
+        case '\\':
+            builder.append('\\');
+            break;
+        default:
+            // If not a special character, keep the backslash and the character
+            builder.append('\\').append(c);
+            break;
+        }
+    }
+
+    /**
+     * Handles a trailing backslash at the end of the input string
+     *
+     * @param builder StringBuilder to append to
+     * @param escaped Whether the last character processed was an escape character
+     */
+    private static void appendTrailingBackslash(StringBuilder builder, boolean escaped) {
+        if (escaped) {
+            builder.append('\\');
+        }
     }
 }
