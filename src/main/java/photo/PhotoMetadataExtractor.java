@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import exception.NoDateTimeMetaDataException;
+import exception.NoGPSMetaDataException;
+import exception.NoMetaDataException;
 import tracker.Tracker;
 
 public class PhotoMetadataExtractor {
@@ -35,7 +39,7 @@ public class PhotoMetadataExtractor {
      *
      * @param filepath the path to the image file
      */
-    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException {
+    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException, NoMetaDataException {
         File imageFile = new File(filepath);
         Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
         ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
@@ -49,7 +53,7 @@ public class PhotoMetadataExtractor {
                         .toLocalDateTime();
                 this.datetime = localDate;
             } else {
-                throw new ImageProcessingException("No DateTime metadata found.");
+                throw new NoDateTimeMetaDataException();
             }
 
             GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
@@ -62,11 +66,10 @@ public class PhotoMetadataExtractor {
                 this.longitude = extractedLon;
                 this.location = getLocationFromCoordinates(extractedLat, extractedLon);
             } else {
-                throw new ImageProcessingException("No GPS Data Found \n" +
-                        "please insert photo with GPS metadata");
+                throw new NoGPSMetaDataException();
             }
         } else{
-            throw new ImageProcessingException("The image you've uploaded has no metadata. Please try a different image or use an online tool like https://onlineexifviewer.com/ to check your image's metadata.");
+            throw new NoMetaDataException();
         }
     }
 

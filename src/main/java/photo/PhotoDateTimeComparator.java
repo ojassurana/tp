@@ -22,11 +22,11 @@ public class PhotoDateTimeComparator implements Comparator<Photo> {
         // Case: Both photos have null datetime values, they are considered equal.
         if (p1.getDatetime() == null && p2.getDatetime() == null) {
             return 0;
-        } // Case: The first photo has a null datetime, it should come before the second photo.
-        else if (p1.getDatetime() == null) {
+        } else if (p1.getDatetime() == null) {
+            // Case: The first photo has a null datetime, it should come before the second photo.
             return -1;
-        } // Case: The second photo has a null datetime, it should come after the first photo.
-        else if (p2.getDatetime() == null) {
+        } else if (p2.getDatetime() == null) {
+            // Case: The second photo has a null datetime, it should come after the first photo.
             return 1;
         } // Case: Both photos have non-null datetime values, compare them normally.
         return p1.getDatetime().compareTo(p2.getDatetime());
