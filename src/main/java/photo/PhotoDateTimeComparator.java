@@ -28,8 +28,7 @@ public class PhotoDateTimeComparator implements Comparator<Photo> {
         } else if (p2.getDatetime() == null) {
             // Case: The second photo has a null datetime, it should come after the first photo.
             return 1;
-        }
-        // Case: Both photos have non-null datetime values, compare them normally.
+        } // Case: Both photos have non-null datetime values, compare them normally.
         return p1.getDatetime().compareTo(p2.getDatetime());
     }
 }
