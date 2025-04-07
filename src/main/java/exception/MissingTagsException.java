@@ -5,6 +5,6 @@ public class MissingTagsException extends ParserException{
             "\tMissing required tag(s) for " ;
 
     public MissingTagsException(String command,String tags) {
-        super(ParserException.DEFAULT_MESSAGE + DEFAULT_MESSAGE + command + " Required:" + tags);
+        super(ParserException.DEFAULT_MESSAGE + DEFAULT_MESSAGE + command + " Required tags: " + tags);
     }
 }

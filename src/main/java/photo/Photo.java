@@ -1,7 +1,9 @@
 package photo;
 
 import com.drew.imaging.ImageProcessingException;
+import exception.NoMetaDataException;
 import exception.TravelDiaryException;
+import exception.UnsupportedImageFormatException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,20 +28,28 @@ public class Photo {
      * The location and coordinates are extracted from the photo file via PhotoMetadataExtractor.
      */
     public Photo(String filePath, String photoName, String caption, LocalDateTime datetime)
-            throws TravelDiaryException, IOException, ImageProcessingException {
+            throws TravelDiaryException, IOException, ImageProcessingException, NoMetaDataException {
         if (filePath == null || photoName == null || caption == null) {
             throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
                     "n# (photoname), c# (caption).");
         }
+        
+        // Check if the file has a .jpg extension
+        if (!filePath.toLowerCase().endsWith(".jpg")) {
+            throw new UnsupportedImageFormatException(filePath);
+        }
+        
         this.filePath = filePath;
         this.photoName = photoName;
         this.caption = caption;
+
         extractData(filePath, datetime);
+
     }
 
     // Overloaded constructor without datetime parameter.
     public Photo(String filePath, String photoName, String caption) throws TravelDiaryException,
-            ImageProcessingException, IOException {
+            ImageProcessingException, IOException, NoMetaDataException {
         this(filePath, photoName, caption, null);
     }
 
@@ -71,7 +81,8 @@ public class Photo {
         return locationName != null && !locationName.isEmpty() && !locationName.equals("Location not found");
     }
 
-    private void extractData(String filePath, LocalDateTime datetime) throws ImageProcessingException, IOException {
+    private void extractData(String filePath, LocalDateTime datetime) throws ImageProcessingException,
+            IOException, NoMetaDataException {
         // Use PhotoMetadataExtractor to extract metadata from the image.
         PhotoMetadataExtractor extractor = new PhotoMetadataExtractor(filePath);
         Map<String, Object> metadata = extractor.getMetadataMap();

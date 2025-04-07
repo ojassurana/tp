@@ -5,6 +5,7 @@ import command.Command;
 import command.CommandFactory;
 import exception.InvalidIndexException;
 import exception.CommandNotRecogniseException;
+import exception.NoMetaDataException;
 import exception.TripNotSelectedException;
 import exception.ParserException;
 import exception.FileFormatException;
@@ -47,6 +48,8 @@ public class TravelDiary {
             ui.showToUser("Error loading saved trips: " + e.getMessage());
             logger.log(Level.SEVERE, "Failed to load trips", e);
             return;  // Exit if there's an error loading trips
+        } catch (NoMetaDataException e) {
+            ui.showToUser(e.getMessage());
         }
 
 
@@ -96,6 +99,7 @@ public class TravelDiary {
                  NumberFormatException |
                  MissingCompulsoryParameter |
                  ImageProcessingException |
+                 NoMetaDataException |
                  IOException |
                  TripNotSelectedException e) {
             ui.showToUser(e.getMessage());

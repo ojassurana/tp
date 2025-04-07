@@ -32,17 +32,14 @@ public class HelpCommand extends Command {
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
             TravelDiaryException, MissingCompulsoryParameter, InvalidIndexException {
-        // Always use the current FSM value unless a valid specific one was explicitly requested
+
+        // If a valid FSM value was provided in the command, use it, otherwise use the current FSM value
         int fsmToUse = (helpFsmValue == 0 || helpFsmValue == 1) ? helpFsmValue : fsmValue;
 
-        // Display help based on the determined FSM state
         showHelp(fsmToUse);
-
-        // Ensure we do not redirect to the main menu from photo management if help is shown
-        if (fsmToUse == 1) {
-            ui.showPhotoPage(); // Or the method that shows the current photo page
-        }
+        this.fsmValue = fsmValue; // Preserve the current FSM value
     }
+
     /**
      * Displays help information based on the current state.
      * FSM = 0: General commands and Trip commands
@@ -68,7 +65,7 @@ public class HelpCommand extends Command {
             System.out.println("  list                - List all your saved trips");
             System.out.println("  add_trip n# d#      - Add a new trip to your collection");
             System.out.println("                         n# - Trip name (required)");
-            System.out.println("                         d# - Trip description (required)");
+            System.out.println("                         d# - Trip description (optional)");
             System.out.println("                         Example: add_trip n#Paris Vacation d#Summer trip to France");
             System.out.println("  select <index>      - Select a trip to view and manage its photos");
             System.out.println("                         Example: select 2");
@@ -91,6 +88,7 @@ public class HelpCommand extends Command {
 
         System.out.println("\n💡 TIPS:");
         System.out.println("• Parameters marked with # must include the prefix (n#, d#, f#, etc.)");
+        System.out.println("• Use quotation marks for values containing spaces: n#\"My Trip\"");
         System.out.println("• The application automatically extracts date, time, and location from photos if possible");
 
         if (fsm == 0) {
