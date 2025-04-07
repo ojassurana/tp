@@ -66,7 +66,7 @@ public class PhotoMetadataExtractor {
                         "please insert photo with GPS metadata");
             }
         } else{
-            throw new ImageProcessingException("No Metadata Found");
+            throw new ImageProcessingException("The image you've uploaded has no metadata. Please try a different image or use an online tool like https://onlineexifviewer.com/ to check your image's metadata.");
         }
     }
 
