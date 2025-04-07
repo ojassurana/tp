@@ -15,7 +15,7 @@ public class TrackerTest {
      * Verifies that the photos are correctly sorted based on their datetime.
      */
     @Test
-    void sortPhotosByDate_withValidPhotoList_shouldSortCorrectly() {
+    void sortPhotosByDate_validPhotoList_expectSortCorrectly() {
         try {
             Photo photo1 = new Photo("./data/photos/hongkong_1.jpeg", "photo 1 name", "photo 1 caption");
             Photo photo2 = new Photo("./data/photos/hongkong_2.jpeg", "photo 2 name", "photo 2 caption");
@@ -40,7 +40,7 @@ public class TrackerTest {
      * Verifies the accuracy of the calculated distance using expected values.
      */
     @Test
-    void getDist_withTwoValidPhotos_shouldCalculateCorrectDistance() {
+    void getDist_twoValidPhotos_expectCalculateCorrectDistance() {
         try {
             Photo photo1 = new Photo("./data/photos/hongkong_1.jpeg", "photo 1 name", "photo 1 caption");
             Photo photo2 = new Photo("./data/photos/hongkong_2.jpeg", "photo 2 name", "photo 2 caption");
@@ -58,7 +58,7 @@ public class TrackerTest {
      * Verifies that the period is correctly calculated.
      */
     @Test
-    void getPeriod_withValidAlbum_shouldReturnCorrectDates() {
+    void getPeriod_validAlbum_expectCorrectPeriod() {
         try {
             Album album = new Album();
             album.addPhoto("./data/photos/hongkong_1.jpeg", "photo 1 name", "photo 1 caption");
