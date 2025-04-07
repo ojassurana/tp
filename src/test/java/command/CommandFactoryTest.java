@@ -132,7 +132,7 @@ public class CommandFactoryTest {
         // Positive test case: AddPhoto command in trip state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "add_photo");
-        parsedCommand.put("filepath", "./data/photos/hongkong_1.jpeg");
+        parsedCommand.put("filepath", "./data/photos/hongkong_1.jpg");
         parsedCommand.put("photoname", "Test Photo");
         parsedCommand.put("caption", "Test Caption");
         
@@ -169,7 +169,7 @@ public class CommandFactoryTest {
         // Negative test case: AddPhoto command in menu state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "add_photo");
-        parsedCommand.put("filepath", "./data/photos/hongkong_1.jpeg");
+        parsedCommand.put("filepath", "./data/photos/hongkong_1.jpg");
         parsedCommand.put("photoname", "Test Photo");
         parsedCommand.put("caption", "Test Caption");
         
@@ -183,13 +183,18 @@ public class CommandFactoryTest {
      */
     @Test
     void testGetCommand_InvalidFsmValue_ShouldThrowException() {
-        // Negative test case: Invalid FSM value
+        // Test case for "list" command with an invalid FSM value
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "list");
         
-        assertThrows(TravelDiaryException.class, () -> 
-            CommandFactory.getCommand(parsedCommand, 2) // Invalid FSM value
+        // From the CommandFactory implementation, an invalid state (not 0 or 1)
+        // should throw a TravelDiaryException
+        TravelDiaryException exception = assertThrows(TravelDiaryException.class, () -> 
+            CommandFactory.getCommand(parsedCommand, 999) // Very large FSM value
         );
+        
+        // Verify the exception message
+        assertEquals("Invalid state.", exception.getMessage());
     }
     
     @Test

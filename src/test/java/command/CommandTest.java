@@ -1,5 +1,6 @@
 package command;
 
+import exception.IndexOutOfRangeException;
 import exception.InvalidIndexException;
 import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
@@ -222,7 +223,7 @@ public class CommandTest {
         Command command = new DeleteCommand(invalidIndex);
         
         // Should throw exception for invalid index
-        assertThrows(InvalidIndexException.class, () -> 
+        assertThrows(IndexOutOfRangeException.class, () -> 
             command.execute(tripManager, ui, 0)
         );
     }
