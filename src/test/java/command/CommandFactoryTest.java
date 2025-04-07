@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Contains test cases for the CommandFactory class.
@@ -23,7 +25,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_ExitCommand_ShouldReturnExitCommand() throws Exception {
+    void testGetCommandExitCommandShouldReturnExitCommand() throws Exception {
         // Positive test case: Exit command in menu state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "bye");
@@ -44,7 +46,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_ListCommand_ShouldReturnListCommand() throws Exception {
+    void testGetCommandListCommandShouldReturnListCommand() throws Exception {
         // Positive test case: List command in both states
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "list");
@@ -64,7 +66,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_SelectCommand_ShouldReturnSelectCommand() throws Exception {
+    void testGetCommandSelectCommandShouldReturnSelectCommand() throws Exception {
         // Positive test case: Select command in both states
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "select");
@@ -85,7 +87,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_DeleteCommand_ShouldReturnDeleteCommand() throws Exception {
+    void testGetCommandDeleteCommandShouldReturnDeleteCommand() throws Exception {
         // Positive test case: Delete command in both states
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "delete");
@@ -106,7 +108,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_HelpCommand_ShouldReturnHelpCommand() throws Exception {
+    void testGetCommandHelpCommandShouldReturnHelpCommand() throws Exception {
         // Positive test case: Help command in both states
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "help");
@@ -126,7 +128,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_AddTripCommand_ShouldReturnAddTripCommand() throws Exception {
+    void testGetCommandAddTripCommandShouldReturnAddTripCommand() throws Exception {
         // Positive test case: AddTrip command in menu state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "add_trip");
@@ -142,7 +144,7 @@ public class CommandFactoryTest {
      * Tests that exception is thrown for "menu" command in menu state (FSM=0).
      */
     @Test
-    void testGetCommand_MenuCommandInMenuState_ShouldThrowException() {
+    void testGetCommandMenuCommandInMenuStateShouldThrowException() {
         // Negative test case: Menu command in menu state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "menu");
@@ -158,7 +160,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_AddPhotoCommand_ShouldReturnAddPhotoCommand() throws Exception {
+    void testGetCommandAddPhotoCommandShouldReturnAddPhotoCommand() throws Exception {
         // Positive test case: AddPhoto command in trip state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "add_photo");
@@ -176,7 +178,7 @@ public class CommandFactoryTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testGetCommand_MenuCommandInTripState_ShouldReturnMenuCommand() throws Exception {
+    void testGetCommandMenuCommandInTripStateShouldReturnMenuCommand() throws Exception {
         // Positive test case: Menu command in trip state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "menu");
@@ -189,7 +191,7 @@ public class CommandFactoryTest {
      * Tests that exception is thrown for "add_trip" command in trip state (FSM=1).
      */
     @Test
-    void testGetCommand_AddTripCommandInTripState_ShouldThrowException() {
+    void testGetCommandAddTripCommandInTripStateShouldThrowException() {
         // Negative test case: AddTrip command in trip state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "add_trip");
@@ -206,7 +208,7 @@ public class CommandFactoryTest {
      * Tests that exception is thrown for "add_photo" command in menu state (FSM=0).
      */
     @Test
-    void testGetCommand_AddPhotoCommandInMenuState_ShouldThrowException() {
+    void testGetCommandAddPhotoCommandInMenuStateShouldThrowException() {
         // Negative test case: AddPhoto command in menu state
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "add_photo");
@@ -223,7 +225,7 @@ public class CommandFactoryTest {
      * Tests that exception is thrown for invalid FSM values (not 0 or 1).
      */
     @Test
-    void testGetCommand_InvalidFsmValue_ShouldThrowException() {
+    void testGetCommandInvalidFsmValueShouldThrowException() {
         // Use a command that is not in the common commands section
         // (not bye, close, select, list, delete, or help)
         Map<String, String> parsedCommand = new HashMap<>();
@@ -242,7 +244,7 @@ public class CommandFactoryTest {
      * Tests that exception is thrown for invalid commands.
      */
     @Test
-    void testGetCommand_InvalidCommand_ShouldThrowException() {
+    void testGetCommandInvalidCommandShouldThrowException() {
         // Negative test case: Invalid command
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "invalid_command");
@@ -260,7 +262,7 @@ public class CommandFactoryTest {
      * Tests that exception is thrown when required parameters are missing.
      */
     @Test
-    void testGetCommand_MissingIndex_ShouldThrowException() {
+    void testGetCommandMissingIndexShouldThrowException() {
         // Negative test case: Missing index for commands that require it
         Map<String, String> parsedCommand = new HashMap<>();
         parsedCommand.put("command", "select");

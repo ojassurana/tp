@@ -43,7 +43,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testAddTripCommand_ValidInputs_ShouldAddTrip() throws Exception {
+    void testAddTripCommandValidInputsShouldAddTrip() throws Exception {
         // Positive test case: Valid inputs
         String name = "Japan Trip";
         String description = "Skiing in Hokkaido";
@@ -62,7 +62,7 @@ public class CommandTest {
      * Tests that AddTripCommand throws TravelDiaryException with null TripManager.
      */
     @Test
-    void testAddTripCommand_NullTripManager_ShouldThrowException() {
+    void testAddTripCommandNullTripManagerShouldThrowException() {
         // Negative test case: Null TripManager
         String name = "Japan Trip";
         String description = "Skiing in Hokkaido";
@@ -81,7 +81,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testListCommand_EmptyTripList_ShouldNotThrowException() throws Exception {
+    void testListCommandEmptyTripListShouldNotThrowException() throws Exception {
         // Positive test case: Empty trip list
         Command command = new ListCommand();
         
@@ -95,7 +95,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testListCommand_WithExistingTrips_ShouldNotThrowException() throws Exception {
+    void testListCommandWithExistingTripsShouldNotThrowException() throws Exception {
         // Positive test case: With existing trips
         // First add some trips
         tripManager.addTrip("Trip 1", "Description 1");
@@ -113,7 +113,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testSelectCommand_ValidIndex_ShouldSelectTrip() throws Exception {
+    void testSelectCommandValidIndexShouldSelectTrip() throws Exception {
         // Positive test case: Valid index
         tripManager.addTrip("Trip 1", "Description 1");
         int validIndex = 0; // Zero-based index
@@ -132,7 +132,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testSelectCommand_InvalidIndex_ShouldThrowException() throws Exception {
+    void testSelectCommandInvalidIndexShouldThrowException() throws Exception {
         // Negative test case: Invalid index - out of bounds
         tripManager.addTrip("Trip 1", "Description 1");
         int invalidIndex = 5; // Out of bounds
@@ -151,7 +151,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testSelectCommand_NegativeIndex_ShouldThrowException() throws Exception {
+    void testSelectCommandNegativeIndexShouldThrowException() throws Exception {
         // Negative test case: Invalid index - negative
         tripManager.addTrip("Trip 1", "Description 1");
         int invalidIndex = -1; // Negative index
@@ -170,7 +170,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testHelpCommand_NullFsmValue_ShouldNotThrowException() throws Exception {
+    void testHelpCommandNullFsmValueShouldNotThrowException() throws Exception {
         // Positive test case: Null FSM value
         Command command = new HelpCommand(null);
         
@@ -184,7 +184,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testHelpCommand_ValidFsmValue_ShouldNotThrowException() throws Exception {
+    void testHelpCommandValidFsmValueShouldNotThrowException() throws Exception {
         // Positive test case: Valid FSM value
         Command command = new HelpCommand("0");
         
@@ -198,7 +198,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testMenuCommand_ShouldNotThrowException() throws Exception {
+    void testMenuCommandShouldNotThrowException() throws Exception {
         // Positive test case
         Command command = new MenuCommand();
         
@@ -210,7 +210,7 @@ public class CommandTest {
      * Tests that ExitCommand correctly returns true for isExit.
      */
     @Test
-    void testExitCommand_ShouldReturnTrueForIsExit() {
+    void testExitCommandShouldReturnTrueForIsExit() {
         // Positive test case
         Command command = new ExitCommand();
         
@@ -224,7 +224,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testDeleteCommand_ValidIndex_ShouldDeleteTrip() throws Exception {
+    void testDeleteCommandValidIndexShouldDeleteTrip() throws Exception {
         // Positive test case: Valid index
         tripManager.addTrip("Trip 1", "Description 1");
         tripManager.addTrip("Trip 2", "Description 2");
@@ -244,7 +244,7 @@ public class CommandTest {
      * @throws Exception if there's an issue with execution
      */
     @Test
-    void testDeleteCommand_InvalidIndex_ShouldThrowException() throws Exception {
+    void testDeleteCommandInvalidIndexShouldThrowException() throws Exception {
         // Negative test case: Invalid index
         tripManager.addTrip("Trip 1", "Description 1");
         int invalidIndex = 5; // Out of bounds

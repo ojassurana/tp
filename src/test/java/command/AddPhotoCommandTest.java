@@ -24,12 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * 3. Positive & Negative Test Cases: Verifying both expected behavior and error handling
  */
 public class AddPhotoCommandTest {
-    private TripManager tripManager;
-    private Ui ui;
     private static final String VALID_FILEPATH = "./data/photos/hongkong_1.jpg";
     private static final String INVALID_FILEPATH = "./data/photos/nonexistent.jpg";
     private static final String VALID_PHOTONAME = "Test Photo";
     private static final String VALID_CAPTION = "Test Caption";
+    
+    private TripManager tripManager;
+    private Ui ui;
 
     /**
      * Sets up the test environment before each test.
@@ -58,7 +59,7 @@ public class AddPhotoCommandTest {
      * Tests that AddPhotoCommand throws exception with null TripManager.
      */
     @Test
-    void testAddPhotoCommand_NullTripManager_ShouldThrowException() {
+    void testAddPhotoCommandNullTripManagerShouldThrowException() {
         // Negative test case: Null TripManager
         Command command = new AddPhotoCommand(VALID_FILEPATH, VALID_PHOTONAME, VALID_CAPTION);
         
@@ -73,7 +74,7 @@ public class AddPhotoCommandTest {
      * @throws TravelDiaryException if there's an issue with the TripManager
      */
     @Test
-    void testAddPhotoCommand_NoSelectedTrip_ShouldThrowException() throws TravelDiaryException {
+    void testAddPhotoCommandNoSelectedTripShouldThrowException() throws TravelDiaryException {
         // Negative test case: No selected trip
         TripManager emptyTripManager = new TripManager();
         emptyTripManager.setSilentMode(true);
@@ -91,7 +92,7 @@ public class AddPhotoCommandTest {
      * Tests that AddPhotoCommand throws exception with invalid file path.
      */
     @Test
-    void testAddPhotoCommand_InvalidFilePath_ShouldThrowException() {
+    void testAddPhotoCommandInvalidFilePathShouldThrowException() {
         // Negative test case: Invalid file path
         // Since we don't have actual photo files, all paths will throw exceptions
         // We can still test that the command correctly handles file-related exceptions
