@@ -1,7 +1,9 @@
+package tracker;
+
 import org.junit.jupiter.api.Test;
 import photo.Photo;
 import album.Album;
-import tracker.Tracker;
+
 import java.util.ArrayList;
 import java.util.List;
 
