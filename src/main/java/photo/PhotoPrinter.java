@@ -1,8 +1,5 @@
 package photo;
 
-import com.drew.imaging.ImageProcessingException;
-import exception.NoMetaDataException;
-import exception.TravelDiaryException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -14,11 +11,9 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Window;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -38,7 +33,10 @@ public class PhotoPrinter {
      * @return PhotoFrame object containing JLabels and JFrame of the printed photo.
      */
     public static PhotoFrame createFrame(Photo photo) throws FileNotFoundException {
+        assert photo != null : "Photo object cannot be null";
         String filePath = photo.getFilePath();
+        assert filePath != null && !filePath.isEmpty() : "Photo file path cannot be null or empty";
+
         if (!(new File(filePath).exists())) {
             throw new FileNotFoundException("File does not exist: " + filePath);
         }
@@ -55,6 +53,10 @@ public class PhotoPrinter {
         JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
         imageLabel.setBorder(BorderFactory.createLineBorder(new Color(51, 36, 33), 5));
 
+        // Assert image icon is correctly loaded
+        assert originalIcon.getIconWidth() > 0 : "Image icon width must be greater than 0";
+        assert originalIcon.getIconHeight() > 0 : "Image icon height must be greater than 0";
+
         // Resize the location pin icon
         ImageIcon locationIcon = new ImageIcon(locationPinIconPath);
         Image scaledLocationImage = locationIcon.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
@@ -62,6 +64,7 @@ public class PhotoPrinter {
 
         // Format the datetime
         LocalDateTime dateTime = photo.getDatetime();
+        assert dateTime != null : "Photo datetime cannot be null";
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
         String formattedDate = dateTime.format(outputFormatter);
 
@@ -73,6 +76,9 @@ public class PhotoPrinter {
 
         // Caption label
         JLabel captionLabel = new JLabel(photo.getCaption(), SwingConstants.CENTER);
+        assert captionLabel.getText() != null &&
+                !captionLabel.getText().isEmpty() : "Caption label text cannot be null or empty";
+
         captionLabel.setFont(new Font("Helvetica", Font.BOLD, 16));
 
         // Adding labels to Frame
@@ -92,15 +98,30 @@ public class PhotoPrinter {
      * @param photoFrame photoFrame object containing the JFrame to be displayed.
      */
     public static void display(PhotoFrame photoFrame) {
+        assert photoFrame != null : "PhotoFrame object cannot be null";
         JFrame frame = photoFrame.getFrame();
         assert frame != null : "JFrame should not be null";
         frame.setVisible(true);
         logger.info(String.format("Photo displayed: %s", photoFrame.getTitle()));
     }
 
+    /**
+     * Closes all open photo windows in the application.
+     * tf there are no open windows,
+     * it outputs a message indicating that all photos have already been closed.
+     * It also logs the details of each closed window.
+     *
+     * Assertions:
+     * - The number of windows (`numOfWindows`) must be non-negative.
+     *
+     * Outputs:
+     * - Logs the closure of each window.
+     * - Prints a message to the console indicating the total number of windows that were closed.
+     */
     public static void closeAllWindows() {
         Window[] windows = Window.getWindows();
         int numOfWindows = windows.length;
+        assert numOfWindows >= 0 : "Number of windows cannot be negative";
         if (numOfWindows == 0) {
             System.out.println("\tAll photos have been closed.");
         } else {
@@ -109,27 +130,6 @@ public class PhotoPrinter {
                 logger.info(String.format("%s photo has been closed.", i + 1));
             }
             System.out.println(String.format("\t%s photo has been closed.", numOfWindows));
-        }
-    }
-
-    // Updated main method for testing purposes.
-    // Note: In production, you would invoke PhotoPrinter from another class rather than using main here.
-    public static void main(String[] args) throws TravelDiaryException, ImageProcessingException,
-            IOException, NoMetaDataException {
-        LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
-        String filePath = "./data/photos/sample1.jpg";
-        String photoName = "First night in Osaka";
-        String caption = "This is a photo of my friends and I in Osaka.";
-        // Create Photo using the updated constructor (location is extracted automatically)
-        Photo photo = new Photo(filePath, photoName, caption, datetime);
-
-        try {
-            // Create PhotoFrame and display it
-            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
-            PhotoPrinter.display(photoFrame);
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
         }
     }
 }

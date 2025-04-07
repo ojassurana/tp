@@ -49,9 +49,9 @@ public class HelpCommand extends Command {
      */
     private void showHelp(int fsm) {
         if (fsm == 0) {
-            System.out.println("============ TRAVEL DIARY HELP: TRIP MODE ============");
+            System.out.println("=============== TRAVEL DIARY HELP: TRIP MODE ===============");
         } else if (fsm == 1) {
-            System.out.println("============ TRAVEL DIARY HELP: PHOTO MODE ============");
+            System.out.println("=============== TRAVEL DIARY HELP: PHOTO MODE ===============");
         }
 
         // General commands - always available
@@ -91,7 +91,9 @@ public class HelpCommand extends Command {
         System.out.println("\n💡 TIPS:");
         System.out.println("• Parameters marked with # must include the prefix (n#, d#, f#, etc.)");
         System.out.println("• Use quotation marks for values containing spaces: n#\"My Trip\"");
-        System.out.println("• The application automatically extracts date, time, and location from photos if possible");
+        System.out.println("• The application automatically extracts date, time, and " +
+                "location from photos if meta data is available.");
+        System.out.println("• Please upload images only in JPG format.");
 
         if (fsm == 0) {
             System.out.println("• Use 'select' to add and manage photos within that trip");
@@ -99,7 +101,7 @@ public class HelpCommand extends Command {
             System.out.println("• Use 'menu' to return to trip management");
         }
 
-        System.out.println("==========================================");
+        System.out.println("============================================================");
     }
 
     @Override
