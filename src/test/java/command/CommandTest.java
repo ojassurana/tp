@@ -16,6 +16,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * Contains test cases for various Command implementations.
  * This test class follows the test case design principles from the NUS SE book:
  * 1. Equivalence Partitioning (EP): Testing representative values from different groups
  * 2. Boundary Value Analysis: Testing edge cases and boundary conditions
@@ -25,6 +26,10 @@ public class CommandTest {
     private TripManager tripManager;
     private Ui ui;
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes a TripManager in silent mode and a UI instance.
+     */
     @BeforeEach
     void setUp() {
         tripManager = new TripManager();
@@ -33,15 +38,9 @@ public class CommandTest {
     }
 
     /**
-     * Tests for AddTripCommand
+     * Tests that AddTripCommand correctly adds a trip with valid inputs.
      * 
-     * Equivalence Partitions for name:
-     * - Valid names (non-empty strings)
-     * - Invalid names (null)
-     * 
-     * Equivalence Partitions for description:
-     * - Valid descriptions (non-empty strings)
-     * - Invalid descriptions (null)
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testAddTripCommand_ValidInputs_ShouldAddTrip() throws Exception {
@@ -59,6 +58,9 @@ public class CommandTest {
         assertEquals(description, tripManager.getTrips().get(0).description);
     }
     
+    /**
+     * Tests that AddTripCommand throws TravelDiaryException with null TripManager.
+     */
     @Test
     void testAddTripCommand_NullTripManager_ShouldThrowException() {
         // Negative test case: Null TripManager
@@ -74,7 +76,9 @@ public class CommandTest {
     }
     
     /**
-     * Tests for ListCommand
+     * Tests that ListCommand works with an empty trip list.
+     * 
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testListCommand_EmptyTripList_ShouldNotThrowException() throws Exception {
@@ -85,6 +89,11 @@ public class CommandTest {
         assertDoesNotThrow(() -> command.execute(tripManager, ui, 0));
     }
     
+    /**
+     * Tests that ListCommand works with existing trips.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testListCommand_WithExistingTrips_ShouldNotThrowException() throws Exception {
         // Positive test case: With existing trips
@@ -99,11 +108,9 @@ public class CommandTest {
     }
     
     /**
-     * Tests for SelectCommand
+     * Tests that SelectCommand correctly selects a trip with valid index.
      * 
-     * Equivalence Partitions for index:
-     * - Valid index (within bounds of trip list)
-     * - Invalid index (negative or >= size of trip list)
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testSelectCommand_ValidIndex_ShouldSelectTrip() throws Exception {
@@ -119,6 +126,11 @@ public class CommandTest {
         assertEquals("Trip 1", tripManager.getSelectedTrip().name);
     }
     
+    /**
+     * Tests that SelectCommand throws exception with an invalid index.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testSelectCommand_InvalidIndex_ShouldThrowException() throws Exception {
         // Negative test case: Invalid index - out of bounds
@@ -133,6 +145,11 @@ public class CommandTest {
         );
     }
     
+    /**
+     * Tests that SelectCommand throws exception with a negative index.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testSelectCommand_NegativeIndex_ShouldThrowException() throws Exception {
         // Negative test case: Invalid index - negative
@@ -148,7 +165,9 @@ public class CommandTest {
     }
     
     /**
-     * Tests for HelpCommand
+     * Tests that HelpCommand works with null FSM value.
+     * 
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testHelpCommand_NullFsmValue_ShouldNotThrowException() throws Exception {
@@ -159,6 +178,11 @@ public class CommandTest {
         assertDoesNotThrow(() -> command.execute(tripManager, ui, 0));
     }
     
+    /**
+     * Tests that HelpCommand works with valid FSM value.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testHelpCommand_ValidFsmValue_ShouldNotThrowException() throws Exception {
         // Positive test case: Valid FSM value
@@ -169,7 +193,9 @@ public class CommandTest {
     }
     
     /**
-     * Tests for MenuCommand
+     * Tests that MenuCommand executes without throwing exceptions.
+     * 
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testMenuCommand_ShouldNotThrowException() throws Exception {
@@ -181,7 +207,7 @@ public class CommandTest {
     }
     
     /**
-     * Tests for ExitCommand
+     * Tests that ExitCommand correctly returns true for isExit.
      */
     @Test
     void testExitCommand_ShouldReturnTrueForIsExit() {
@@ -193,11 +219,9 @@ public class CommandTest {
     }
     
     /**
-     * Tests for DeleteCommand
+     * Tests that DeleteCommand correctly deletes a trip with valid index.
      * 
-     * Equivalence Partitions for index:
-     * - Valid index (within bounds of trip list)
-     * - Invalid index (negative or >= size of trip list)
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testDeleteCommand_ValidIndex_ShouldDeleteTrip() throws Exception {
@@ -214,6 +238,11 @@ public class CommandTest {
         assertEquals("Trip 2", tripManager.getTrips().get(0).name);
     }
     
+    /**
+     * Tests that DeleteCommand throws exception with an invalid index.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testDeleteCommand_InvalidIndex_ShouldThrowException() throws Exception {
         // Negative test case: Invalid index

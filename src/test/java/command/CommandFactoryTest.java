@@ -9,7 +9,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for CommandFactory class following the test case design principles:
+ * Contains test cases for the CommandFactory class.
+ * Tests follow the principles from the NUS SE book:
  * 1. Equivalence Partitioning: Different types of commands in different FSM states
  * 2. Boundary Value Analysis: Edge cases like invalid commands or state transitions
  * 3. Positive and Negative Test Cases: Valid and invalid inputs
@@ -17,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CommandFactoryTest {
 
     /**
-     * Tests for commands available in both FSM states
+     * Tests that ExitCommand is returned for "bye" command in both FSM states.
+     * 
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testGetCommand_ExitCommand_ShouldReturnExitCommand() throws Exception {
@@ -35,6 +38,11 @@ public class CommandFactoryTest {
         assertTrue(command.isExit());
     }
     
+    /**
+     * Tests that ListCommand is returned for "list" command in both FSM states.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testGetCommand_ListCommand_ShouldReturnListCommand() throws Exception {
         // Positive test case: List command in both states
@@ -50,6 +58,11 @@ public class CommandFactoryTest {
         assertTrue(command instanceof ListCommand);
     }
     
+    /**
+     * Tests that SelectCommand is returned for "select" command in both FSM states.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testGetCommand_SelectCommand_ShouldReturnSelectCommand() throws Exception {
         // Positive test case: Select command in both states
@@ -66,6 +79,11 @@ public class CommandFactoryTest {
         assertTrue(command instanceof SelectCommand);
     }
     
+    /**
+     * Tests that DeleteCommand is returned for "delete" command in both FSM states.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testGetCommand_DeleteCommand_ShouldReturnDeleteCommand() throws Exception {
         // Positive test case: Delete command in both states
@@ -82,6 +100,11 @@ public class CommandFactoryTest {
         assertTrue(command instanceof DeleteCommand);
     }
     
+    /**
+     * Tests that HelpCommand is returned for "help" command in both FSM states.
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testGetCommand_HelpCommand_ShouldReturnHelpCommand() throws Exception {
         // Positive test case: Help command in both states
@@ -98,7 +121,9 @@ public class CommandFactoryTest {
     }
     
     /**
-     * Tests for menu state specific commands
+     * Tests that AddTripCommand is returned for "add_trip" command in menu state (FSM=0).
+     * 
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testGetCommand_AddTripCommand_ShouldReturnAddTripCommand() throws Exception {
@@ -113,6 +138,9 @@ public class CommandFactoryTest {
         assertTrue(command instanceof AddTripCommand);
     }
     
+    /**
+     * Tests that exception is thrown for "menu" command in menu state (FSM=0).
+     */
     @Test
     void testGetCommand_MenuCommandInMenuState_ShouldThrowException() {
         // Negative test case: Menu command in menu state
@@ -125,7 +153,9 @@ public class CommandFactoryTest {
     }
     
     /**
-     * Tests for trip state specific commands
+     * Tests that AddPhotoCommand is returned for "add_photo" command in trip state (FSM=1).
+     * 
+     * @throws Exception if there's an issue with execution
      */
     @Test
     void testGetCommand_AddPhotoCommand_ShouldReturnAddPhotoCommand() throws Exception {
@@ -140,6 +170,11 @@ public class CommandFactoryTest {
         assertTrue(command instanceof AddPhotoCommand);
     }
     
+    /**
+     * Tests that MenuCommand is returned for "menu" command in trip state (FSM=1).
+     * 
+     * @throws Exception if there's an issue with execution
+     */
     @Test
     void testGetCommand_MenuCommandInTripState_ShouldReturnMenuCommand() throws Exception {
         // Positive test case: Menu command in trip state
@@ -150,6 +185,9 @@ public class CommandFactoryTest {
         assertTrue(command instanceof MenuCommand);
     }
     
+    /**
+     * Tests that exception is thrown for "add_trip" command in trip state (FSM=1).
+     */
     @Test
     void testGetCommand_AddTripCommandInTripState_ShouldThrowException() {
         // Negative test case: AddTrip command in trip state
@@ -164,6 +202,9 @@ public class CommandFactoryTest {
         );
     }
     
+    /**
+     * Tests that exception is thrown for "add_photo" command in menu state (FSM=0).
+     */
     @Test
     void testGetCommand_AddPhotoCommandInMenuState_ShouldThrowException() {
         // Negative test case: AddPhoto command in menu state
@@ -179,24 +220,27 @@ public class CommandFactoryTest {
     }
     
     /**
-     * Boundary value tests
+     * Tests that exception is thrown for invalid FSM values (not 0 or 1).
      */
     @Test
     void testGetCommand_InvalidFsmValue_ShouldThrowException() {
-        // Test case for "list" command with an invalid FSM value
+        // Use a command that is not in the common commands section
+        // (not bye, close, select, list, delete, or help)
         Map<String, String> parsedCommand = new HashMap<>();
-        parsedCommand.put("command", "list");
+        parsedCommand.put("command", "add_trip");
         
-        // From the CommandFactory implementation, an invalid state (not 0 or 1)
-        // should throw a TravelDiaryException
+        // Invalid FSM value (not 0 or 1) should throw a TravelDiaryException
         TravelDiaryException exception = assertThrows(TravelDiaryException.class, () -> 
-            CommandFactory.getCommand(parsedCommand, 999) // Very large FSM value
+            CommandFactory.getCommand(parsedCommand, 999)
         );
         
         // Verify the exception message
         assertEquals("Invalid state.", exception.getMessage());
     }
     
+    /**
+     * Tests that exception is thrown for invalid commands.
+     */
     @Test
     void testGetCommand_InvalidCommand_ShouldThrowException() {
         // Negative test case: Invalid command
@@ -212,6 +256,9 @@ public class CommandFactoryTest {
         );
     }
     
+    /**
+     * Tests that exception is thrown when required parameters are missing.
+     */
     @Test
     void testGetCommand_MissingIndex_ShouldThrowException() {
         // Negative test case: Missing index for commands that require it
