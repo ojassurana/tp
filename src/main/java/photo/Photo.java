@@ -2,6 +2,7 @@ package photo;
 
 import com.drew.imaging.ImageProcessingException;
 import exception.TravelDiaryException;
+import exception.UnsupportedImageFormatException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +32,12 @@ public class Photo {
             throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
                     "n# (photoname), c# (caption).");
         }
+        
+        // Check if the file has a .jpg extension
+        if (!filePath.toLowerCase().endsWith(".jpg")) {
+            throw new UnsupportedImageFormatException(filePath);
+        }
+        
         this.filePath = filePath;
         this.photoName = photoName;
         this.caption = caption;
