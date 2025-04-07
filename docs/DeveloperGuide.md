@@ -156,6 +156,43 @@ The `TripManager` class:
 * Provides methods to manipulate trips and their contents
 ![Trip Manager Class Diagra](puml_pics/TripManager.png)
 
+#### Model Component Data Structure
+
+The diagram below illustrates the core data model classes that form the backbone of the Travel Diary application:
+
+![Trip Class Diagram](puml_pics/TripClass.png)
+
+The Model consists of the following key classes:
+
+* **Trip**: Represents a user's travel journey, containing basic trip information and an associated album of photos. Each trip has:
+  * A name and description that provide context about the journey
+  * A unique ID for reference
+  * A boolean flag indicating if it's currently selected in the UI
+  * An Album that contains all photos associated with the trip
+
+* **Album**: Acts as a container for photos from a specific trip. The album:
+  * Maintains a collection of Photo objects
+  * Provides methods to add, remove, and retrieve photos
+
+* **Photo**: Stores information about an image file associated with a trip, including:
+  * The filepath to the actual image file
+  * A user-provided name and caption
+  * Datetime information extracted from the image metadata
+  * An optional Location object with geographical coordinates
+
+* **Location**: Represents the geographical location where a photo was taken:
+  * Stores latitude and longitude coordinates
+  * Can include a human-readable location name
+  * Is linked to a Photo when extracted from metadata
+
+The diagram shows the key relationships between these classes:
+* A Trip contains exactly one Album (composition relationship)
+* An Album contains multiple Photos (composition relationship)
+* A Photo may have one Location (optional composition relationship)
+* The TripManager manages multiple Trip objects (aggregation relationship)
+
+These relationships form a hierarchical data structure that mirrors a traveler's natural organization of travel memories.
+
 #### Photo
 ![Photo](puml_pics/photo.png)
 ####
@@ -311,7 +348,7 @@ The app enables roadtrippers to seamlessly track their journeys on the go. It au
 |---------|---------------|------------------------------------------------------|------------------------------------------------------------------|
 | v1.0    | new user      | see usage instructions                              | refer to them when I forget how to use the application          |
 | v1.0    | user          | add a trip with a name and description              | record and organize my travel plans                             |
-| v1.0    | user          | list all my trips                                   | view all the trips I’ve recorded                                |
+| v1.0    | user          | list all my trips                                   | view all the trips I've recorded                                |
 | v1.0    | user          | select a trip                                       | manage the photos associated with that trip                     |
 | v1.0    | user          | delete a trip                                       | remove trips I no longer want to keep                           |
 | v1.0    | user          | add a photo with details                            | store visual memories along with meaningful captions            |
