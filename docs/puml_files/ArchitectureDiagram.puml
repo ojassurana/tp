@@ -1,0 +1,81 @@
+@startuml TravelDiaryArchitecture
+
+package "TravelDiary" {
+  class TravelDiary
+}
+
+package "UI" {
+  class Ui
+}
+
+package "Logic" {
+  class Parser
+  class CommandFactory
+  interface Command
+  class "Command implementations" as CommandImpl
+}
+
+package "Model" {
+  class TripManager
+  class Trip
+  class Photo
+}
+
+package "Storage" {
+  class Storage
+  class StorageReader
+  class StorageWriter
+}
+
+package "Commons" {
+  package "Exceptions" {
+    class TravelDiaryException
+    class InvalidIndexException
+    class CommandNotRecogniseException
+    class FileFormatException
+    class FileReadException
+    class FileWriteException
+    class TripNotSelectedException
+    class ParserException
+    class MissingCompulsoryParameter
+  }
+  class PhotoPrinter
+}
+
+' Main relationships
+TravelDiary --> Ui : uses
+TravelDiary --> TripManager : uses
+TravelDiary --> Parser : uses
+TravelDiary --> Storage : uses
+
+' Logic relationships
+Parser ..> CommandFactory : creates command details for
+CommandFactory ..> Command : creates
+Command <|-- CommandImpl
+CommandImpl --> TripManager : modifies
+CommandImpl --> Ui : interacts with
+
+' Model relationships
+TripManager *-- "0..*" Trip : contains
+Trip *-- "0..*" Photo : contains
+
+' Storage relationships
+Storage --> TripManager : loads/saves
+Storage *-- StorageReader : uses
+Storage *-- StorageWriter : uses
+
+' Exception relationships
+TravelDiaryException <|-- InvalidIndexException
+TravelDiaryException <|-- CommandNotRecogniseException
+TravelDiaryException <|-- FileFormatException
+TravelDiaryException <|-- FileReadException
+TravelDiaryException <|-- FileWriteException
+TravelDiaryException <|-- TripNotSelectedException
+TravelDiaryException <|-- ParserException
+TravelDiaryException <|-- MissingCompulsoryParameter
+
+' Commons relationships
+CommandImpl ..> PhotoPrinter : may use
+CommandImpl ..> TravelDiaryException : throws
+
+@enduml

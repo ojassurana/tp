@@ -1,6 +1,7 @@
 package photo;
 
 import com.drew.imaging.ImageProcessingException;
+import exception.NoMetaDataException;
 import exception.TravelDiaryException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -113,7 +114,8 @@ public class PhotoPrinter {
 
     // Updated main method for testing purposes.
     // Note: In production, you would invoke PhotoPrinter from another class rather than using main here.
-    public static void main(String[] args) throws TravelDiaryException, ImageProcessingException, IOException {
+    public static void main(String[] args) throws TravelDiaryException, ImageProcessingException,
+            IOException, NoMetaDataException {
         LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
         String filePath = "./data/photos/sample1.jpg";

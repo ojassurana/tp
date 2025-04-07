@@ -1,4 +1,4 @@
-import trip.TripManager;
+package trip;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

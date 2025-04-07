@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import exception.NoDateTimeMetaDataException;
+import exception.NoGPSMetaDataException;
+import exception.NoMetaDataException;
+import tracker.Tracker;
+
 public class PhotoMetadataExtractor {
 
     // Static KD-tree instance, built from the CSV file.
@@ -34,7 +39,7 @@ public class PhotoMetadataExtractor {
      *
      * @param filepath the path to the image file
      */
-    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException {
+    public PhotoMetadataExtractor(String filepath) throws IOException, ImageProcessingException, NoMetaDataException {
         File imageFile = new File(filepath);
         Metadata metadata = ImageMetadataReader.readMetadata(imageFile);
         ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
@@ -48,7 +53,7 @@ public class PhotoMetadataExtractor {
                         .toLocalDateTime();
                 this.datetime = localDate;
             } else {
-                throw new ImageProcessingException("No DateTime metadata found.");
+                throw new NoDateTimeMetaDataException();
             }
 
             GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
@@ -61,11 +66,10 @@ public class PhotoMetadataExtractor {
                 this.longitude = extractedLon;
                 this.location = getLocationFromCoordinates(extractedLat, extractedLon);
             } else {
-                throw new ImageProcessingException("No GPS Data Found \n" +
-                        "please insert photo with GPS metadata");
+                throw new NoGPSMetaDataException();
             }
         } else{
-            throw new ImageProcessingException("No Metadata Found");
+            throw new NoMetaDataException();
         }
     }
 
@@ -93,7 +97,7 @@ public class PhotoMetadataExtractor {
             }
         }
         City initialBest = kdTree.city;
-        double initDist = haversine(latitude, longitude, initialBest.lat, initialBest.lon);
+        double initDist = Tracker.calculateHaversineDistance(latitude, longitude, initialBest.lat, initialBest.lon);
         City nearest = searchKDTree(kdTree, latitude, longitude, 0, initialBest, initDist);
         return nearest.name + ", " + nearest.country;
     }
@@ -196,26 +200,6 @@ public class PhotoMetadataExtractor {
     }
 
     /**
-     * Calculates the great-circle distance between two points (lat1, lon1) and (lat2, lon2).
-     *
-     * @param lat1 latitude of point 1
-     * @param lon1 longitude of point 1
-     * @param lat2 latitude of point 2
-     * @param lon2 longitude of point 2
-     * @return distance in kilometers
-     */
-    private static double haversine(double lat1, double lon1, double lat2, double lon2) {
-        final double earthRadius = 6371.0; // Earth's radius in kilometers
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return earthRadius * c;
-    }
-
-    /**
      * Recursively searches the KD-Tree for the nearest city to (lat, lon).
      *
      * @param node     the current KDNode
@@ -231,7 +215,7 @@ public class PhotoMetadataExtractor {
         if (node == null) {
             return best;
         }
-        double d = haversine(lat, lon, node.city.lat, node.city.lon);
+        double d = Tracker.calculateHaversineDistance(lat, lon, node.city.lat, node.city.lon);
         City currentBest = best;
         double currentBestDist = bestDist;
         if (d < currentBestDist) {
@@ -259,7 +243,7 @@ public class PhotoMetadataExtractor {
             }
         }
         currentBest = searchKDTree(goodSide, lat, lon, depth + 1, currentBest, currentBestDist);
-        currentBestDist = haversine(lat, lon, currentBest.lat, currentBest.lon);
+        currentBestDist = Tracker.calculateHaversineDistance(lat, lon, currentBest.lat, currentBest.lon);
 
         double delta;
         if (axis == 0) {
