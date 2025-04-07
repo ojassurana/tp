@@ -68,6 +68,8 @@ add_trip n#2025 Great Barrier Reef d#Summer break with family
 add_trip n#2025 Kyoto Tour d#Winter exchange
 ```
 
+> **Note:** Trip date ranges are automatically determined based on the dates of photos added to the trip. The earliest photo date becomes the trip start date, and the latest photo date becomes the trip end date. You cannot manually set these dates when creating a trip.
+
 ### Deleting a Trip
 
 Deletes a trip from the collection.
