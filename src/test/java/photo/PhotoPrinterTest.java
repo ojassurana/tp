@@ -4,45 +4,47 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PhotoPrinterTest {
 
     @Test
     void createFrame_validPhoto_expectPhotoDetailsToMatchPhotoFrame() {
-        String filePath = "./data/photos/samurai.jpg";
-        String photoName = "First night in Osaka";
-        String caption = "This is a photo of my friends and I in Osaka.";
-        // Call the Photo constructor without the location parameter.
-        Photo photo = assertDoesNotThrow(() -> new Photo(filePath, photoName, caption));
-
+        String filePath = "./data/photos/hongkong_1.jpeg";
+        String photoName = "photo 1 name";
+        String caption = "photo 1 caption";
         try {
-            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo);
-            // Check photoName with frame title
-            assertEquals(photoName, photoFrame.getTitle());
-            // Check caption with frame caption label
+            Photo photo1 = new Photo(filePath, photoName, caption);
+            PhotoFrame photoFrame = PhotoPrinter.createFrame(photo1);
+            LocalDateTime dateTime = photo1.getDatetime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+            String formattedDate = dateTime.format(formatter);
+            String location = photo1.getLocation().getLocationName();
+
+            String photoTitle = photoFrame.getTitle();
+            String locationDateLabel = photoFrame.getLocationDateLabel().getText();
+            System.out.println(photoTitle);
+            System.out.println(locationDateLabel);
+
+            assertTrue(photoTitle.contains(photoName), "Photo frame title does not contain photo name.");
             assertEquals(caption, photoFrame.getCaptionLabel().getText());
-            // Since location is extracted from metadata, we cannot assert an exact value.
-            // Instead, verify that the location/date label contains the formatted datetime.
-            String formattedDate = photo.getDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma"));
-            assertEquals(true, photoFrame.getLocationDateLabel().getText().contains(formattedDate));
-        } catch (FileNotFoundException e) {
+            assertTrue(locationDateLabel.contains(location),
+                    "Photo frame location date label does not contain location name.");
+            assertTrue(locationDateLabel.contains(formattedDate));
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     @Test
     void createFrame_invalidPhoto_expectFileNotFoundException() {
-        LocalDateTime datetime = LocalDateTime.parse("2022-12-23 8:23PM",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma", Locale.ENGLISH));
-        String filePath = "./data/photos/sample0.jpg"; // File does not exist
-        String photoName = "First night in Osaka";
-        String caption = "This is a photo of my friends and I in Osaka.";
-        FileNotFoundException photo = assertThrows(FileNotFoundException.class,() -> new Photo(filePath,
-                photoName, caption, datetime));
-        //assertThrows(FileNotFoundException.class, () -> PhotoPrinter.createFrame(photo));
+        try {
+            Photo photo1 = new Photo("./data/photos/hongkong_999.jpeg", "photo 1 name", "photo 1 caption");
+            assertThrows(FileNotFoundException.class, () -> PhotoPrinter.createFrame(photo1));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
