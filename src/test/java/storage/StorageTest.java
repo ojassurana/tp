@@ -54,7 +54,8 @@ class StorageTest {
 
     @Test
     void saveAndLoadTrips() throws TravelDiaryException, FileWriteException, FileReadException, FileFormatException,
-            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException, DuplicateNameException, MissingCompulsoryParameter {
+            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException,
+            DuplicateNameException, MissingCompulsoryParameter, MetadataFilepathNotFound {
         // Create some test trips
         tripManager.addTrip("Test Trip 1", "Test Description 1");
         tripManager.addTrip("Test Trip 2", "Test Description 2");

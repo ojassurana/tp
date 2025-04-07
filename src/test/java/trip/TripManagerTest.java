@@ -52,7 +52,7 @@ class TripManagerTest {
     }
 
     @Test
-    void testAddTripSilently() throws TravelDiaryException, MissingCompulsoryParameter {
+    void testAddTripSilently() throws TravelDiaryException, MissingCompulsoryParameter, DuplicateNameException {
         Trip trip = tripManager.addTripSilently("Korea Trip", "Cherry Blossoms in Seoul");
         org.junit.jupiter.api.Assertions.assertNotNull(trip);
         org.junit.jupiter.api.Assertions.assertEquals("Korea Trip", trip.name);

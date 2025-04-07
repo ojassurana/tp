@@ -1,10 +1,7 @@
 package album;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.MetadataFilepathNotFound;
-import exception.NoMetaDataException;
-import exception.TravelDiaryException;
-import exception.InvalidIndexException;
+import exception.*;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
@@ -57,11 +54,21 @@ public class Album {
      * @param datetime the datetime when the photo was taken
      * @throws TravelDiaryException if required parameters are missing
      * @throws ImageProcessingException if there is an error processing the image
-     * @throws IOException if there is an error reading the file
      * @throws NoMetaDataException if the photo has no metadata
      */
     public void addPhoto(String filePath, String photoName, String caption, LocalDateTime datetime)
-            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException,
+            DuplicateNameException, DuplicateFilepathException {
+        boolean anyContainsDuplicateName = photos.stream()
+                .anyMatch(s -> s.getPhotoName().equals(photoName));
+        if (anyContainsDuplicateName){
+            throw new DuplicateNameException("photo", photoName);
+        }
+        boolean anyContainsDuplicateFilepath = photos.stream()
+                .anyMatch(s -> s.getFilePath().equals(filePath));
+        if (anyContainsDuplicateFilepath){
+            throw new DuplicateFilepathException("photo", filePath);
+        }
         photos.add(new Photo(filePath, photoName, caption, datetime));
         if (!silentMode) {
             System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);
@@ -77,11 +84,21 @@ public class Album {
      * @param caption the caption for the photo
      * @throws TravelDiaryException if required parameters are missing
      * @throws ImageProcessingException if there is an error processing the image
-     * @throws IOException if there is an error reading the file
      * @throws NoMetaDataException if the photo has no metadata
      */
     public void addPhoto(String filePath, String photoName, String caption)
-            throws TravelDiaryException, ImageProcessingException, NoMetaDataException, MetadataFilepathNotFound {
+            throws TravelDiaryException, ImageProcessingException, NoMetaDataException,
+            MetadataFilepathNotFound, DuplicateNameException, DuplicateFilepathException {
+        boolean anyContainsDuplicateName = photos.stream()
+                .anyMatch(s -> s.getPhotoName().equals(photoName));
+        if (anyContainsDuplicateName){
+            throw new DuplicateNameException("photo", photoName);
+        }
+        boolean anyContainsDuplicateFilepath = photos.stream()
+                .anyMatch(s -> s.getFilePath().equals(filePath));
+        if (anyContainsDuplicateFilepath){
+            throw new DuplicateFilepathException("photo", filePath);
+        }
         photos.add(new Photo(filePath, photoName, caption));
         if (!silentMode) {
             System.out.printf("\tPhoto [%s] has been added successfully.\n", photoName);

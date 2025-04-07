@@ -3,18 +3,7 @@ package seedu.duke;
 import com.drew.imaging.ImageProcessingException;
 import command.Command;
 import command.CommandFactory;
-import exception.InvalidIndexException;
-import exception.CommandNotRecogniseException;
-import exception.NoMetaDataException;
-import exception.TripNotSelectedException;
-import exception.ParserException;
-import exception.FileFormatException;
-import exception.FileReadException;
-import exception.FileWriteException;
-import exception.TravelDiaryException;
-import exception.MissingCompulsoryParameter;
-import exception.DuplicateNameException;
-import exception.MetadataFilepathNotFound;
+import exception.*;
 import parser.Parser;
 import photo.PhotoPrinter;
 import storage.Storage;
@@ -99,7 +88,7 @@ public class TravelDiary {
             }
         } catch (TravelDiaryException | NumberFormatException | MissingCompulsoryParameter | ImageProcessingException |
                  NoMetaDataException | IOException | TripNotSelectedException | DuplicateNameException |
-                 MetadataFilepathNotFound e) {
+                 DuplicateFilepathException | MetadataFilepathNotFound e) {
             ui.showToUser(e.getMessage());
             return false;
         }

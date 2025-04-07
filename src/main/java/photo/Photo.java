@@ -94,6 +94,10 @@ public class Photo {
         return this.filePath;
     }
 
+    public String getLocationName() {
+        return locationName;
+    }
+
     /**
      * Returns the name of the photo.
      * @return The photo name.

@@ -1,10 +1,7 @@
 package command;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.MetadataFilepathNotFound;
-import exception.MissingCompulsoryParameter;
-import exception.NoMetaDataException;
-import exception.TravelDiaryException;
+import exception.*;
 import trip.TripManager;
 import ui.Ui;
 
@@ -58,7 +55,7 @@ public class AddPhotoCommand extends Command {
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
             TravelDiaryException, ImageProcessingException,
-            NoMetaDataException, MetadataFilepathNotFound {
+            NoMetaDataException, MetadataFilepathNotFound, DuplicateNameException, DuplicateFilepathException {
         logger.info("Executing AddPhotoCommand");
 
         if (tripManager == null) {

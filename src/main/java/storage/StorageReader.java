@@ -2,14 +2,7 @@ package storage;
 
 import album.Album;
 import com.drew.imaging.ImageProcessingException;
-import exception.FileFormatException;
-import exception.NoMetaDataException;
-import exception.PhotoLoadException;
-import exception.TravelDiaryException;
-import exception.TripLoadException;
-import exception.MetadataFilepathNotFound;
-import exception.DuplicateNameException;
-import exception.MissingCompulsoryParameter;
+import exception.*;
 import trip.Trip;
 import trip.TripManager;
 
@@ -251,7 +244,8 @@ public class StorageReader {
             addPhotoWithSilentMode(currentTrip, photoPath, photoName, caption, photoTime);
         } catch (DateTimeParseException e) {
             throw new FileFormatException(filePath, lineNumber, e);
-        } catch (TravelDiaryException | ImageProcessingException | MetadataFilepathNotFound e) {
+        } catch (TravelDiaryException | ImageProcessingException | MetadataFilepathNotFound |
+                 DuplicateNameException | DuplicateFilepathException e) {
             String photoName = extractPhotoNameForError(parts, 2);
             String photoPath = extractPhotoNameForError(parts, 1);
             throw new PhotoLoadException(photoName, photoPath, e);
@@ -263,7 +257,8 @@ public class StorageReader {
      */
     private static void addPhotoWithSilentMode(Trip trip, String photoPath, String photoName,
                                                String caption, LocalDateTime photoTime)
-            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException,
+            DuplicateNameException, DuplicateFilepathException {
         // Get current album silent mode setting before adding photo
         boolean originalSilentMode = trip.album.isSilentMode();
         // Use silent mode during loading
