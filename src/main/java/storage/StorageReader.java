@@ -2,7 +2,15 @@ package storage;
 
 import album.Album;
 import com.drew.imaging.ImageProcessingException;
-import exception.*;
+import exception.NoMetaDataException;
+import exception.FileFormatException;
+import exception.TravelDiaryException;
+import exception.MissingCompulsoryParameter;
+import exception.MetadataFilepathNotFound;
+import exception.DuplicateFilepathException;
+import exception.DuplicateNameException;
+import exception.TripLoadException;
+import exception.PhotoLoadException;
 import trip.Trip;
 import trip.TripManager;
 
@@ -15,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class StorageReader {
@@ -90,7 +97,7 @@ public class StorageReader {
                     throw new FileFormatException(filePath, lineNumber, e);
                 }
                 System.out.println(e.getMessage());
-//                throw e;
+                //throw e;
             }
         }
 
@@ -203,7 +210,7 @@ public class StorageReader {
      * @param parts
      * @param tripManager
      * @param filePath
-     * @return
+     * @return trip
      * @throws TripLoadException error that stems when creating trip object
      * @throws FileFormatException error that stems when the txt file is not valid
      */

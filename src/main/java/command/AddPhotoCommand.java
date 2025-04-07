@@ -1,7 +1,12 @@
 package command;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.*;
+import exception.MissingCompulsoryParameter;
+import exception.NoMetaDataException;
+import exception.TravelDiaryException;
+import exception.DuplicateNameException;
+import exception.DuplicateFilepathException;
+import exception.MetadataFilepathNotFound;
 import trip.TripManager;
 import ui.Ui;
 

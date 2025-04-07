@@ -1,7 +1,13 @@
 package command;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.*;
+import exception.MissingCompulsoryParameter;
+import exception.NoMetaDataException;
+import exception.TravelDiaryException;
+import exception.DuplicateNameException;
+import exception.DuplicateFilepathException;
+import exception.MetadataFilepathNotFound;
+import exception.InvalidIndexException;
 
 import trip.TripManager;
 import ui.Ui;
@@ -45,5 +51,6 @@ public abstract class Command {
      */
     public abstract void execute(TripManager tripManager, Ui ui, int fsmValue) throws
             TravelDiaryException, MissingCompulsoryParameter, InvalidIndexException, IOException,
-            ImageProcessingException, NoMetaDataException, DuplicateNameException, MetadataFilepathNotFound, DuplicateFilepathException;
+            ImageProcessingException, NoMetaDataException, DuplicateNameException, MetadataFilepathNotFound,
+            DuplicateFilepathException;
 }

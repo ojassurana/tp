@@ -1,12 +1,16 @@
 package album;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.*;
+import exception.NoMetaDataException;
+import exception.TravelDiaryException;
+import exception.InvalidIndexException;
+import exception.DuplicateFilepathException;
+import exception.DuplicateNameException;
+import exception.MetadataFilepathNotFound;
 import photo.Photo;
 import photo.PhotoFrame;
 import photo.PhotoPrinter;
 import tracker.Tracker;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

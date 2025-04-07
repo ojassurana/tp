@@ -35,7 +35,8 @@ public class AddPhotoCommandTest {
      * @throws IndexOutOfRangeException if there's an issue with trip selection
      */
     @BeforeEach
-    void setUp() throws TravelDiaryException, IndexOutOfRangeException, DuplicateNameException, MissingCompulsoryParameter {
+    void setUp() throws TravelDiaryException, IndexOutOfRangeException, DuplicateNameException,
+            MissingCompulsoryParameter {
         tripManager = new TripManager();
         tripManager.setSilentMode(true);
         ui = new Ui();
