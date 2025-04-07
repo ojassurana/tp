@@ -2,7 +2,7 @@ package exception;
 
 public class InvalidIndexException extends Exception {
     public static final String DEFAULT_MESSAGE =
-            "\n\tPlease specific a valid Index." ;
+            "\n\tPlease specify a valid Index." ;
     public InvalidIndexException() {
         super(DEFAULT_MESSAGE);
     }
