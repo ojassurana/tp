@@ -4,6 +4,7 @@ import com.drew.imaging.ImageProcessingException;
 import exception.FileFormatException;
 import exception.FileReadException;
 import exception.FileWriteException;
+import exception.NoMetaDataException;
 import exception.TravelDiaryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,7 +58,7 @@ class StorageTest {
 
     @Test
     void saveAndLoadTrips() throws TravelDiaryException, FileWriteException, FileReadException, FileFormatException,
-            ImageProcessingException, IOException {
+            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException {
         // Create some test trips
         tripManager.addTrip("Test Trip 1", "Test Description 1");
         tripManager.addTrip("Test Trip 2", "Test Description 2");
@@ -95,7 +97,8 @@ class StorageTest {
     }
 
     @Test
-    void loadTripsWithNonExistentFileCreatesEmptyFile() throws FileReadException, FileFormatException {
+    void loadTripsWithNonExistentFileCreatesEmptyFile() throws FileReadException,
+            FileFormatException, NoMetaDataException {
         String nonExistentPath = tempDir.resolve("non_existent.dat").toString();
         Storage.loadTrips(tripManager, nonExistentPath, true);
 
