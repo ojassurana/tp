@@ -9,6 +9,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+/**
+ * Represents a Photo with metadata including file path, name, caption,
+ * location, and datetime. This class extracts and stores metadata from
+ * the photo file using the PhotoMetadataExtractor.
+ */
 public class Photo {
     private String filePath;
     private String photoName;
@@ -18,14 +23,18 @@ public class Photo {
     private Location location;
 
     /**
-     * Constructs a Photo object.
-     * Inputs:
-     *  - filePath: the photo file path
-     *  - photoName: name of the photo
-     *  - caption: caption for the photo
-     *  - datetime: optional; if null, metadata or current time is used.
+     * Constructs a Photo object with all specified parameters.
+     * If datetime is null, it attempts to extract the datetime from
+     * the photo metadata or defaults to the current time.
      *
-     * The location and coordinates are extracted from the photo file via PhotoMetadataExtractor.
+     * @param filePath The file path of the photo.
+     * @param photoName The name of the photo.
+     * @param caption The caption for the photo.
+     * @param datetime The optional datetime; null to use metadata or current time.
+     * @throws TravelDiaryException If required parameters are missing.
+     * @throws IOException If an error occurs while accessing the file.
+     * @throws ImageProcessingException If an error occurs while processing the image.
+     * @throws NoMetaDataException If the photo has no metadata.
      */
     public Photo(String filePath, String photoName, String caption, LocalDateTime datetime)
             throws TravelDiaryException, IOException, ImageProcessingException, NoMetaDataException {
@@ -33,54 +42,96 @@ public class Photo {
             throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
                     "n# (photoname), c# (caption).");
         }
-        
+
         // Check if the file has a .jpg extension
         if (!filePath.toLowerCase().endsWith(".jpg")) {
             throw new UnsupportedImageFormatException(filePath);
         }
-        
+
         this.filePath = filePath;
         this.photoName = photoName;
         this.caption = caption;
 
         extractData(filePath, datetime);
-
     }
 
-    // Overloaded constructor without datetime parameter.
+    /**
+     * Constructs a Photo object without specifying datetime.
+     * Defaults datetime to metadata or current time.
+     *
+     * @param filePath The file path of the photo.
+     * @param photoName The name of the photo.
+     * @param caption The caption for the photo.
+     * @throws TravelDiaryException If required parameters are missing.
+     * @throws IOException If an error occurs while accessing the file.
+     * @throws ImageProcessingException If an error occurs while processing the image.
+     * @throws NoMetaDataException If the photo has no metadata.
+     */
     public Photo(String filePath, String photoName, String caption) throws TravelDiaryException,
             ImageProcessingException, IOException, NoMetaDataException {
         this(filePath, photoName, caption, null);
     }
 
+    /**
+     * Returns the file path of the photo.
+     * @return The file path of the photo.
+     */
     public String getFilePath() {
         return this.filePath;
     }
 
+    /**
+     * Returns the name of the photo.
+     * @return The photo name.
+     */
     public String getPhotoName() {
         return this.photoName;
     }
 
+    /**
+     * Returns the caption of the photo.
+     * @return The photo caption.
+     */
     public String getCaption() {
         return this.caption;
     }
 
+    /**
+     * Returns the location associated with the photo.
+     * @return The photo's location as a Location object.
+     */
     public Location getLocation() {
         return this.location;
     }
 
+    /**
+     * Returns the datetime associated with the photo.
+     * @return The datetime of the photo as a LocalDateTime object.
+     */
     public LocalDateTime getDatetime() {
         return this.datetime;
     }
 
-
     /**
-     * Returns true if the extracted location name is valid (not null, not empty, and not "Location not found").
+     * Checks whether the photo has a valid location name.
+     * A valid location name is not null, not empty, and not "Location not found".
+     *
+     * @return True if the location name is valid; false otherwise.
      */
     public boolean hasLocationName() {
         return locationName != null && !locationName.isEmpty() && !locationName.equals("Location not found");
     }
 
+    /**
+     * Extracts metadata from the photo file including location and datetime.
+     * If the datetime is provided, it uses that instead of metadata.
+     *
+     * @param filePath The file path of the photo.
+     * @param datetime The optional datetime; null to use metadata or current time.
+     * @throws ImageProcessingException If an error occurs while processing the image.
+     * @throws IOException If an error occurs while accessing the file.
+     * @throws NoMetaDataException If the photo has no metadata.
+     */
     private void extractData(String filePath, LocalDateTime datetime) throws ImageProcessingException,
             IOException, NoMetaDataException {
         // Use PhotoMetadataExtractor to extract metadata from the image.
@@ -94,6 +145,7 @@ public class Photo {
         double latitude = (latObj instanceof Number) ? ((Number) latObj).doubleValue() : 0.0;
         double longitude = (lonObj instanceof Number) ? ((Number) lonObj).doubleValue() : 0.0;
         LocalDateTime extractedDateTime;
+
         // Set the datetime: use provided datetime if non-null, otherwise fallback to metadata or current time.
         if (datetime != null) {
             extractedDateTime = datetime;
@@ -105,10 +157,16 @@ public class Photo {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
         this.datetime = extractedDateTime.minusHours(8); // Convert to GMT +8.
 
-        // Store longitude, latitude and locationname as Location class.
+        // Store longitude, latitude, and locationName as a Location class.
         this.location = new Location(latitude, longitude, locationName);
     }
 
+    /**
+     * Returns a string representation of the Photo object, including the photo name,
+     * location, datetime, and caption.
+     *
+     * @return A formatted string with the photo's details.
+     */
     @Override
     public String toString() {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
