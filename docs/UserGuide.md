@@ -148,6 +148,8 @@ add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 
 > **Note:** This program only accepts .jpg images.
 
+> **Important:** Only images with GPS data can be uploaded. You can use [Online EXIF Viewer](https://onlineexifviewer.com/) to check if your images contain GPS data before uploading them.
+
 ### Selecting a Photo
 
 Select an existing photo to view content and display its details.
