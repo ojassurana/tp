@@ -1,5 +1,8 @@
 @startuml TravelDiaryArchitecture
 
+hide circle
+skinparam classAttributeIconSize 0
+
 package "TravelDiary" {
   class TravelDiary
 }

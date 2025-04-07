@@ -1,6 +1,11 @@
 @startuml
+hide circle
+skinparam classAttributeIconSize 0
+package trip {
+
 class TripManager {
     - trips: List<Trip>
+    - selectedTrip: Trip
     + addTrip(name: String, description: String): void
     + addTripSilently(name: String, description: String): Trip
     + setSelectedTrip(selectedTrip: Trip): void
@@ -11,5 +16,18 @@ class TripManager {
     + getTrips(): List<Trip>
 }
 
-TripManager --> Trip: manages >
+class Trip {
+    - name: String
+    - description: String
+    - album: Album
+    + Trip(name: String, description: String)
+    + getAlbumDetails(): String
+    + getAlbum(): Album
+    + toString(): String
+}
+
+TripManager --> Trip : manages >
+Trip --> Album : contains >
+Trip --> Tracker : uses >
+}
 @enduml
