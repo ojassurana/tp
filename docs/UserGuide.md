@@ -68,6 +68,8 @@ add_trip n#2025 Great Barrier Reef d#Summer break with family
 add_trip n#2025 Kyoto Tour d#Winter exchange
 ```
 
+> **Note:** Trip date ranges are automatically determined based on the dates of photos added to the trip. The earliest photo date becomes the trip start date, and the latest photo date becomes the trip end date. You cannot manually set these dates when creating a trip.
+
 ### Deleting a Trip
 
 Deletes a trip from the collection.
@@ -143,6 +145,8 @@ add_photo f#FILENAME n#PHOTONAME c#CAPTION
 add_photo f#desktop/bali.jpg n#Dog c#Wow
 add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 ```
+
+> **Note:** This program only accepts .jpg images.
 
 ### Selecting a Photo
 
