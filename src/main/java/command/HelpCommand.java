@@ -37,6 +37,7 @@ public class HelpCommand extends Command {
         int fsmToUse = (helpFsmValue == 0 || helpFsmValue == 1) ? helpFsmValue : fsmValue;
 
         showHelp(fsmToUse);
+        this.fsmValue = fsmValue; // Preserve the current FSM value
     }
 
     /**
