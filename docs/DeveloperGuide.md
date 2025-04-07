@@ -1,7 +1,4 @@
 # Developer Guide
-
-## Acknowledgements
-
 ## Setting up, getting started
 
 ### Prerequisites
@@ -42,15 +39,15 @@ Importing as a Gradle project is different from a normal Java project. Be sure t
 
 ## Design
 
-# Architecture
+### Architecture
 
-## Architecture Diagram
+#### Architecture Diagram
 ![Class Diagram for Architecture](puml_pics/TravelDiaryArchitectureClass.png)
 The Architecture Diagram above explains the high-level design of the Travel Diary App.
 
 Given below is a quick overview of main components and how they interact with each other.
 
-## Main components of the architecture
+#### Main components of the architecture
 
 **Main** (implemented in `TravelDiary` class) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence and connects them with each other.
@@ -65,9 +62,9 @@ The bulk of the app's work is done by the following four components:
 
 **Commons** represents a collection of classes used by multiple components, including exceptions and utility classes.
 
-## How the architecture components interact with each other
+#### How the architecture components interact with each other
 
-### Component Interactions
+##### Component Interactions
 
 The sequence diagram below shows a typical interaction flow when a user enters a command:
 ![Sequence Diagram for Architecture](puml_pics/TravelDiarySequenceDiagram.png)
@@ -80,25 +77,13 @@ The sequence diagram below shows a typical interaction flow when a user enters a
 6. After command execution, any changes are saved via **Storage**
 7. Results are displayed to the user through the **UI**
 
-### State Management
+##### State Management
 
 The application uses a Finite State Machine (FSM) to track the user's current context:
 * State 0: No trip selected
 * State 1: Inside a specific trip
 
 This state affects which commands are available and how they're processed.
-
-## Component Details
-
-### Main Component
-
-The `TravelDiary` class:
-* Initializes the UI, TripManager, and logging
-* Loads existing trips from storage
-* Processes user commands in a continuous loop until exit
-* Saves all trips before exiting
-* Manages the FSM state that tracks user context
-
 
 ### UI Component
 
@@ -134,36 +119,34 @@ The Logic component consists of:
 
 Commands are executed based on the current FSM state, ensuring context-appropriate behavior.
 
-
 #### Parser
 ![Parser](puml_pics/parser_class_diagram.png)
-####
+
 - Contains static classes
 - Parse input based on tags
 - Return hashmap based on command name and tags
 
-#### Parsing Input
+##### Parsing Input
 The parsing process convert input and return hashmap which will be processed by CommandFactory.
 
 ![Sequence diagram for parsing data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/Parser%20sequence%20diagram.png)
 
-The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+The sequence diagram above illustrates how the parsing process works:
 
 1. The parsing will be split by space and tags
 2. The return value for this parsing will be a hashmap <String, String>
 3. The hashmap will be process to CommandFactory which will return the corresponding command
 
-#### Command Sequence
+##### Command Sequence
 The hashmap will be process based on its Command key value in the hashmap
 
 ![Sequence diagram for command process](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/command%20sequence%20diagram.png)
 
-The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+The sequence diagram above illustrates how the command processing works:
 
 1. The hashmap will always have a key `"command"`
 2. The value of hashmap.get(`"command"`) will be the commandName eg. `"list"`
 3. This value will be used to get the corresponding command eg. `ListCommand`
-
 
 ### Model Component
 
@@ -171,21 +154,53 @@ The `TripManager` class:
 * Stores and manages all trips
 * Maintains the current selected trip
 * Provides methods to manipulate trips and their contents
-![Trip Manager Class Diagra](puml_pics/TripManager.png)
+![Trip Manager Class Diagram](puml_pics/TripManager.png)
+
+#### Model Component Data Structure
+
+The diagram below illustrates the core data model classes that form the backbone of the Travel Diary application:
+
+![Trip Class Diagram](puml_pics/TripClass.png)
+
+The Model consists of the following key classes:
+
+* **Trip**: Represents a user's travel journey, containing basic trip information and an associated album of photos. Each trip has:
+  * A name and description that provide context about the journey
+  * A unique ID for reference
+  * A boolean flag indicating if it's currently selected in the UI
+  * An Album that contains all photos associated with the trip
+
+* **Album**: Acts as a container for photos from a specific trip. The album:
+  * Maintains a collection of Photo objects
+  * Provides methods to add, remove, and retrieve photos
+
+* **Photo**: Stores information about an image file associated with a trip, including:
+  * The filepath to the actual image file
+  * A user-provided name and caption
+  * Datetime information extracted from the image metadata
+  * An optional Location object with geographical coordinates
+
+* **Location**: Represents the geographical location where a photo was taken:
+  * Stores latitude and longitude coordinates
+  * Can include a human-readable location name
+  * Is linked to a Photo when extracted from metadata
+
+The diagram shows the key relationships between these classes:
+* A Trip contains exactly one Album (composition relationship)
+* An Album contains multiple Photos (composition relationship)
+* A Photo may have one Location (optional composition relationship)
+* The TripManager manages multiple Trip objects (aggregation relationship)
+
+These relationships form a hierarchical data structure that mirrors a traveler's natural organization of travel memories.
 
 #### Photo
 ![Photo](puml_pics/photo.png)
-####
+
 - Stores image data with file paths and captions.
-
 - Extracts metadata from image files using PhotoMetadataExtractor.
-
 - Links each photo to a specific Location.
-
 - Supports comparison of photos by datetime using PhotoDateTimeComparator.
-
 - Can be displayed using PhotoPrinter.
-
 
 ### Storage Component
 
@@ -245,7 +260,7 @@ The architecture allows for easy extension:
 
 ## Implementation
 
-### Storage Component
+### Storage Component Implementation
 The **Storage** component is implemented as a utility class with static methods for interacting with persistent storage. It employs the custom text file format described in the design section.
 
 #### Key Operations
@@ -294,35 +309,31 @@ The exception handling system addresses various error scenarios during file oper
 - Includes the location of the failure
 - Details the type of issue encountered to facilitate troubleshooting
 
+### Add Photo Feature Implementation
+The Add Photo feature allows users to associate photos with their trips, complete with metadata extraction.
 
-### Add Photo Process Sequence Diagram
+#### Add Photo Process Sequence Diagram
 ![Add Photo Process Sequence Diagram](puml_pics/AddPhotoProcess.png)
-####
 
+The process works as follows:
 - AddPhotoCommand calls execute(tripManager, ui, fsmValue).
-
 - TripManager getSelectedTrip() retrieves the current trip and its album.
-
 - Album addPhoto(filepath, photoname, caption) creates a new Photo.
-
 - Photo#extractData(filepath, datetime) extracts metadata.
-
 - If metadata includes coordinates, a Location object is created.
-
 - The photo is added to the album's list.
 
+## Appendix: Requirements
 
-## Apendix: Requirements
-### Product scope
+### Appendix A: Product Scope
 #### Target user profile
 
 Roadtrippers, van lifers, backpackers, and long-distance drivers who want to document their journeys efficiently. These users value convenience, real-time tracking, and the ability to relive their trips through route history.
 
-
 #### Value proposition
 The app enables roadtrippers to seamlessly track their journeys on the go. It automatically logs their geographical location, records mileage between stops, and helps them organize rest stops and key travel moments. By reducing manual input, it ensures that travelers can focus on their experience while still capturing essential trip details effortlessly.
 
-### User Stories
+### Appendix B: User Stories
 
 | Version | As a ...      | I want to ...                                        | So that I can ...                                               |
 |---------|---------------|------------------------------------------------------|------------------------------------------------------------------|
@@ -341,43 +352,43 @@ The app enables roadtrippers to seamlessly track their journeys on the go. It au
 | v2.0    | advanced user | access and edit the saved data file manually        | make bulk edits or backups directly from the storage file       |
 | v2.0    | user          | get notified about missing fields when adding items | fix input errors immediately and avoid confusion                |
 
-### Non-Functional Requirements
+### Appendix C: Non-Functional Requirements
 
-This application works on any computers that are Windows, macOS or Unix that has Java17.
+1. The application should work on any mainstream OS as long as it has Java 17 or above installed.
+2. The application should be responsive with response time under 1 second for standard operations.
+3. Data should not be lost during normal usage, with automatic saving after each operation.
+4. The application should be usable by users who prefer a command-line interface over GUI.
+5. New users should be able to use the application with minimal guidance after reading the user guide.
 
-### Glossary
-* Trip - A user-defined journey or travel event that includes details such as start/end points, duration, and associated albums or photos.
-* Album - A collection of photos linked to a specific trip, used to organize visual memories captured during the journey.
-* Photo - An image file with metadata (e.g., caption, location, timestamp) that documents a specific moment within a trip.
-* PhotoFrame - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
-* TripManager - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
+### Appendix D: Glossary
 
-## Appendix: Instructions for manual testing
+* **Trip** - A user-defined journey or travel event that includes details such as start/end points, duration, and associated albums or photos.
+* **Album** - A collection of photos linked to a specific trip, used to organize visual memories captured during the journey.
+* **Photo** - An image file with metadata (e.g., caption, location, timestamp) that documents a specific moment within a trip.
+* **PhotoFrame** - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
+* **TripManager** - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
+* **FSM** - Finite State Machine, the system used to track user context and application state.
 
-## Appendix: Instructions for Manual Testing
+### Appendix E: Instructions for Manual Testing
 
 These instructions provide a systematic approach to manually test the Travel Diary application. Each test case describes the steps to perform and the expected outcome.
 
----
+#### Launch and Shutdown
 
-### Launch and Shutdown
-
-#### Initial launch
+##### Initial launch
 
 1. Download the jar file and copy it into an empty folder
 2. Run the command `java -jar Travel_Diary.jar` in your terminal or command prompt  
    **Expected:** The CLI displays the welcome message and shows the Trip Page interface with empty trip list or sample trips
 
-#### Shutdown
+##### Shutdown
 
 - Type `bye` and press Enter  
   **Expected:** The application terminates and closes the terminal window or returns to command prompt
 
----
+#### Trip Management
 
-### Trip Management
-
-#### Adding a trip
+##### Adding a trip
 
 **Prerequisites:** Be on the Trip Page
 
@@ -393,7 +404,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Other incorrect commands to try:** `add_trip`, `add_trip n#`, `add_trip d#`, `add_trip n# d#`  
   **Expected:** Error messages explaining the correct format.
 
-#### Listing trips
+##### Listing trips
 
 **Prerequisites:** At least one trip added
 
@@ -403,7 +414,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Test case:** Execute `list` after adding multiple trips  
   **Expected:** The newly added trips appear in the list in the order they were added.
 
-#### Selecting a trip
+##### Selecting a trip
 
 **Prerequisites:** List all trips using the `list` command. Multiple trips in the list.
 
@@ -419,7 +430,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Other incorrect commands to try:** `select`, `select x` (where x is not a number)  
   **Expected:** Error messages explaining the correct format.
 
-#### Deleting a trip
+##### Deleting a trip
 
 **Prerequisites:** List all trips using the `list` command. Multiple trips in the list.
 
@@ -435,11 +446,9 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Other incorrect commands to try:** `delete`, `delete x` (where x is not a number)  
   **Expected:** Error messages explaining the correct format.
 
----
+#### Photo Management
 
-### Photo Management
-
-#### Adding a photo
+##### Adding a photo
 
 **Prerequisites:** Select a trip and be on the Photo Page
 
@@ -455,7 +464,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Other incorrect commands to try:** `add_photo`, `add_photo f#`, `add_photo n#`, `add_photo c#`  
   **Expected:** Error messages explaining the correct format.
 
-#### Listing photos
+##### Listing photos
 
 **Prerequisites:** Be on the Photo Page with at least one photo added
 
@@ -465,7 +474,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Test case:** Execute `list` after adding multiple photos  
   **Expected:** The newly added photos appear in the list in the order they were added.
 
-#### Selecting a photo
+##### Selecting a photo
 
 **Prerequisites:** List all photos using the `list` command. Multiple photos in the list.
 
@@ -481,7 +490,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Other incorrect commands to try:** `select`, `select x` (where x is not a number)  
   **Expected:** Error messages explaining the correct format.
 
-#### Deleting a photo
+##### Deleting a photo
 
 **Prerequisites:** List all photos using the `list` command. Multiple photos in the list.
 
@@ -497,7 +506,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Other incorrect commands to try:** `delete`, `delete x` (where x is not a number)  
   **Expected:** Error messages explaining the correct format.
 
-#### Closing a photo
+##### Closing a photo
 
 **Prerequisites:** Select a photo using the `select [INDEX]` command
 
@@ -507,11 +516,9 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Test case:** Execute `close` without selecting a photo  
   **Expected:** Error message indicates no photo is currently selected.
 
----
+#### Navigation
 
-### Navigation
-
-#### Returning to main menu
+##### Returning to main menu
 
 **Prerequisites:** Be on the Photo Page
 
@@ -521,7 +528,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Test case:** Execute `menu` while already on the Trip Page  
   **Expected:** Error message indicates you are already on the Trip Page.
 
-#### Help command
+##### Help command
 
 - **Test case:** `help` on Trip Page  
   **Expected:** Displays all available commands for the Trip Page.
@@ -529,18 +536,16 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Test case:** `help` on Photo Page  
   **Expected:** Displays all available commands for the Photo Page.
 
----
+#### Data Persistence
 
-### Data Persistence
-
-#### Saving data
+##### Saving data
 
 **Prerequisites:** Add several trips and photos
 
 - **Test case:** Exit the application using `bye` and restart it  
   **Expected:** All previously added trips and photos are loaded and displayed.
 
-#### Dealing with missing/corrupted data files
+##### Dealing with missing/corrupted data files
 
 **To simulate a missing data file:**
 
@@ -548,7 +553,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 2. Exit the application
 3. Delete or rename the data file in the `/data` folder
 4. Restart the application  
-   **Expected:** A new empty data file is created. Application starts with no trips.
+  **Expected:** A new empty data file is created. Application starts with no trips.
 
 **To simulate a corrupted data file:**
 
@@ -556,37 +561,35 @@ These instructions provide a systematic approach to manually test the Travel Dia
 2. Exit the application
 3. Open the data file in a text editor and modify it to make it invalid JSON
 4. Restart the application  
-   **Expected:** Application attempts to load the file, detects corruption, and either creates a new empty data file or displays an error message explaining the issue with the data file.
+  **Expected:** Application attempts to load the file, detects corruption, and either creates a new empty data file or displays an error message explaining the issue with the data file.
 
----
+#### Edge Cases
 
-### Edge Cases
-
-#### Long inputs
+##### Long inputs
 
 - **Test case:** Add a trip with an extremely long name and description  
   `add_trip n#[300 character name] d#[500 character description]`  
   **Expected:** Trip is added successfully, with text potentially truncated in the display.
 
-#### Special characters
+##### Special characters
 
 - **Test case:** Add a trip with special characters in the name and description  
   `add_trip n#My Trip!@#$%^&*() d#Special chars: !@#$%^&*()`  
   **Expected:** Trip is added successfully with all special characters preserved.
 
-#### Case sensitivity
+##### Case sensitivity
 
 - **Test case:** Try commands with different capitalization  
   `ADD_TRIP n#Test Trip d#Test Description`  
   `Add_Trip n#Test Trip d#Test Description`  
   **Expected:** Commands are recognized regardless of case.
 
-#### Empty list operations
+##### Empty list operations
 
 - **Test case:** Execute `list`, `select 1`, and `delete 1` on an empty trip list  
   **Expected:** `list` shows empty list message, `select` and `delete` show error messages.
 
-#### Concurrent modification
+##### Concurrent modification
 
 - **Test case:** Modify the data file while the application is running
     1. Run the application
