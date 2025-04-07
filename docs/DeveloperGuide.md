@@ -1,5 +1,4 @@
 # Developer Guide
-
 ## Acknowledgements
 
 ## Setting up, getting started
@@ -45,7 +44,7 @@ Importing as a Gradle project is different from a normal Java project. Be sure t
 # Architecture
 
 ## Architecture Diagram
-![Class Diagram for Architecture](puml_pics/TravelDiaryArchitectureClass.png)
+![Class Diagram for Architecture](puml_pics/TravelDiaryArchitecture.png)
 The Architecture Diagram above explains the high-level design of the Travel Diary App.
 
 Given below is a quick overview of main components and how they interact with each other.
