@@ -146,6 +146,8 @@ add_photo f#desktop/bali.jpg n#Dog c#Wow
 add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 ```
 
+> **Note:** This program only accepts .jpg images.
+
 ### Selecting a Photo
 
 Select an existing photo to view content and display its details.
