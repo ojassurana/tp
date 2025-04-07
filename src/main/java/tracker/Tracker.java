@@ -30,7 +30,10 @@ public class Tracker {
      * @param photoList The list of photos to be sorted.
      */
     public static void sortPhotosByDate(List<Photo> photoList) {
+        assert photoList != null : "Photo list should not be null";
+        logger.info("Sorting photos by date.");
         photoList.sort(new PhotoDateTimeComparator());
+        logger.info("Sorting completed.");
     }
 
     /**
@@ -42,9 +45,17 @@ public class Tracker {
      * @return The distance between the two photos in kilometers.
      */
     public static double getDist(Photo photo1, Photo photo2) {
+        assert photo1 != null : "Photo1 should not be null";
+        assert photo2 != null : "Photo2 should not be null";
+        assert photo1.getLocation() != null : "Photo1 location should not be null";
+        assert photo2.getLocation() != null : "Photo2 location should not be null";
+
         // Retrieve the locations of both photos
         Location location1 = photo1.getLocation();
         Location location2 = photo2.getLocation();
+
+        logger.info(String.format("Calculating distance between %s and %s.",
+                photo1.getPhotoName(), photo2.getPhotoName()));
 
         // Calculate the distance using the Haversine formula
         double distance = calculateHaversineDistance(
@@ -70,6 +81,11 @@ public class Tracker {
      * @return The distance between the two locations in kilometers.
      */
     public static double calculateHaversineDistance(double lat1, double lon1, double lat2, double lon2) {
+        assert lat1 >= -90 && lat1 <= 90 : "Latitude1 should be between -90 and 90 degrees.";
+        assert lon1 >= -180 && lon1 <= 180 : "Longitude1 should be between -180 and 180 degrees.";
+        assert lat2 >= -90 && lat2 <= 90 : "Latitude2 should be between -90 and 90 degrees.";
+        assert lon2 >= -180 && lon2 <= 180 : "Longitude2 should be between -180 and 180 degrees.";
+
         // Calculate the differences in latitude and longitude in radians
         double deltaLatitude = Math.toRadians(lat2 - lat1);
         double deltaLongitude = Math.toRadians(lon2 - lon1);
@@ -81,7 +97,11 @@ public class Tracker {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         // Calculate the distance and round the result
-        return Math.round(EARTH_RADIUS * c);
+        double distance = Math.round(EARTH_RADIUS * c);
+        // Assert that the distance is non-negative
+        assert distance >= 0;
+
+        return distance;
     }
 
     /**
@@ -93,9 +113,14 @@ public class Tracker {
      * @return A list containing two formatted strings: the earliest date and the latest date.
      */
     public static List<String> getPeriod(Album album) {
+        assert album != null : "Album should not be null";
+        assert album.getPhotos() != null : "Album photos list should not be null";
+        logger.info("Retrieving date range from album.");
+
         // Extract all date-time values from the photos in the album.
         List<LocalDateTime> dateTimeList = new ArrayList<>();
         for (Photo photo : album.getPhotos()) {
+            assert photo.getDatetime() != null : "Photo datetime should not be null";
             dateTimeList.add(photo.getDatetime());
         }
 
@@ -105,6 +130,10 @@ public class Tracker {
 
         // Define the format for date-time representation.
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+
+        logger.info(String.format("Date range retrieved: Min - %s, Max - %s",
+                formatDate(minimumDateTime, dateTimeFormatter),
+                formatDate(maximumDateTime, dateTimeFormatter)));
 
         // Return the formatted date range as a list of strings.
         return List.of(
@@ -125,6 +154,7 @@ public class Tracker {
         if (dateTime != null) {
             return dateTime.format(formatter);
         } else {
+            logger.warning("DateTime is null; returning default message.");
             return "No Date Available";
         }
     }

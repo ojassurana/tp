@@ -3,6 +3,7 @@ package storage;
 import album.Album;
 import com.drew.imaging.ImageProcessingException;
 import exception.FileFormatException;
+import exception.NoMetaDataException;
 import exception.PhotoLoadException;
 import exception.TravelDiaryException;
 import exception.TripLoadException;
@@ -28,7 +29,7 @@ public class StorageReader {
      * Reads trips from a file and adds them to the trip manager
      */
     protected static void readTripsFromFile(TripManager tripManager, File dataFile, String filePath)
-            throws FileFormatException {
+            throws FileFormatException, NoMetaDataException {
         try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
             processFileLines(reader, tripManager, filePath);
         } catch (IOException e) {
@@ -41,7 +42,7 @@ public class StorageReader {
      * Process all lines in the file
      */
     private static List<Trip> processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
-            throws IOException, FileFormatException {
+            throws IOException, FileFormatException, NoMetaDataException {
         List<Trip> trips = new ArrayList<>();
         String line;
         Trip currentTrip = null;
@@ -234,7 +235,7 @@ public class StorageReader {
      * Adds a photo to a trip from a line
      */
     private static void addPhotoToTrip(String[] parts, Trip currentTrip, String filePath, int lineNumber)
-            throws PhotoLoadException, FileFormatException {
+            throws PhotoLoadException, FileFormatException, NoMetaDataException {
         validatePhotoLineFormat(parts, filePath);
 
         try {
@@ -258,7 +259,7 @@ public class StorageReader {
      */
     private static void addPhotoWithSilentMode(Trip trip, String photoPath, String photoName,
                                                String caption, LocalDateTime photoTime)
-            throws TravelDiaryException, ImageProcessingException, IOException {
+            throws TravelDiaryException, ImageProcessingException, IOException, NoMetaDataException {
         // Get current album silent mode setting before adding photo
         boolean originalSilentMode = trip.album.isSilentMode();
         // Use silent mode during loading

@@ -3,6 +3,7 @@ package storage;
 import exception.FileReadException;
 import exception.FileFormatException;
 import exception.FileWriteException;
+import exception.NoMetaDataException;
 import trip.Trip;
 import trip.TripManager;
 
@@ -40,7 +41,7 @@ public class Storage {
      * @param silentMode  Whether to suppress console output during loading
      */
     public static void loadTrips(TripManager tripManager, String filePath, boolean silentMode)
-            throws FileReadException, FileFormatException {
+            throws FileReadException, FileFormatException, NoMetaDataException {
         LOGGER.info("Loading trips from file: " + filePath + " (silent mode: " + silentMode + ")");
 
         // Create the file if it does not exist
@@ -69,7 +70,7 @@ public class Storage {
      * Loads trips from a file using default silent mode from TripManager
      */
     public static void loadTrips(TripManager tripManager, String filePath)
-            throws FileReadException, FileFormatException {
+            throws FileReadException, FileFormatException, NoMetaDataException {
         // Use the tripManager's current silent mode setting
         loadTrips(tripManager, filePath, tripManager.isSilentMode());
     }
