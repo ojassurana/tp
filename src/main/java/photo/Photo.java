@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Represents a Photo with metadata including file path, name, caption,
@@ -15,6 +16,8 @@ import java.util.Map;
  * the photo file using the PhotoMetadataExtractor.
  */
 public class Photo {
+    private static final Logger logger = Logger.getLogger(Photo.class.getName());
+
     private String filePath;
     private String photoName;
     private String caption;
@@ -38,13 +41,21 @@ public class Photo {
      */
     public Photo(String filePath, String photoName, String caption, LocalDateTime datetime)
             throws TravelDiaryException, IOException, ImageProcessingException, NoMetaDataException {
+        logger.info("Initializing Photo object...");
+
+        assert filePath != null && !filePath.isEmpty() : "File path cannot be null or empty.";
+        assert photoName != null && !photoName.isEmpty() : "Photo name cannot be null or empty.";
+        assert caption != null && !caption.isEmpty() : "Caption cannot be null or empty.";
+
         if (filePath == null || photoName == null || caption == null) {
+            logger.severe("Required fields are missing: filePath, photoName, or caption.");
             throw new TravelDiaryException("Missing required tag(s) for add_photo. Required: f# (filename), " +
                     "n# (photoname), c# (caption).");
         }
 
         // Check if the file has a .jpg extension
         if (!filePath.toLowerCase().endsWith(".jpg")) {
+            logger.warning("Unsupported file format: " + filePath);
             throw new UnsupportedImageFormatException(filePath);
         }
 
@@ -52,6 +63,7 @@ public class Photo {
         this.photoName = photoName;
         this.caption = caption;
 
+        logger.info(String.format("Photo metadata extraction started for file: %s", filePath));
         extractData(filePath, datetime);
     }
 
@@ -77,6 +89,7 @@ public class Photo {
      * @return The file path of the photo.
      */
     public String getFilePath() {
+        logger.fine("Retrieving file path: " + filePath);
         return this.filePath;
     }
 
@@ -85,6 +98,7 @@ public class Photo {
      * @return The photo name.
      */
     public String getPhotoName() {
+        logger.fine("Retrieving photo name: " + photoName);
         return this.photoName;
     }
 
@@ -93,6 +107,7 @@ public class Photo {
      * @return The photo caption.
      */
     public String getCaption() {
+        logger.fine("Retrieving caption: " + caption);
         return this.caption;
     }
 
@@ -101,6 +116,8 @@ public class Photo {
      * @return The photo's location as a Location object.
      */
     public Location getLocation() {
+        assert location != null : "Location object cannot be null.";
+        logger.fine("Retrieving location: " + location);
         return this.location;
     }
 
@@ -109,6 +126,8 @@ public class Photo {
      * @return The datetime of the photo as a LocalDateTime object.
      */
     public LocalDateTime getDatetime() {
+        assert datetime != null : "Datetime object cannot be null.";
+        logger.fine("Retrieving datetime: " + datetime);
         return this.datetime;
     }
 
@@ -119,6 +138,7 @@ public class Photo {
      * @return True if the location name is valid; false otherwise.
      */
     public boolean hasLocationName() {
+        logger.fine("Checking if location name is valid...");
         return locationName != null && !locationName.isEmpty() && !locationName.equals("Location not found");
     }
 
@@ -134,19 +154,23 @@ public class Photo {
      */
     private void extractData(String filePath, LocalDateTime datetime) throws ImageProcessingException,
             IOException, NoMetaDataException {
+        logger.info("Starting metadata extraction...");
+
         // Use PhotoMetadataExtractor to extract metadata from the image.
         PhotoMetadataExtractor extractor = new PhotoMetadataExtractor(filePath);
         Map<String, Object> metadata = extractor.getMetadataMap();
 
-        // Set location (as a string), latitude, and longitude.
+        // Log and set location (as a string), latitude, and longitude.
         this.locationName = (String) metadata.get("location");
+        logger.fine("Extracted location name: " + locationName);
         Object latObj = metadata.get("latitude");
         Object lonObj = metadata.get("longitude");
         double latitude = (latObj instanceof Number) ? ((Number) latObj).doubleValue() : 0.0;
         double longitude = (lonObj instanceof Number) ? ((Number) lonObj).doubleValue() : 0.0;
+
         LocalDateTime extractedDateTime;
 
-        // Set the datetime: use provided datetime if non-null, otherwise fallback to metadata or current time.
+        // Log and set datetime
         if (datetime != null) {
             extractedDateTime = datetime;
         } else if (metadata.get("datetime") != null) {
@@ -154,11 +178,13 @@ public class Photo {
         } else {
             extractedDateTime = LocalDateTime.now();
         }
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
+        logger.fine("Extracted datetime: " + extractedDateTime);
+
         this.datetime = extractedDateTime.minusHours(8); // Convert to GMT +8.
 
         // Store longitude, latitude, and locationName as a Location class.
         this.location = new Location(latitude, longitude, locationName);
+        logger.info("Metadata extraction completed successfully.");
     }
 
     /**
@@ -170,6 +196,9 @@ public class Photo {
     @Override
     public String toString() {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mma");
-        return String.format("%s (%s) %s \n\t\t%s", photoName, locationName, datetime.format(outputFormatter), caption);
+        String result = String.format("%s (%s) %s \n\t\t%s", photoName,
+                locationName, datetime.format(outputFormatter), caption);
+        logger.fine("Photo toString: " + result);
+        return result;
     }
 }
