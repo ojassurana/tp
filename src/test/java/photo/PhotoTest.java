@@ -11,7 +11,7 @@ public class PhotoTest {
      * Verifies that the metadata is successfully extracted for the given .jpg file.
      */
     @Test
-    void extractData_JpgFile_expectExtractMetadataSuccessfully() {
+    void extractData_jpgFile_expectExtractMetadataSuccessfully() {
         try {
             String filePath = "./data/photos/usa/usa1_jpg.jpg";
             String photoName = "USA Photo 1";
@@ -34,7 +34,7 @@ public class PhotoTest {
      * Verifies that an UnsupportedImageFormatException is thrown for the unsupported file format.
      */
     @Test
-    void extractData_PngHeicFile_expectUnsupportedImageFormatException() {
+    void extractData_pngHeicFile_expectUnsupportedImageFormatException() {
         String filePath = "./data/photos/usa/usa1_png.heic";
         String photoName = "USA Photo 2";
         String caption = "Caption for USA Photo 2";
@@ -50,7 +50,7 @@ public class PhotoTest {
      * Verifies that an UnsupportedImageFormatException is thrown for the unsupported file format.
      */
     @Test
-    void extractData_wHeicFile_expectUnsupportedImageFormatException() {
+    void extractData_heicFile_expectUnsupportedImageFormatException() {
         String filePath = "./data/photos/usa/usa1_heic.heic";
         String photoName = "USA Photo 3";
         String caption = "Caption for USA Photo 3";

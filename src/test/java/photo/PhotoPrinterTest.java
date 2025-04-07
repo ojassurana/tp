@@ -37,8 +37,10 @@ public class PhotoPrinterTest {
             // Verify photo frame contains correct information
             assertTrue(photoTitle.contains(photoName), "Photo frame title does not contain photo name.");
             assertEquals(caption, photoFrame.getCaptionLabel().getText());
-            assertTrue(locationDateLabel.contains(location), "Photo frame location/date label does not contain location.");
-            assertTrue(locationDateLabel.contains(formattedDate), "Photo frame location/date label does not contain the formatted date.");
+            assertTrue(locationDateLabel.contains(location),
+                    "Photo frame location/date label does not contain location.");
+            assertTrue(locationDateLabel.contains(formattedDate),
+                    "Photo frame location/date label does not contain the formatted date.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
