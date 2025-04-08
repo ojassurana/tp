@@ -1,5 +1,6 @@
 package command;
 
+import exception.DuplicateFilepathException;
 import exception.IndexOutOfRangeException;
 import exception.InvalidIndexException;
 import exception.TravelDiaryException;
@@ -255,4 +256,172 @@ public class CommandTest {
             command.execute(tripManager, ui, 0)
         );
     }
-} 
+
+    @Test
+    void testAddTripSelectTripAddPhotoSelectPhoto() throws Exception {
+        // Positive test case: Valid inputs
+        String name = "Japan Trip";
+        String description = "Skiing in Hokkaido";
+        String location = "Japan";
+        int fsmValue = 0;
+        String filepath = "./data/photos/group_photo.jpg";
+        String photoname = "street photo";
+        String caption = "final day";
+
+
+        Command command = new AddTripCommand(name, description, location);
+        command.execute(tripManager, ui, 0);
+
+        command = new SelectCommand(0);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new AddPhotoCommand(filepath,photoname,caption);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new SelectCommand(0);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new ExitCommand();
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+
+        // Verify trip was added
+
+        assertEquals(1, tripManager.getTrips().size());
+        assertEquals(name, tripManager.getTrips().get(0).name);
+        assertEquals(description, tripManager.getTrips().get(0).description);
+        assertEquals(1, tripManager.getTrips().get(0).album.photos.size());
+        assertEquals(photoname, tripManager.getTrips().get(0).album.photos.get(0).getPhotoName());
+        assertEquals("Tokyo, Japan", tripManager.getTrips().get(0).album.photos.get(0).getLocation().getLocationName());
+    }
+
+    @Test
+    void testWrongFsm() throws Exception {
+        // Positive test case: Valid inputs
+        String name = "Japan Trip";
+        String description = "Skiing in Hokkaido";
+        String location = "Japan";
+        int fsmValue = 0;
+        String filepath = "./data/photos/group_photo.jpg";
+        String photoname = "street photo";
+        String caption = "final day";
+
+
+        Command command = new AddTripCommand(name, description, location);
+        command.execute(tripManager, ui, 0);
+        fsmValue = command.fsmValue;
+
+
+        command = new AddPhotoCommand(filepath,photoname,caption);
+        Command finalCommand = command;
+        int finalFsmValue = fsmValue;
+        assertThrows(java.lang.AssertionError.class, () ->
+                finalCommand.execute(tripManager, ui, finalFsmValue));
+    }
+
+    @Test
+    void testAddTrip2PhotoOrder() throws Exception {
+        // Positive test case: Valid inputs
+        String name = "Japan Trip";
+        String description = "Skiing in Hokkaido";
+        String location = "Japan";
+        int fsmValue = 0;
+        String filepath = "./data/photos/group_photo.jpg";
+        String photoname = "street photo";
+        String caption = "final day";
+        String filepath1 = "./data/photos/samurai.jpg";
+        String photoname1 = "museum";
+        String caption1 = "cool";
+
+
+        Command command = new AddTripCommand(name, description, location);
+        command.execute(tripManager, ui, 0);
+
+        command = new SelectCommand(0);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new AddPhotoCommand(filepath,photoname,caption);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new AddPhotoCommand(filepath1,photoname1,caption1);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new ExitCommand();
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        assertEquals(2, tripManager.getTrips().get(0).album.photos.size());
+        assertEquals(photoname, tripManager.getTrips().get(0).album.photos.get(0).getPhotoName());
+        assertEquals(caption, tripManager.getTrips().get(0).album.photos.get(0).getCaption());
+        assertEquals(photoname1, tripManager.getTrips().get(0).album.photos.get(1).getPhotoName());
+        assertEquals(caption1, tripManager.getTrips().get(0).album.photos.get(1).getCaption());
+        command = new MenuCommand();
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+        command = new DeleteCommand(0);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+        assertEquals(0, tripManager.getTrips().size());
+    }
+
+    @Test
+    void testDuplicateTripName() throws Exception {
+        String name = "Japan Trip";
+        String description = "Skiing in Hokkaido";
+        String location = "Japan";
+        int fsmValue = 0;
+
+
+        Command command = new AddTripCommand(name, description, location);
+        command.execute(tripManager, ui, 0);
+        fsmValue = command.fsmValue;
+
+
+        command = new AddTripCommand(name, description, location);
+        int finalFsmValue = fsmValue;
+        Command finalCommand = command;
+        assertThrows(exception.DuplicateNameException.class, () ->
+                finalCommand.execute(tripManager, ui, finalFsmValue));;
+
+    }
+
+    @Test
+    void test2PhotoFilepathOrder() throws Exception {
+        // Positive test case: Valid inputs
+        String name = "Japan Trip";
+        String description = "Skiing in Hokkaido";
+        String location = "Japan";
+        int fsmValue = 0;
+        String filepath = "./data/photos/group_photo.jpg";
+        String photoname = "street photo";
+        String caption = "final day";
+
+
+        Command command = new AddTripCommand(name, description, location);
+        command.execute(tripManager, ui, 0);
+
+        command = new SelectCommand(0);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new AddPhotoCommand(filepath,photoname,caption);
+        command.execute(tripManager, ui, fsmValue);
+        fsmValue = command.fsmValue;
+
+        command = new AddPhotoCommand(filepath,photoname + "1",caption + " 1");
+        Command finalCommand = command;
+        int finalFsmValue = fsmValue;
+        assertThrows(DuplicateFilepathException.class, () -> finalCommand.execute(tripManager,ui, finalFsmValue));
+
+
+    }
+
+
+}

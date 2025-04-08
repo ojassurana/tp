@@ -275,25 +275,38 @@ Advanced users can modify the JSON file directly.
 ## Command Summary
 
 ### General Commands
-| Action            | Format                      |
-|------------------|---------------------------|
-| View Help        | `help`                     |
-| Exit Application | `bye`                      |
-| Return to Menu   | `menu`                     |
 
-### Managing Trips
-| Action       | Format                                   |
-|-------------|------------------------------------------|
-| Add Trip    | `add_trip n#NAME d#DESCRIPTION`         |
-| List Trips  | `list`                                  |
-| Select Trip | `select INDEX`                          |
-| Delete Trip | `delete INDEX`                          |
+> These commands are available on any page.
 
-### Managing Photos
-| Action        | Format                                                  |
-|--------------|----------------------------------------------------------|
-| Add Photo    | `add_photo f#FILE_PATH n#PHOTO_NAME c#CAPTION`          |
-| List Photos  | `list`                                                   |
-| Select Photo | `select INDEX`                                           |
-| Delete Photo | `delete INDEX`                                           |
-| Close Photo  | `close`                                                  |
+| Action            | Command     | Description                        |
+|------------------|-------------|------------------------------------|
+| View Help         | `help`      | Shows available commands           |
+| Exit Application  | `bye`       | Closes the program                 |
+| Return to Menu    | `menu`      | Goes back to the main menu         |
+
+---
+
+### Trip Management Commands
+
+> Available on the **Trip Page**
+
+| Action         | Command Format                         | Example                                                |
+|----------------|----------------------------------------|--------------------------------------------------------|
+| Add Trip       | `add_trip n#NAME d#DESCRIPTION`        | `add_trip n#Japan d#Autumn leaves in Kyoto`           |
+| List Trips     | `list`                                 |                                                        |
+| Select Trip    | `select INDEX`                         | `select 1`                                             |
+| Delete Trip    | `delete INDEX`                         | `delete 2`                                             |
+
+---
+
+### Photo Management Commands
+
+> Available **after selecting a trip**
+
+| Action          | Command Format                                          | Example                                                      |
+|-----------------|---------------------------------------------------------|--------------------------------------------------------------|
+| Add Photo       | `add_photo f#FILE_PATH n#PHOTO_NAME c#CAPTION`          | `add_photo f#img/hanoi.jpg n#Old Quarter c#Crowded and fun!` |
+| List Photos     | `list`                                                  |                                                              |
+| Select Photo    | `select INDEX`                                          | `select 3`                                                   |
+| Delete Photo    | `delete INDEX`                                          | `delete 2`                                                   |
+| Close Photo     | `close`                                                 |                                                              |

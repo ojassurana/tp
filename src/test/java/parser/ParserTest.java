@@ -1,9 +1,12 @@
 package parser;
 
+
 import org.junit.jupiter.api.Test;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ParserTest {
 
@@ -53,4 +56,25 @@ class ParserTest {
         // Verify the parsed result
         assertEquals("list", parsedCommand.get("command"));
     }
+
+    @Test
+    public void unrecogniseParsing() {
+        assertThrows(exception.CommandNotRecogniseException.class, () ->
+                Parser.processInput("bla"));
+    }
+
+    @Test
+    public void addMissingTagParsingTest() {
+        assertThrows (exception.MissingTagsException.class,() ->
+                Parser.processInput("add_trip  d#Summer break with family"));
+    }
+
+    @Test
+    public void addDuplicateTagParsingTest() {
+        assertThrows (exception.TagException.class,() ->
+                Parser.processInput("add_trip  d#Summer break with family d#Summer break with family"));
+    }
+
+
+
 }
