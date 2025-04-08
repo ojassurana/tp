@@ -1,0 +1,52 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+
+class Album {
+    - List<Photo> photos
+    --
+    + toString(): String
+}
+
+class Tracker {
+    + <u>void sortPhotosByDate(photoList: List<Photo>)</u>
+    + <u>double getDist(photo1: Photo, photo2: Photo)</u>
+    + <u>double calculateHaversineDistance(lat1: double, lon1: double, lat2: double, lon2: double)</u>
+    + <u>List<String> getPeriod(album: Album)</u>
+}
+
+class Photo {
+    - String filePath
+    - String photoName
+    - String caption
+    - String locationName
+    - LocalDateTime datetime
+    - Location location
+}
+
+class Location {
+    - double latitude
+    - double longitude
+    - String locationName
+    --
+    + getLatitude():double
+    + getLongitude(): double
+    + getLocationName(): String
+}
+
+class Trip {
+    - String name
+    - String description
+    - Album album
+    --
+    + toString(): String
+}
+
+Album --> Photo : contains
+Album --> Tracker : uses
+Tracker --> Photo : uses
+Tracker --> Location : uses
+Photo --> Location : contains
+Trip --> Album : contains
+Trip --> Tracker : uses
+@enduml

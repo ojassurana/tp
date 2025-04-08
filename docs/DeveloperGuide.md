@@ -164,27 +164,91 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 3. This value will be used to get the corresponding command eg. `ListCommand`
 
 
-### Model Component
+### TripManager Component
 
 The `TripManager` class:
-* Stores and manages all trips
-* Maintains the current selected trip
+* Manages the application's trip data
+* Maintains the collection of all trips
+* Tracks the currently selected trip
 * Provides methods to manipulate trips and their contents
-![Trip Manager Class Diagra](puml_pics/TripManager.png)
+* Supports the Finite State Machine for application context
+
+![TripManager](puml_pics/TripClass.png)
+
+The TripManager component:
+* Serves as the central data repository for all trip information
+* Implements a hierarchical data structure where:
+  * TripManager maintains a collection of Trip objects
+  * Each Trip contains an Album
+  * Albums organize collections of Photos
+  * Photos can include Location information
+* Implements selection state tracking to support the application's FSM
+* Provides a clear API for Command classes to manipulate trip data
+* Maintains a single source of truth for trip information
+
+The TripManager follows a singleton pattern:
+* Only one instance exists throughout the application lifecycle
+* It centralizes data access and modification
+* All commands operate on the same trip collection
+* It ensures data consistency across the application
+
+#### TripManager Class
+- Core class responsible for managing all trips in the application
+- Stores trips in an ArrayList<Trip> collection
+- Tracks the currently selected trip through a reference variable
+- Provides methods for trip manipulation (addTrip, removeTrip, getTrip)
+- Handles trip selection and deselection through selectTrip() and unselectTrip()
+- Returns trip collection through getTrips() for UI display
+- Acts as the central interface between the application logic and trip data
+- Maintains trip selection state which affects command availability
+
+#### Trip Class
+- Represents a user's travel journey with name, description, and a unique ID
+- Contains an Album to store and organize photos from the trip
+- Maintains a boolean isSelected flag to track selection status
+- Provides methods to manage trip metadata (getName, getDescription, getId)
+- Supports Album management through getAlbum() and setAlbum() methods
+- Can be created with either a name and description or with additional ID parameter
+- Implements toString() method for displaying trip information to users
+
+This design ensures that trip data remains consistent throughout the application, with clear separation between data management (TripManager) and data representation (Trip).
+
+### Photo Component
+
+![Photo](puml_pics/photo.png)
+
+The Photo component manages image data and metadata for the application:
+- Provides classes for storing and handling photo information
+- Extracts and processes metadata from image files
+- Links photos with location data for trip tracking
+- Implements date/time functionality for trip chronology
 
 #### Photo
-![Photo](puml_pics/photo.png)
-####
-- Stores image data with file paths and captions.
+- Stores image data with file paths and captions
+- Extracts metadata from image files using PhotoMetadataExtractor
+- Links each photo to a specific Location
+- Supports comparison of photos by datetime using PhotoDateTimeComparator
+- Can be displayed using PhotoPrinter
+- Contains essential trip metadata including timestamps and geographical coordinates
+- Provides toString() method for displaying photo information
 
-- Extracts metadata from image files using PhotoMetadataExtractor.
+#### Album
+- Contains an ArrayList<Photo> to organize photos for a specific trip
+- Maintains a name identifier for the album
+- Provides methods to add and remove photos (addPhoto, removePhoto)
+- Retrieves specific photos by index with getPhoto()
+- Returns the entire photo collection with getPhotos()
+- Tracks the total number of photos with getSize()
+- Created with a specific name through Album(String name) constructor
 
-- Links each photo to a specific Location.
-
-- Supports comparison of photos by datetime using PhotoDateTimeComparator.
-
-- Can be displayed using PhotoPrinter.
-
+#### Location
+- Stores geographical coordinates (latitude, longitude)
+- Maintains a descriptive location name for user reference
+- Provides accessor methods for coordinate data
+- Can be created with coordinates only or with additional location name
+- Implements toString() method for displaying location information
+- Supports mapping and geographical sorting functionality
+- Essential for trip route visualization and tracking
 
 ### Storage Component
 
@@ -292,24 +356,192 @@ The exception handling system addresses various error scenarios during file oper
 - Provides specific error messages with context
 - Includes the location of the failure
 - Details the type of issue encountered to facilitate troubleshooting
+  Got it! Here's the Markdown version of the Tracker documentation and TrackerCalculateDistanceProcess using proper headings with `###` for labels and clarity:
 
+---
+## Photo Component
 
-### Add Photo Process Sequence Diagram
-![Add Photo Process Sequence Diagram](puml_pics/AddPhotoProcess.png)
-####
+#### Overview
+The **Photo** component is responsible for representing and managing metadata and geographical information about a photo. It acts as a core data structure that stores attributes like file path, caption, and location, and integrates with external tools for extracting metadata from photos.
 
-- AddPhotoCommand calls execute(tripManager, ui, fsmValue).
+### Component Structure
+The **Photo** component includes multiple related classes and interactions, as shown in the class diagram below:
 
-- TripManager getSelectedTrip() retrieves the current trip and its album.
+![Class diagram for Photo](puml_pics/Photo.png)
 
-- Album addPhoto(filepath, photoname, caption) creates a new Photo.
+### Design Considerations
 
-- Photo#extractData(filepath, datetime) extracts metadata.
+#### Metadata Management
+The **Photo** component uses the `PhotoMetadataExtractor` class to extract relevant metadata (e.g., location and datetime) from image files. This ensures that all information is kept consistent and valid.
 
-- If metadata includes coordinates, a Location object is created.
+#### Location Representation
+The geographical location of a photo is represented using the `Location` class, which encapsulates latitude and longitude. This design allows modular and extensible handling of location data.
 
-- The photo is added to the album's list.
+#### Exception Handling
+- Validates input attributes like `filePath` to ensure non-null and well-formatted data.
+- Handles scenarios where metadata cannot be extracted, throwing meaningful exceptions for better traceability.
 
+---
+
+## AddPhotoProcess
+
+### Sequence Diagram
+The **sequence diagram** below illustrates how the `AddPhotoCommand` interacts with other components to add a photo to a trip:
+
+![Sequence diagram for AddPhotoProcess](puml_pics/AddPhotoProcess.png)
+
+### Key Steps in the Process
+1. **TravelDiary** initiates the process by calling the `AddPhotoCommand` constructor with a `filePath`, `photoName`, and `caption`.
+2. The `execute` method is called on the `AddPhotoCommand`, passing the `TripManager`, `UI`, and `fsmValue`.
+3. If the `TripManager` is null, a `TravelDiaryException` is logged and thrown.
+4. If the `TripManager` is valid:
+  - The `AddPhotoCommand` fetches the selected `Trip` via `getSelectedTrip()` from `TripManager`.
+  - The `Trip` retrieves its associated `Album` using `getAlbum()`.
+
+5. The **Album**:
+  - Calls its `addPhoto()` method to create and add a new `Photo` object.
+  - Instantiates a `Photo` object with the provided details (`filePath`, `photoName`, and `caption`).
+
+6. The **Photo**:
+  - Invokes `extractData()` to process the file and extract metadata via the `PhotoMetadataExtractor`.
+  - The `PhotoMetadataExtractor` reads the metadata and returns details, including latitude and longitude.
+
+7. The **Photo** uses the `Location` class to create an instance with extracted latitude and longitude.
+
+8. The **Album** adds the photo to its `photos` list.
+
+---
+
+### Key Operations
+
+#### Creating a Photo
+The `Photo` class constructor follows this process:
+1. Initializes with a `filePath`, `photoName`, and `caption`.
+2. Calls the `extractData()` method to process the image file.
+3. Validates extracted metadata and initializes associated attributes like `Location`.
+
+#### Extracting Metadata
+- The `PhotoMetadataExtractor` uses a `getMetadataMap()` method to process the image file and return a map of metadata values.
+- Latitude and longitude are extracted and encapsulated in the `Location` class.
+
+---
+
+### Error Management
+- If `TripManager` is null, the `AddPhotoCommand` logs an error and throws a `TravelDiaryException`.
+- If the `Photo` file path or metadata are invalid, appropriate exceptions are raised during the creation and extraction process.
+- All errors are logged with contextual information for debugging purposes.
+
+---
+
+### Implementation
+
+#### AddPhotoProcess
+The **AddPhotoProcess** is implemented as a sequence of commands that involve multiple components:
+- `AddPhotoCommand`: Central command class managing the workflow.
+- `TripManager`: Fetches the selected `Trip`.
+- `Album`: Stores and organizes photos.
+- `Photo`: Represents the photo with its metadata.
+- `PhotoMetadataExtractor`: Extracts metadata from the photo file.
+- `Location`: Represents the geographical coordinates of the photo.
+
+#### Photo Component
+The **Photo** component is implemented with methods for:
+- **Creation:** `Photo(String filePath, String photoName, String caption)`
+- **Data Extraction:** `void extractData(String filePath, LocalDateTime datetime)`
+- **Interaction with Location:** `Location fromCoordinates(double latitude, double longitude)`
+
+---
+
+## Tracker Component
+
+### Overview
+The **Tracker** component serves as a utility module for operations related to photo data management. It is responsible for calculating distances between photo locations, sorting photos by date, and determining periods for albums. This component encapsulates logic for data analysis and simplifies operations involving geographic and temporal data.
+
+### Component Structure
+The **Tracker** component consists of static methods and does not maintain its own state. Below is the class diagram for the **Tracker** component:
+
+![Class diagram for Tracker](puml_pics/Tracker.png)
+
+### Design Considerations
+
+#### Distance Calculation
+The **Tracker** uses the Haversine formula to calculate the geographical distance between two photos. This formula accounts for the Earth's curvature, ensuring accurate results for any two points on the globe. The calculation uses:
+- Latitude and longitude coordinates of two photo locations.
+- A constant for Earth's radius: `EARTH_RADIUS = 6371` (in kilometers).
+
+#### Sorting Photos
+The component provides functionality to sort photos by their `datetime` attribute, leveraging the `PhotoDateTimeComparator`.
+
+#### Period Calculation
+The **Tracker** determines the date range of an album by analyzing the minimum and maximum `datetime` values among the photos in the album.
+
+#### Exception Handling
+The **Tracker** ensures robust exception handling for all operations:
+- Validates that `Photo` objects have valid `Location` and `datetime` data.
+- Ensures geographic coordinates are within valid ranges:
+  - Latitude: `[-90, 90]`
+  - Longitude: `[-180, 180]`.
+
+---
+
+## Tracker Calculate Distance Process
+
+### Sequence Diagram
+The **sequence diagram** below illustrates the process for calculating the distance between two photos using the `Tracker` component:
+
+![Sequence diagram for TrackerCalculateDistance](puml_pics/TrackerCalculateDistanceProcess.png)
+
+### Key Steps in the Process
+1. **Album** initiates the process by calling the `getDist` method of the **Tracker**, passing two **Photo** objects (`photo1` and `photo2`).
+2. The **Tracker** retrieves the `Location` objects from both photos by invoking their `getLocation()` method.
+3. It extracts the latitude and longitude of each photo using `getLatitude()` and `getLongitude()` from the respective `Location` objects.
+4. The **Tracker** calculates the distance between the two points using the **Haversine formula**:
+  - Computes the differences in latitude and longitude, in radians.
+  - Applies the Haversine equation to calculate the great-circle distance.
+5. The calculated distance (in kilometers) is returned to the **Album**.
+
+---
+
+### Key Operations
+
+#### Calculating Distance
+The `getDist` method follows this process:
+1. Retrieve `Location` from both `Photo` objects.
+2. Extract latitude and longitude from the `Location` objects.
+3. Validate coordinate ranges.
+4. Calculate the Haversine distance:
+  - Formula:
+    ```
+    a = sin²(Δφ / 2) + cos(φ₁) ⋅ cos(φ₂) ⋅ sin²(Δλ / 2)
+    c = 2 ⋅ atan2(√a, √(1 − a))
+    distance = EARTH_RADIUS ⋅ c
+    ```
+5. Return the distance.
+
+#### Validations
+The following validations are performed:
+- Ensure `Photo` objects are non-null and have valid `Location` data.
+- Validate that latitude and longitude are within acceptable ranges.
+
+---
+
+### Error Management
+The component ensures:
+- Invalid `Location` or `Photo` data is logged and handled gracefully.
+- Exceptional cases, such as null attributes or out-of-range coordinates, are flagged with detailed error messages.
+
+---
+
+### Implementation
+
+#### Tracker Component
+The **Tracker** component is implemented as a utility class with the following static methods:
+- `sortPhotosByDate(List<Photo>)`: Sorts photos by their `datetime` field.
+- `getDist(Photo photo1, Photo photo2)`: Calculates the distance between two `Photo` objects.
+- `calculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)`: Performs the distance calculation using the Haversine formula.
+- `getPeriod(Album album)`: Retrieves the date range of an album.
+
+---
 
 ## Apendix: Requirements
 ### Product scope
