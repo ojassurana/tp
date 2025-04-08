@@ -8,27 +8,21 @@ Travel Diary is a desktop app for managing trips and travel memories, optimized 
 
 * **Code contributed**: [RepoSense link](https://nus-cs2113-ay2425s2.github.io/tp-dashboard/?search=ojassurana&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2025-02-21&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other)
 
-* **New Feature**: Designed and implemented the Album class for photo management within trips.
-  * What it does: Provides an organizational structure for storing, displaying, and managing photos within a trip.
-  * Justification: This feature forms the core functionality of the app, allowing users to track their memories through photos.
-  * Highlights: Album intelligently sorts photos by datetime and calculates distances between consecutive photos to track journey progression.
+* **New Feature**: Designed and implemented the Album class for photo management.
+  * What it does: Organizes photos within trips with metadata support.
+  * Justification: Core functionality enabling users to track travel memories via photos.
+  * Highlights: Sorts photos chronologically and calculates distances between consecutive photos.
 
 * **New Feature**: Developed offline geo-tagging system for photos.
-  * What it does: Extracts GPS coordinates from photo EXIF data and converts them to human-readable city/country names without internet connection.
-  * Justification: Allows users to identify photo locations even when traveling without internet access.
-  * Highlights: Implemented a KD-tree algorithm with a dataset of cities with population above 1000 for efficient offline reverse geocoding.
-  * Challenges & Implementation:
-    * Created a spatial search solution using KD-tree data structure (O(log n) time complexity) to overcome the limitation of requiring online services like Google Maps.
-    * The KD-tree partitions coordinate space to quickly identify the nearest city to GPS coordinates without exhaustive searching.
-    * Addressed technical challenges including EXIF metadata extraction, dataset size optimization, and seamless Photo class integration.
-  * Limitations:
-    * May return incorrect city names for photos taken near city borders, as it identifies the nearest city center by coordinates.
-    * Future implementation would use city boundary data to improve location accuracy.
+  * What it does: Converts GPS coordinates to city/country names without internet.
+  * Justification: Essential for travelers identifying photo locations without connectivity.
+  * Highlights: Used KD-tree algorithm with population data for efficient reverse geocoding.
+  * Limitations: May be inaccurate near city borders; future version would use boundary data.
 
 * **New Feature**: Built the command architecture using Command pattern.
-  * What it does: Created an extensible command system that handles all user interactions with proper state management.
-  * Justification: This modular design provides clean separation of concerns and makes adding new commands straightforward.
-  * Highlights: Implemented a finite state machine to manage application state (Trip Page vs. Photo Page) and proper command routing.
+  * What it does: Processes user interactions with proper state management.
+  * Justification: Enables clean separation of concerns and extends functionality easily.
+  * Highlights: Implements FSM to manage Trip Page vs. Photo Page contexts.
 
 * **New Feature**: Architected the Parser system for processing user input.
   * What it does: Parses user commands with complex tag-based syntax (e.g., `add_photo f#FILENAME n#PHOTONAME c#CAPTION`) into structured data for Command classes.
@@ -40,13 +34,9 @@ Travel Diary is a desktop app for managing trips and travel memories, optimized 
     * Integrated the parser with the command factory to seamlessly convert user input into executable commands.
 
 * **New Feature**: Developed the UI component for user interaction.
-  * What it does: Provides a clean, consistent interface for displaying information and collecting user input through the CLI.
-  * Justification: A well-designed UI is crucial for usability, especially in a CLI application where visual cues are limited.
-  * Highlights:
-    * Implemented state-aware UI that adapts display based on the current application context (Trip Page vs. Photo Page).
-    * Created a consistent formatting system with separators and padding for improved readability.
-    * Added ASCII art logo capability to enhance the visual appeal of the application.
-    * Designed a modular approach with dedicated methods for different UI elements, making future UI enhancements straightforward.
+  * What it does: Displays information based on application context.
+  * Justification: Critical for usability in text-based interfaces.
+  * Highlights: Adapts display based on current application state.
 
 * **New Feature**: Designed the application's Finite State Machine (FSM) architecture.
   * What it does: Controls the application flow between Trip mode and Photo mode, ensuring commands are context-appropriate.
@@ -63,21 +53,15 @@ Travel Diary is a desktop app for managing trips and travel memories, optimized 
   * Facilitated pull request reviews and issue triaging
 
 * **Enhancements to existing features**:
-  * Improved Photo class to extract and utilize EXIF metadata (commit 2e0622a)
-  * Added validation for image file formats to ensure only JPG files with GPS data are accepted (commits c22ec9f, 2c4628b)
-  * Enhanced UI text and error messages for better user experience (commits 9c705c3, c44de02)
-  * Refactored code to ensure cross-platform compatibility (commits 13c506f, b9bf0ed)
+  * Improved Photo class to use EXIF metadata (commit 2e0622a)
+  * Added validation for JPG files with GPS data (commits c22ec9f, 2c4628b)
+  * Enhanced error messages for better user experience (commits 9c705c3, c44de02)
 
 * **Documentation**:
-  * User Guide:
-    * Added documentation for photo management features
-    * Added important image format requirements and GPS data prerequisites
-    * Added explanations for trip date range calculations and location tracking
-  * Developer Guide:
-    * Did everything in the Ui Component section
-    * Did everything in the Trip Manager component
+  * User Guide: Added photo management, format requirements, and location tracking
+  * Developer Guide: Did everything in the Ui Component section and Trip Manager component
 
 * **Community**:
-  * Reviewed PRs from team members (#35, #37, #39, #41 and others)
-  * Helped teammates debug issues with Git and testing frameworks
-  * Fixed numerous Gradle compatibility issues affecting different OS environments
+  * Reviewed PRs from team members (#35, #37, #39, #41)
+  * Helped teammates with Git and testing frameworks
+  * Fixed Gradle compatibility issues across platforms
