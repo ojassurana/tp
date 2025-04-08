@@ -29,6 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Test class for the Storage utility class.
+ * This class contains unit tests for the storage functionality, including saving and loading trips,
+ * handling various file conditions, and edge cases.
+ */
 class StorageTest {
     @TempDir
     Path tempDir;
@@ -36,12 +41,22 @@ class StorageTest {
     private TripManager tripManager;
     private String testFilePath;
 
+    /**
+     * Set up the test environment before each test.
+     * Initializes a new TripManager and creates a temporary file path for testing.
+     */
     @BeforeEach
     void setUp() {
         tripManager = new TripManager();
         testFilePath = tempDir.resolve("test_trips.dat").toString();
     }
 
+    /**
+     * Tests that the ensureFileExists method creates a new file when it doesn't exist.
+     * This test uses reflection to access the private method.
+     *
+     * @throws IOException if there is an error creating the file
+     */
     @Test
     void ensureFileExistsCreatesNewFile() throws IOException {
         // Use reflection to access private method
@@ -60,6 +75,24 @@ class StorageTest {
         }
     }
 
+    /**
+     * Tests the full save and load cycle for trips.
+     * Creates test trips, adds photos with metadata, saves them, and then loads them
+     * into a new TripManager to verify the data integrity.
+     *
+     * @throws TravelDiaryException if there is an error in the travel diary operations
+     * @throws FileWriteException if there is an error writing to the file
+     * @throws FileReadException if there is an error reading from the file
+     * @throws FileFormatException if the file format is invalid
+     * @throws ImageProcessingException if there is an error processing the image
+     * @throws IOException if there is an I/O error
+     * @throws NoSuchAlgorithmException if a cryptographic algorithm is not available
+     * @throws NoMetaDataException if metadata is missing
+     * @throws DuplicateNameException if a duplicate name is detected
+     * @throws MissingCompulsoryParameter if a required parameter is missing
+     * @throws MetadataFilepathNotFound if the metadata filepath is not found
+     * @throws DuplicateFilepathException if a duplicate filepath is detected
+     */
     @Test
     void saveAndLoadTrips() throws TravelDiaryException, FileWriteException, FileReadException, FileFormatException,
             ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException,
@@ -102,6 +135,13 @@ class StorageTest {
         assertEquals(1, loadedTrip2.album.photos.size());
     }
 
+    /**
+     * Tests that loading trips from a non-existent file creates an empty file.
+     *
+     * @throws FileReadException if there is an error reading from the file
+     * @throws FileFormatException if the file format is invalid
+     * @throws NoMetaDataException if metadata is missing
+     */
     @Test
     void loadTripsWithNonExistentFileCreatesEmptyFile() throws FileReadException,
             FileFormatException, NoMetaDataException {
@@ -116,6 +156,11 @@ class StorageTest {
         assertEquals(0, tripManager.getTrips().size());
     }
 
+    /**
+     * Tests that loading trips from a file with an invalid format throws a FileFormatException.
+     *
+     * @throws IOException if there is an I/O error
+     */
     @Test
     void loadTripsWithInvalidFormatThrowsException() throws IOException {
         // Create a file with invalid format
@@ -128,7 +173,12 @@ class StorageTest {
         );
     }
 
-    // Helper method to copy a real photo with EXIF metadata
+    /**
+     * Helper method to copy a real photo with EXIF metadata to the temporary directory.
+     *
+     * @param relativeFilePath the relative path to the source photo
+     * @return the absolute path to the copied photo
+     */
     private String copyRealTestPhoto(String relativeFilePath) {
         try {
             // Get the project root directory
@@ -150,6 +200,11 @@ class StorageTest {
         }
     }
 
+    /**
+     * Tests that saving an empty trip list creates a file.
+     *
+     * @throws FileWriteException if there is an error writing to the file
+     */
     @Test
     void saveEmptyTripListCreatesFile() throws FileWriteException {
         List<Trip> emptyTrips = List.of();
@@ -160,6 +215,11 @@ class StorageTest {
         assertEquals(0, file.length()); // File should be empty
     }
 
+    /**
+     * Tests that loading from an empty file does not throw an exception.
+     *
+     * @throws Exception if there is an unexpected error
+     */
     @Test
     void loadFromEmptyFileDoesNotThrow() throws Exception {
         Files.createFile(Path.of(testFilePath)); // Create empty file
@@ -168,6 +228,11 @@ class StorageTest {
         assertEquals(0, tripManager.getTrips().size());
     }
 
+    /**
+     * Tests that directories are created when missing when ensuring file existence.
+     *
+     * @throws IOException if there is an I/O error
+     */
     @Test
     void ensureDirectoryCreatedWhenMissing() throws IOException {
         // Create a file path with a missing directory
@@ -191,6 +256,14 @@ class StorageTest {
         }
     }
 
+    /**
+     * Tests saving trips to a non-existent parent directory.
+     *
+     * @throws FileWriteException if there is an error writing to the file
+     * @throws TravelDiaryException if there is an error in the travel diary operations
+     * @throws DuplicateNameException if a duplicate name is detected
+     * @throws MissingCompulsoryParameter if a required parameter is missing
+     */
     @Test
     void saveTripsToNonExistentParentDirectory() throws FileWriteException, TravelDiaryException,
             DuplicateNameException, MissingCompulsoryParameter {
