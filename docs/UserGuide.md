@@ -181,7 +181,7 @@ add_photo f#desktop/bali.jpg n#Dog c#Wow
 add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 ```
 
-> **Note:** This program only accepts .jpg images.
+> **Note:** This program only accepts .jpg images. Photos must be taken from a phone with internet and make sure your gps is working. If you are using a messaging app like telegram to transfer the photo please transfer it as a `FILE !!!`
 
 > **Important:** Only images with GPS data can be uploaded. You can use [Online EXIF Viewer](https://onlineexifviewer.com/) to check if your images contain GPS data before uploading them.
 
