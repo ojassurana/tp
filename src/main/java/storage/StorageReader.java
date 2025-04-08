@@ -25,13 +25,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Class responsible for reading trip data from storage files.
+ * This class provides functionality to parse trip data stored in files
+ * and load them into the TripManager for the Travel Diary application.
+ */
 public class StorageReader {
     private static final Logger logger = Logger.getLogger(StorageReader.class.getName());
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static boolean isTripCorrupted = false;
 
     /**
-     * Reads trips from a file and adds them to the trip manager
+     * Reads trips data from a file and adds them to the trip manager.
+     * This method processes the file line by line, parsing trip, album, and photo information.
+     *
+     * @param tripManager The TripManager instance to which trips should be added
+     * @param dataFile The file containing trip data
+     * @param filePath The path of the file (used for error reporting)
+     * @throws FileFormatException If the file format is invalid
+     * @throws NoMetaDataException If required metadata is missing
      */
     protected static void readTripsFromFile(TripManager tripManager, File dataFile, String filePath)
             throws FileFormatException, NoMetaDataException {
@@ -44,10 +56,19 @@ public class StorageReader {
     }
 
     /**
-     * Process all lines in the file
+     * Processes all lines in the file, parsing trip, album, and photo data.
+     * This method reads each line, identifies its type based on markers, and
+     * processes it accordingly.
+     *
+     * @param reader The BufferedReader to read lines from
+     * @param tripManager The TripManager instance to which trips should be added
+     * @param filePath The path of the file (used for error reporting)
+     * @throws FileFormatException If the file format is invalid
+     * @throws IOException If an I/O error occurs
+     * @throws NoMetaDataException If required metadata is missing
      */
     private static void processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
-            throws FileFormatException, IOException , NoMetaDataException {
+            throws FileFormatException, IOException, NoMetaDataException {
         List<Trip> trips = new ArrayList<>();
         String line;
         Trip currentTrip = null;
@@ -106,7 +127,17 @@ public class StorageReader {
     }
 
     /**
-     * Process trip marker line and manage trip collection
+     * Processes a trip marker line and manages the trip collection.
+     * This method adds the previous trip to the collection before creating a new one.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @param tripManager The TripManager instance
+     * @param filePath The file path for error reporting
+     * @param currentTrip The current trip being processed
+     * @param trips The list of trips collected
+     * @return A new Trip object
+     * @throws TripLoadException If the trip cannot be loaded
+     * @throws FileFormatException If the file format is invalid
      */
     private static Trip processTripMarker(String[] parts, TripManager tripManager, String filePath,
                                           Trip currentTrip, List<Trip> trips)
@@ -117,7 +148,12 @@ public class StorageReader {
     }
 
     /**
-     * Adds the current trip to the list if it exists
+     * Adds the current trip to the list if it exists.
+     * This method is used to ensure the current trip is included in the collection
+     * before moving on to process a new trip.
+     *
+     * @param currentTrip The current trip to add
+     * @param trips The list of trips to add to
      */
     private static void addRemainingTrip(Trip currentTrip, List<Trip> trips) {
         if (currentTrip != null) {
@@ -126,7 +162,14 @@ public class StorageReader {
     }
 
     /**
-     * Validates that we have a trip when processing an album marker
+     * Validates that we have a trip when processing an album marker.
+     * This method checks that the album marker appears in the correct context
+     * and has the expected format.
+     *
+     * @param currentTrip The current trip being processed
+     * @param parts The parts of the line split by delimiter
+     * @param filePath The file path for error reporting
+     * @throws FileFormatException If validation fails
      */
     private static void validateAlbumAndMarker(Trip currentTrip, String[] parts, String filePath)
             throws FileFormatException {
@@ -141,7 +184,12 @@ public class StorageReader {
     }
 
     /**
-     * Validates that we have proper context for adding a photo
+     * Validates that we have proper context for adding a photo.
+     * This method checks that a photo appears in the context of a trip and album.
+     *
+     * @param currentTrip The current trip being processed
+     * @param filePath The file path for error reporting
+     * @throws FileFormatException If validation fails
      */
     private static void validatePhotoContext(Trip currentTrip, String filePath)
             throws FileFormatException {
@@ -155,7 +203,12 @@ public class StorageReader {
     }
 
     /**
-     * Splits a string by delimiter, respecting escaped delimiters
+     * Splits a string by delimiter, respecting escaped delimiters.
+     * This method handles the case where delimiters may be escaped in the input string.
+     *
+     * @param line The line to split
+     * @param delimiter The delimiter to split by
+     * @return An array of parts split by the delimiter
      */
     private static String[] splitByDelimiter(String line, String delimiter) {
         List<String> parts = new ArrayList<>();
@@ -194,7 +247,14 @@ public class StorageReader {
     }
 
     /**
-     * Check if the current position in the string is a delimiter
+     * Checks if the current position in the string is a delimiter.
+     * This helper method determines if the characters starting at the given position
+     * match the delimiter string.
+     *
+     * @param line The line being processed
+     * @param position The current position in the line
+     * @param delimiter The delimiter to check for
+     * @return true if the delimiter is found at the position, false otherwise
      */
     private static boolean checkDelimiter(String line, int position, String delimiter) {
         if (position > line.length() - delimiter.length()) {
@@ -204,15 +264,17 @@ public class StorageReader {
         return line.substring(position, position + delimiter.length()).equals(delimiter);
     }
 
-
     /**
-     * create trips from a line
-     * @param parts
-     * @param tripManager
-     * @param filePath
-     * @return trip
-     * @throws TripLoadException error that stems when creating trip object
-     * @throws FileFormatException error that stems when the txt file is not valid
+     * Creates a trip object from the parsed line parts.
+     * This method validates the trip format, decodes the trip name and description,
+     * and adds the trip to the trip manager.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @param tripManager The TripManager instance
+     * @param filePath The file path for error reporting
+     * @return A new Trip object
+     * @throws TripLoadException If the trip cannot be loaded
+     * @throws FileFormatException If the file format is invalid
      */
     private static Trip createTrip(String[] parts, TripManager tripManager, String filePath)
             throws TripLoadException, FileFormatException {
@@ -236,7 +298,12 @@ public class StorageReader {
     }
 
     /**
-     * Validates trip marker format has required fields
+     * Validates that the trip marker format has the required fields.
+     * This method checks that the trip line has the minimum required number of parts.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @param filePath The file path for error reporting
+     * @throws FileFormatException If validation fails
      */
     private static void validateTripFormat(String[] parts, String filePath) throws FileFormatException {
         if (parts.length < 3) {
@@ -246,7 +313,10 @@ public class StorageReader {
     }
 
     /**
-     * Ensures the trip has an album
+     * Ensures the trip has an album.
+     * If the trip doesn't have an album, a new one is created.
+     *
+     * @param trip The trip to check and update
      */
     private static void ensureTripHasAlbum(Trip trip) {
         if (trip.album == null) {
@@ -255,7 +325,17 @@ public class StorageReader {
     }
 
     /**
-     * Adds a photo to a trip from a line
+     * Adds a photo to a trip from a parsed line.
+     * This method validates the photo line format, extracts photo details,
+     * and adds the photo to the trip's album.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @param currentTrip The current trip to add the photo to
+     * @param filePath The file path for error reporting
+     * @param lineNumber The line number for error reporting
+     * @throws PhotoLoadException If the photo cannot be loaded
+     * @throws FileFormatException If the file format is invalid
+     * @throws NoMetaDataException If required metadata is missing
      */
     private static void addPhotoToTrip(String[] parts, Trip currentTrip, String filePath, int lineNumber)
             throws PhotoLoadException, FileFormatException, NoMetaDataException {
@@ -279,7 +359,21 @@ public class StorageReader {
     }
 
     /**
-     * Adds a photo to an album with preserved silent mode
+     * Adds a photo to an album with preserved silent mode.
+     * This method temporarily sets the album to silent mode, adds the photo,
+     * and then restores the original silent mode setting.
+     *
+     * @param trip The trip containing the album
+     * @param photoPath The path to the photo file
+     * @param photoName The name of the photo
+     * @param caption The caption for the photo
+     * @param photoTime The timestamp of the photo, or null if not available
+     * @throws TravelDiaryException If a general travel diary error occurs
+     * @throws ImageProcessingException If the image cannot be processed
+     * @throws MetadataFilepathNotFound If the metadata filepath is not found
+     * @throws NoMetaDataException If required metadata is missing
+     * @throws DuplicateNameException If the photo name is a duplicate
+     * @throws DuplicateFilepathException If the photo path is a duplicate
      */
     private static void addPhotoWithSilentMode(Trip trip, String photoPath, String photoName,
                                                String caption, LocalDateTime photoTime)
@@ -304,7 +398,13 @@ public class StorageReader {
     }
 
     /**
-     * Extracts a field for error reporting, handling missing fields gracefully
+     * Extracts a field for error reporting, handling missing fields gracefully.
+     * This method safely extracts a field from the parts array, returning "unknown"
+     * if the field is not available.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @param index The index of the field to extract
+     * @return The decoded field value, or "unknown" if not available
      */
     private static String extractPhotoNameForError(String[] parts, int index) {
         if (parts.length > index) {
@@ -314,7 +414,12 @@ public class StorageReader {
     }
 
     /**
-     * Validates the photo line format has the minimum required fields
+     * Validates that the photo line format has the minimum required fields.
+     * This method checks that the photo line has at least 4 parts.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @param filePath The file path for error reporting
+     * @throws FileFormatException If validation fails
      */
     private static void validatePhotoLineFormat(String[] parts, String filePath) throws FileFormatException {
         if (parts.length < 4) {
@@ -323,7 +428,13 @@ public class StorageReader {
     }
 
     /**
-     * Extracts photo timestamp from parts
+     * Extracts photo timestamp from parts.
+     * This method attempts to parse the timestamp from the parts array, returning null
+     * if the timestamp is not available or invalid.
+     *
+     * @param parts The parts of the line split by delimiter
+     * @return The parsed LocalDateTime, or null if not available
+     * @throws DateTimeParseException If the timestamp cannot be parsed
      */
     private static LocalDateTime extractPhotoTime(String[] parts) throws DateTimeParseException {
         if (parts.length <= 4) {

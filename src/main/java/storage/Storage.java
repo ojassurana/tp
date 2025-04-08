@@ -13,6 +13,10 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Handles saving and loading trip data to and from the local file system.
+ * Provides methods for ensuring data persistence and validating data formats.
+ */
 public class Storage {
     protected static final Logger LOGGER = Logger.getLogger(Storage.class.getName());
     protected static final String TRIP_MARKER = "T";
@@ -21,10 +25,15 @@ public class Storage {
     protected static final String DELIMITER = " | ";
 
     /**
-     * Saves trips to a file
+     * Saves a list of trips to a specified file path.
+     *
+     * @param trips    The list of {@code Trip} objects to be saved.
+     * @param filePath The destination file path for saving trip data.
+     * @throws FileWriteException If an error occurs while writing to the file.
      */
     public static void saveTasks(List<Trip> trips, String filePath) throws FileWriteException {
         File dataFile = new File(filePath);
+
         // Create parent directory if it doesn't exist
         if (dataFile.getParentFile() != null) {
             dataFile.getParentFile().mkdirs();
@@ -34,24 +43,28 @@ public class Storage {
     }
 
     /**
-     * Loads trips from a file
+     * Loads trips from the specified file and adds them to the given TripManager.
      *
-     * @param tripManager The trip manager to add trips to
-     * @param filePath    The path to the file containing trip data
-     * @param silentMode  Whether to suppress console output during loading
+     * @param tripManager The {@code TripManager} to which loaded trips will be added.
+     * @param filePath    The path to the file containing stored trip data.
+     * @param silentMode  Whether to suppress user-facing console messages during loading.
+     * @throws FileReadException     If the file cannot be read.
+     * @throws FileFormatException   If the file has an invalid or corrupted format.
+     * @throws NoMetaDataException   If expected metadata is missing in the file.
      */
     public static void loadTrips(TripManager tripManager, String filePath, boolean silentMode)
             throws FileReadException, FileFormatException, NoMetaDataException {
         LOGGER.info("Loading trips from file: " + filePath + " (silent mode: " + silentMode + ")");
 
-        // Create the file if it does not exist
         File dataFile = new File(filePath);
+
+        // Create new empty file if it doesn't exist
         if (ensureFileExists(dataFile, filePath)) {
-            return;  // Return early if we just created a new empty file
+            return;
         }
 
         // Validate file format before processing
-        validateFileFormat(dataFile, filePath); // need to ctach the error to indicate that the first line is corrupted
+        validateFileFormat(dataFile, filePath);
 
         // Store current silent mode and set to requested mode
         boolean originalSilentMode = tripManager.isSilentMode();
@@ -60,59 +73,58 @@ public class Storage {
         try {
             StorageReader.readTripsFromFile(tripManager, dataFile, filePath);
         } finally {
-            // Always restore the original silent mode, even if an exception occurs
+            // Always restore original silent mode
             tripManager.setSilentMode(originalSilentMode);
             LOGGER.info("Restored original silent mode: " + originalSilentMode);
         }
     }
 
     /**
-     * Loads trips from a file using default silent mode from TripManager
+     * Overloaded version of {@code loadTrips} that uses the TripManager's current silent mode setting.
+     *
+     * @param tripManager The {@code TripManager} to which loaded trips will be added.
+     * @param filePath    The path to the file containing stored trip data.
+     * @throws FileReadException     If the file cannot be read.
+     * @throws FileFormatException   If the file has an invalid or corrupted format.
+     * @throws NoMetaDataException   If expected metadata is missing in the file.
      */
     public static void loadTrips(TripManager tripManager, String filePath)
             throws FileReadException, FileFormatException, NoMetaDataException {
-        // Use the tripManager's current silent mode setting
         loadTrips(tripManager, filePath, tripManager.isSilentMode());
     }
 
     /**
-     * Validates that the file contains proper formatted data
+     * Validates whether the specified file is correctly formatted based on expected markers.
+     * An empty file is considered valid.
      *
-     * @param dataFile The file to validate
-     * @param filePath The path to the file (for logging)
-     * @throws FileFormatException If the file format is invalid
+     * @param dataFile The file to validate.
+     * @param filePath The file path (used for error messages).
+     * @throws FileFormatException If the first line of the file has an unexpected format or can't be read.
      */
     private static void validateFileFormat(File dataFile, String filePath) throws FileFormatException {
         if (dataFile.length() == 0) {
-            // Empty file is valid (no trips)
-            return;
+            return;  // Empty file is valid
         }
 
         try {
-            // Read the first line of the file to check format
             String firstLine = Files.lines(dataFile.toPath()).findFirst().orElse("");
 
-            // Check if the file starts with one of our expected markers
             if (!firstLine.startsWith(TRIP_MARKER + DELIMITER) &&
                     !firstLine.startsWith(ALBUM_MARKER + DELIMITER) &&
                     !firstLine.startsWith(PHOTO_MARKER + DELIMITER)) {
                 throw new FileFormatException(filePath, firstLine);
             }
-
-            // Additional validation could be added here if needed
-
         } catch (IOException e) {
-            // If we can't read the file, it's an issue at line 1
             throw new FileFormatException(filePath, 1, e);
         }
     }
 
     /**
-     * Ensures that the file exists, creating it if necessary
+     * Ensures the specified file exists. If it does not exist, attempts to create it.
      *
-     * @param dataFile The file to check
-     * @param filePath The path to the file (for logging)
-     * @return true if a new empty file was created, false otherwise
+     * @param dataFile The file to check or create.
+     * @param filePath The file path (used for logging).
+     * @return {@code true} if a new file was created; {@code false} if the file already existed.
      */
     private static boolean ensureFileExists(File dataFile, String filePath) {
         if (dataFile.exists()) {
@@ -127,14 +139,14 @@ public class Storage {
             boolean created = dataFile.createNewFile();
             if (created) {
                 LOGGER.info("Created new file: " + filePath);
-                return true;  // New empty file was created
+                return true;
             } else {
                 LOGGER.warning("File already exists: " + filePath);
                 return false;
             }
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             LOGGER.warning("Could not create file: " + filePath + ". " + e.getMessage());
-            return true;  // Return true to signal that we should return early
+            return true;
         }
     }
 }

@@ -13,11 +13,24 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Class responsible for writing trip data to storage files.
+ * This class provides functionality to serialize trip data and save it to files
+ * for the Travel Diary application. It handles the formatting and encoding of
+ * trips, albums, and photos to ensure proper storage.
+ */
 public class StorageWriter {
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * Writes trips to a file
+     * Writes a list of trips to a file.
+     * This method iterates through all trips and calls writeTrip for each one,
+     * handling any IO exceptions that may occur during the writing process.
+     *
+     * @param trips The list of Trip objects to write
+     * @param dataFile The File object representing the destination file
+     * @param filePath The path of the file as a String (used for error reporting)
+     * @throws FileWriteException If an error occurs while writing to the file
      */
     protected static void writeTripsToFile(List<Trip> trips, File dataFile, String filePath) throws FileWriteException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
@@ -30,7 +43,15 @@ public class StorageWriter {
     }
 
     /**
-     * Writes a single trip and its photos to the file
+     * Writes a single trip and its photos to the file.
+     * This method handles the serialization of a Trip object, including its album and photos.
+     * It first writes the trip data, then the album marker, and finally each photo in the album.
+     *
+     * @param writer The BufferedWriter used to write to the file
+     * @param trip The Trip object to write
+     * @param filePath The path of the file (used for error reporting)
+     * @throws IOException If an error occurs during the writing process
+     * @throws PhotoSaveException If an error occurs while saving a photo
      */
     private static void writeTrip(BufferedWriter writer, Trip trip, String filePath)
             throws IOException, PhotoSaveException {
@@ -64,7 +85,12 @@ public class StorageWriter {
     }
 
     /**
-     * Formats a trip into a line for storage
+     * Formats a trip into a line for storage.
+     * This method creates a properly formatted and encoded string representation
+     * of a Trip object suitable for storage in a file.
+     *
+     * @param trip The Trip object to format
+     * @return A formatted string containing the trip data
      */
     private static String formatTripLine(Trip trip) {
         return Storage.TRIP_MARKER + Storage.DELIMITER +
@@ -73,7 +99,13 @@ public class StorageWriter {
     }
 
     /**
-     * Formats a photo into a line for storage
+     * Formats a photo into a line for storage.
+     * This method creates a properly formatted and encoded string representation
+     * of a Photo object suitable for storage in a file. It includes the photo's
+     * file path, name, caption, datetime, and location information.
+     *
+     * @param photo The Photo object to format
+     * @return A formatted string containing the photo data
      */
     private static String formatPhotoLine(Photo photo) {
         String dateTimeString = "";

@@ -11,15 +11,14 @@
 ### 🌟 New Features
 
 #### 1. Storage System
-- **What it does**: Implements persistent data storage by saving and loading trip data from local files, ensuring that user data is retained across sessions.
+- **What it does**: Implements persistent data storage by saving and loading trip data (trip, album, photos and metadata) from txt files, ensuring that user data is retained across sessions.
 - **Justification**: Enables continuity of user data between uses of the application, which is essential for real-world usability.
 - **Highlights**:
     - Designed the file structure and implemented read/write logic.
     - Includes exception handling and validation to ensure data integrity.
-- **Technologies**: Java I/O, JSON serialization
 
 #### 2. Trip Class
-- **What it does**: Represents the core data model for a trip, including its name, description, and associated photo album.
+- **What it does**: Represents the core data model for a trip, including its name, description, and associated album and photo.
 - **Highlights**:
     - Includes logic for formatting trip details and tracking photo timelines.
     - Interfaces with the album class to provide cohesive trip representation.
@@ -33,7 +32,7 @@
 #### 4. Location Class
 - **What it does**: Models individual locations visited during a trip, enhancing trip detail granularity.
 - **Highlights**:
-    - Integrates with trip and album classes for location-based photo tracking.
+    - Integrates with trip, album and photo classes for location-based photo tracking.
 
 ---
 
@@ -68,18 +67,19 @@
 
 #### Developer Guide
 - Documented:
-    - **Architecture**
-    - **Main components (Storage, Model, UI, Logic)**
-    - **Interactions between components**
+    - **Design: Architecture**
+    - **Design: How the architecture components interact with each other**
+    - **Design: Component Details: Main components**
+    - **Design: Storage Components**
     - **Implementation details for storage**
     - **Getting started and setup instructions**
     - **Manual testing steps**
-    - **Appendices: Requirements, User Stories**
+    - **Appendices: Requirements (User Stories)**
 
 ---
 
 ### 🤝 Community Involvement
 
-- Reviewed PRs with constructive, non-trivial feedback: [#12](#), [#32](#), [#19](#), [#42](#)
-- Reported and suggested improvements for other teams: [1](#), [2](#), [3](#)
+- Reviewed PRs with constructive, non-trivial feedback: [#22](#)
+- Reported and suggested improvements for other teams: [29](#)
 ---
