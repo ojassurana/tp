@@ -55,7 +55,6 @@ public class TravelDiary {
             ui.showToUser(e.getMessage());
         }
 
-
         boolean exitProgram = false;
         while (!exitProgram) {
             ui.showFsmState(fsmValue);
