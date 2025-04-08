@@ -8,9 +8,8 @@ import com.drew.metadata.exif.GpsDirectory;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -18,15 +17,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.io.InputStreamReader;
 import exception.MetadataFilepathNotFound;
 import exception.NoDateTimeMetaDataException;
 import exception.NoGPSMetaDataException;
 import exception.NoMetaDataException;
 import tracker.Tracker;
 
-public class PhotoMetadataExtractor {
 
+public class PhotoMetadataExtractor {
+    private static final String DATA_FILEPATH = "assets/1000cities.csv";
     // Static KD-tree instance, built from the CSV file.
     private static KDNode kdTree = null;
 
@@ -96,7 +96,12 @@ public class PhotoMetadataExtractor {
     public static String getLocationFromCoordinates(double latitude, double longitude) {
         if (kdTree == null) {
             try {
-                List<City> cities = loadCities("data/assets/1000cities.csv");
+                // Load the file as a resource from the classpath
+                InputStream inputStream = ClassLoader.getSystemResourceAsStream(DATA_FILEPATH);
+                if (inputStream == null) {
+                    throw new RuntimeException("Resource not found: assets/1000cities.csv");
+                }
+                List<City> cities = loadCities(inputStream); // Updated to load from InputStream
                 kdTree = buildKDTree(cities, 0);
             } catch (IOException e) {
                 return "Error loading city data: " + e.getMessage();
@@ -141,19 +146,19 @@ public class PhotoMetadataExtractor {
     }
 
     /**
-     * Loads cities from a semicolon-delimited CSV file.
+     * Loads cities from a semicolon-delimited CSV file using an InputStream.
      * Expects the CSV format:
      * Geoname ID;Name;ASCII Name;Alternate Names;...;Country name EN;...;Coordinates
      * where "Name" is at index 1, "Country name EN" is at index 7, and "Coordinates" is at index 19
      * in the format "lat, lon".
      *
-     * @param filePath the path to the CSV file
+     * @param inputStream the InputStream of the CSV file
      * @return a list of City objects
      * @throws IOException if there's an error reading the file
      */
-    private static List<City> loadCities(String filePath) throws IOException {
+    private static List<City> loadCities(InputStream inputStream) throws IOException {
         List<City> cities = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             // Skip header line if present
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -179,6 +184,7 @@ public class PhotoMetadataExtractor {
         }
         return cities;
     }
+
 
     /**
      * Recursively builds a KD-Tree from a list of cities.

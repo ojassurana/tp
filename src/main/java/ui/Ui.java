@@ -18,7 +18,7 @@ public class Ui {
     private static final int PADDING = 25;
     
     /** File path for the ASCII art logo */
-    private static final String FILE_PATH = "./data/assets/van.txt";
+    private static final String FILE_PATH = "assets/van.txt";
     
     /** Array of valid command names from the Parser */
     public static final String[] COMMAND_ARRAY = Parser.COMMAND_ARRAY;
