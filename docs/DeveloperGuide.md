@@ -164,27 +164,91 @@ The sequence diagram above illustrates how the `saveTasks` method processes a li
 3. This value will be used to get the corresponding command eg. `ListCommand`
 
 
-### Model Component
+### TripManager Component
 
 The `TripManager` class:
-* Stores and manages all trips
-* Maintains the current selected trip
+* Manages the application's trip data
+* Maintains the collection of all trips
+* Tracks the currently selected trip
 * Provides methods to manipulate trips and their contents
-![Trip Manager Class Diagra](puml_pics/TripManager.png)
+* Supports the Finite State Machine for application context
+
+![TripManager](puml_pics/TripClass.png)
+
+The TripManager component:
+* Serves as the central data repository for all trip information
+* Implements a hierarchical data structure where:
+  * TripManager maintains a collection of Trip objects
+  * Each Trip contains an Album
+  * Albums organize collections of Photos
+  * Photos can include Location information
+* Implements selection state tracking to support the application's FSM
+* Provides a clear API for Command classes to manipulate trip data
+* Maintains a single source of truth for trip information
+
+The TripManager follows a singleton pattern:
+* Only one instance exists throughout the application lifecycle
+* It centralizes data access and modification
+* All commands operate on the same trip collection
+* It ensures data consistency across the application
+
+#### TripManager Class
+- Core class responsible for managing all trips in the application
+- Stores trips in an ArrayList<Trip> collection
+- Tracks the currently selected trip through a reference variable
+- Provides methods for trip manipulation (addTrip, removeTrip, getTrip)
+- Handles trip selection and deselection through selectTrip() and unselectTrip()
+- Returns trip collection through getTrips() for UI display
+- Acts as the central interface between the application logic and trip data
+- Maintains trip selection state which affects command availability
+
+#### Trip Class
+- Represents a user's travel journey with name, description, and a unique ID
+- Contains an Album to store and organize photos from the trip
+- Maintains a boolean isSelected flag to track selection status
+- Provides methods to manage trip metadata (getName, getDescription, getId)
+- Supports Album management through getAlbum() and setAlbum() methods
+- Can be created with either a name and description or with additional ID parameter
+- Implements toString() method for displaying trip information to users
+
+This design ensures that trip data remains consistent throughout the application, with clear separation between data management (TripManager) and data representation (Trip).
+
+### Photo Component
+
+![Photo](puml_pics/photo.png)
+
+The Photo component manages image data and metadata for the application:
+- Provides classes for storing and handling photo information
+- Extracts and processes metadata from image files
+- Links photos with location data for trip tracking
+- Implements date/time functionality for trip chronology
 
 #### Photo
-![Photo](puml_pics/photo.png)
-####
-- Stores image data with file paths and captions.
+- Stores image data with file paths and captions
+- Extracts metadata from image files using PhotoMetadataExtractor
+- Links each photo to a specific Location
+- Supports comparison of photos by datetime using PhotoDateTimeComparator
+- Can be displayed using PhotoPrinter
+- Contains essential trip metadata including timestamps and geographical coordinates
+- Provides toString() method for displaying photo information
 
-- Extracts metadata from image files using PhotoMetadataExtractor.
+#### Album
+- Contains an ArrayList<Photo> to organize photos for a specific trip
+- Maintains a name identifier for the album
+- Provides methods to add and remove photos (addPhoto, removePhoto)
+- Retrieves specific photos by index with getPhoto()
+- Returns the entire photo collection with getPhotos()
+- Tracks the total number of photos with getSize()
+- Created with a specific name through Album(String name) constructor
 
-- Links each photo to a specific Location.
-
-- Supports comparison of photos by datetime using PhotoDateTimeComparator.
-
-- Can be displayed using PhotoPrinter.
-
+#### Location
+- Stores geographical coordinates (latitude, longitude)
+- Maintains a descriptive location name for user reference
+- Provides accessor methods for coordinate data
+- Can be created with coordinates only or with additional location name
+- Implements toString() method for displaying location information
+- Supports mapping and geographical sorting functionality
+- Essential for trip route visualization and tracking
 
 ### Storage Component
 
