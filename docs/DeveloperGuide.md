@@ -740,7 +740,7 @@ These instructions provide a systematic approach to manually test the Travel Dia
 
 1. Run the application once to generate the data file
 2. Exit the application
-3. Open the data file in a text editor and modify it to make it invalid JSON
+3. Open the data file in a text editor and modify it to make it invalid txt.
 4. Restart the application  
    **Expected:** Application attempts to load the file, detects corruption, and either creates a new empty data file or displays an error message explaining the issue with the data file.
 
