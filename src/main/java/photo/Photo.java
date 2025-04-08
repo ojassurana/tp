@@ -1,6 +1,7 @@
 package photo;
 
 import com.drew.imaging.ImageProcessingException;
+import exception.MetadataFilepathNotFound;
 import exception.NoMetaDataException;
 import exception.TravelDiaryException;
 import exception.UnsupportedImageFormatException;
@@ -40,7 +41,7 @@ public class Photo {
      * @throws NoMetaDataException If the photo has no metadata.
      */
     public Photo(String filePath, String photoName, String caption, LocalDateTime datetime)
-            throws TravelDiaryException, IOException, ImageProcessingException, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, NoMetaDataException, MetadataFilepathNotFound {
         logger.info("Initializing Photo object...");
 
         assert filePath != null && !filePath.isEmpty() : "File path cannot be null or empty.";
@@ -80,7 +81,7 @@ public class Photo {
      * @throws NoMetaDataException If the photo has no metadata.
      */
     public Photo(String filePath, String photoName, String caption) throws TravelDiaryException,
-            ImageProcessingException, IOException, NoMetaDataException {
+            ImageProcessingException, NoMetaDataException, MetadataFilepathNotFound {
         this(filePath, photoName, caption, null);
     }
 
@@ -91,6 +92,10 @@ public class Photo {
     public String getFilePath() {
         logger.fine("Retrieving file path: " + filePath);
         return this.filePath;
+    }
+
+    public String getLocationName() {
+        return locationName;
     }
 
     /**
@@ -153,7 +158,7 @@ public class Photo {
      * @throws NoMetaDataException If the photo has no metadata.
      */
     private void extractData(String filePath, LocalDateTime datetime) throws ImageProcessingException,
-            IOException, NoMetaDataException {
+            NoMetaDataException, MetadataFilepathNotFound {
         logger.info("Starting metadata extraction...");
 
         // Use PhotoMetadataExtractor to extract metadata from the image.

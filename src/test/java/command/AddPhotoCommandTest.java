@@ -1,6 +1,8 @@
 package command;
 
+import exception.DuplicateNameException;
 import exception.IndexOutOfRangeException;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,8 @@ public class AddPhotoCommandTest {
      * @throws IndexOutOfRangeException if there's an issue with trip selection
      */
     @BeforeEach
-    void setUp() throws TravelDiaryException, IndexOutOfRangeException {
+    void setUp() throws TravelDiaryException, IndexOutOfRangeException, DuplicateNameException,
+            MissingCompulsoryParameter {
         tripManager = new TripManager();
         tripManager.setSilentMode(true);
         ui = new Ui();

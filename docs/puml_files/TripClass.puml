@@ -1,11 +1,98 @@
-@startuml Trip
+@startuml
+' --- Force-hide any default icons or stereotypes ---
+hide circle
+hide stereotype
+
+skinparam classIconSize 0
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classFontSize 14
+skinparam classBorderColor #333333
+skinparam shadowing false
+skinparam stereotypePosition none
+skinparam circledCharacter false
+skinparam classStyle noStereotype
+
 class Trip {
-    - String name
-    - String description
-    - Album album
-    + Trip(String name, String description) throws TravelDiaryException
-    + String getAlbumDetails()
-    + Album getAlbum()
-    + String toString()
+  - String name
+  - String description
+  - Album album
+  - int id
+  - boolean isSelected
+  
+  + Trip(String name, String description)
+  + Trip(int id, String name, String description)
+  + String getName()
+  + String getDescription()
+  + Album getAlbum()
+  + void setAlbum(Album album)
+  + int getId()
+  + void setId(int id)
+  + boolean isSelected()
+  + void setSelected(boolean selected)
+  + String toString()
 }
+
+class Album {
+  - ArrayList<Photo> photos
+  - String name
+  
+  + Album(String name)
+  + void addPhoto(Photo photo)
+  + void removePhoto(int index)
+  + Photo getPhoto(int index)
+  + ArrayList<Photo> getPhotos()
+  + int getSize()
+  + String getName()
+}
+
+class Photo {
+  - String filepath
+  - String name
+  - String caption
+  - LocalDateTime datetime
+  - Location location
+  
+  + Photo(String filepath, String name, String caption)
+  + String getFilepath()
+  + String getName()
+  + String getCaption()
+  + LocalDateTime getDatetime()
+  + Location getLocation()
+  + void setLocation(Location location)
+  + void extractData(String filepath, LocalDateTime datetime)
+  + String toString()
+}
+
+class Location {
+  - double latitude
+  - double longitude
+  - String locationName
+  
+  + Location(double latitude, double longitude)
+  + Location(double latitude, double longitude, String locationName)
+  + double getLatitude()
+  + double getLongitude()
+  + String getLocationName()
+  + String toString()
+}
+
+class TripManager {
+  - ArrayList<Trip> trips
+  - Trip selectedTrip
+  
+  + void addTrip(Trip trip)
+  + void removeTrip(int index)
+  + Trip getTrip(int index)
+  + ArrayList<Trip> getTrips()
+  + int getSize()
+  + Trip getSelectedTrip()
+  + void selectTrip(int index)
+  + void unselectTrip()
+}
+
+Trip -- Album : contains >
+Album -- Photo : contains >
+Photo -- Location : has >
+TripManager -- Trip : manages >
 @enduml

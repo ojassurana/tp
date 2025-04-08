@@ -1,6 +1,7 @@
 package trip;
 
 import album.Album;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import tracker.Tracker;
 import java.util.List;
@@ -13,14 +14,13 @@ public class Trip {
     public String description;
     public Album album;
 
-    public Trip(String name, String description) throws TravelDiaryException {
+    public Trip(String name, String description) throws TravelDiaryException, MissingCompulsoryParameter {
         logger.info("Initializing Trip object");
 
         // Ensure the name, description, and location attributes are provided
         if (name == null || description == null) {
             logger.severe("Missing required tag(s) for add_trip");
-            throw new TravelDiaryException("Missing required tag(s) for add_trip. Required: n# (name), " +
-                    "d# (description). ");
+            throw new MissingCompulsoryParameter("trip", "name, description");
         }
 
         this.name = name;
@@ -37,6 +37,10 @@ public class Trip {
 
     public String getAlbumDetails() {
         return this.album.toString();
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Album getAlbum() {

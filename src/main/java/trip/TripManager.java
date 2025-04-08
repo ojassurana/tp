@@ -1,5 +1,7 @@
 package trip;
 
+import exception.DuplicateNameException;
+import exception.MissingCompulsoryParameter;
 import exception.TravelDiaryException;
 import exception.IndexOutOfRangeException;
 
@@ -29,8 +31,14 @@ public class TripManager {
     /**
      * Adds a trip and optionally displays the updated list
      */
-    public void addTrip(String name, String description) throws TravelDiaryException {
+    public void addTrip(String name, String description) throws TravelDiaryException, DuplicateNameException,
+            MissingCompulsoryParameter {
         logger.info("Adding a new trip: " + name);
+        boolean anyContainsDuplicateName = trips.stream()
+                .anyMatch(s -> s.getName().equals(name));
+        if (anyContainsDuplicateName){
+            throw new DuplicateNameException("trip", name);
+        }
         trips.add(new Trip(name, description));
         logger.info("Trip added successfully: " + name);
         System.out.printf("\tTrip [%s] has been added successfully.\n", name);
@@ -39,8 +47,14 @@ public class TripManager {
     /**
      * Adds a trip silently, without viewing the updated list
      */
-    public Trip addTripSilently(String name, String description) throws TravelDiaryException {
+    public Trip addTripSilently(String name, String description) throws TravelDiaryException,
+            MissingCompulsoryParameter, DuplicateNameException {
         logger.info("Adding a new trip silently: " + name);
+        boolean anyContainsDuplicateName = trips.stream()
+                .anyMatch(s -> s.getName().equals(name));
+        if (anyContainsDuplicateName){
+            throw new DuplicateNameException("trip", name);
+        }
         Trip newTrip = new Trip(name, description);
         trips.add(newTrip);
         logger.info("Trip added silently: " + name);

@@ -1,5 +1,4 @@
 # Developer Guide
-
 ## Acknowledgements
 
 ## Setting up, getting started
@@ -45,7 +44,7 @@ Importing as a Gradle project is different from a normal Java project. Be sure t
 # Architecture
 
 ## Architecture Diagram
-![Class Diagram for Architecture](puml_pics/TravelDiaryArchitectureClass.png)
+![Class Diagram for Architecture](puml_pics/TravelDiaryArchitecture.png)
 The Architecture Diagram above explains the high-level design of the Travel Diary App.
 
 Given below is a quick overview of main components and how they interact with each other.
@@ -352,7 +351,6 @@ This application works on any computers that are Windows, macOS or Unix that has
 * PhotoFrame - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
 * TripManager - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
 
-## Appendix: Instructions for manual testing
 
 ## Appendix: Instructions for Manual Testing
 

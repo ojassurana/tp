@@ -13,6 +13,9 @@ import exception.FileReadException;
 import exception.FileWriteException;
 import exception.TravelDiaryException;
 import exception.MissingCompulsoryParameter;
+import exception.MetadataFilepathNotFound;
+import exception.DuplicateFilepathException;
+import exception.DuplicateNameException;
 import parser.Parser;
 import photo.PhotoPrinter;
 import storage.Storage;
@@ -95,13 +98,9 @@ public class TravelDiary {
                 ui.showToUser("Error saving trips: " + e.getMessage());
                 logger.log(Level.WARNING, "Failed to save trips after command", e);
             }
-        } catch (TravelDiaryException |
-                 NumberFormatException |
-                 MissingCompulsoryParameter |
-                 ImageProcessingException |
-                 NoMetaDataException |
-                 IOException |
-                 TripNotSelectedException e) {
+        } catch (TravelDiaryException | NumberFormatException | MissingCompulsoryParameter | ImageProcessingException |
+                 NoMetaDataException | IOException | TripNotSelectedException | DuplicateNameException |
+                 DuplicateFilepathException | MetadataFilepathNotFound e) {
             ui.showToUser(e.getMessage());
             return false;
         }
