@@ -1,24 +1,4 @@
-# Gavalion - Project Portfolio Page
-
-## Overview
-
-Travel Diary is a desktop app for managing trips and travel memories, for use via a Command Line Interface (CLI). Travel Diary helps you log and organize trips, photos, and experiences more efficiently than traditional travel journaling apps.
-
-
-### Summary of Contributions
-
-#### Code Contribution
-[View my contributions](https://nus-cs2113-ay2425s2.github.io/tp-dashboard/?search=gavalion&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2025-02-21&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other)
-
-#### Enhancements Implemented
-- **Parser**: Parse the input from the user
-- **Exception**: Defined exceptions for parser and some for photos.
-- **PhotoExtractMetadata**: Extract metadata from photos.
-- **UI**: Improved UI to see where the user at.
-- **CommandFactory**: Help to integrate CommandFactory and Parser along with other commands
-- **Commands**: Collaborate to create most commands and make sure it corrects. 
-
-# Bryan Salim - Project Portfolio Page
+# gavalion - Project Portfolio Page
 
 ## Overview
 
@@ -69,14 +49,27 @@ Travel Diary is a desktop app for managing trips and travel memories, for use vi
 #### 7. Commands and commandFactory Classes
 - **What it does**: Execute commands based on parser output and connects them to trip, tripmanager and photos.
 - **Highlights**:
-    - Collaborated with `Ojassurana` to crea
-    - Create exceptions to reject photos with missing metadata values, eg. missing gps data.
+    - Collaborated with `Ojassurana` to create commands (addphoto, addtrip, closephoto, delete, list, menu)
+    - Make sure the logic for the fsmvalue is correct in the commands
+
+#### 8. Tracker
+- **What it does**: Track datetime of all photos inside a trip, track datetime difference between photos
+- **Highlights**:
+    - Created getPeriod to print out the minimum and maximum date of photos inside an album (originally it was implemented at tripmanager)
+
+#### 9. Storage
+- **What it does**: Implements persistent data storage by saving and loading trip data from local files, ensuring that user data is retained across sessions.
+- **Highlights**:
+    - Hunt and debug the Storage class for any edge cases
+    - Found a major bug where when a line of storage can not be processed, the rest of the text will not be transferred to trip manager 
+    - Added exception to gracefully reject trip with corrupted line
+    - Added exception to gracefully reject photos and trips with duplicated name and filepath
 
 ---
 
 ### 💻 Code Contribution
 
-- [📊 View my contributions on RepoSense](https://nus-cs2113-ay2425s2.github.io/tp-dashboard/?search=lethihongminh&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2025-02-21&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other)
+- [View my contributions](https://nus-cs2113-ay2425s2.github.io/tp-dashboard/?search=gavalion&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2025-02-21&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other)
 
 ---
 
@@ -88,14 +81,6 @@ Travel Diary is a desktop app for managing trips and travel memories, for use vi
 - Coordinated team milestones and documentation updates
 - Facilitated pull request reviews and issue triaging
 
----
-
-### 🛠️ Enhancements to Existing Features
-
-- Extended the `help` command to provide an interactive and detailed guide to all available commands
-- Refined UI feedback for invalid commands and enhanced CLI responsiveness
-
----
 
 ### 📚 Documentation
 
@@ -107,18 +92,14 @@ Travel Diary is a desktop app for managing trips and travel memories, for use vi
 
 #### Developer Guide
 - Documented:
-    - **Architecture**
-    - **Main components (Storage, Model, UI, Logic)**
+    - **Main components (Parser, Commands, CommandFactory)**
     - **Interactions between components**
-    - **Implementation details for storage**
-    - **Getting started and setup instructions**
-    - **Manual testing steps**
-    - **Appendices: Requirements, User Stories**
+    - **Implementation details for Parser**
 
 ---
 
 ### 🤝 Community Involvement
 
-- Reviewed PRs with constructive, non-trivial feedback: [#12](#), [#32](#), [#19](#), [#42](#)
-- Reported and suggested improvements for other teams: [1](#), [2](#), [3](#)
+- Reviewed PRs with constructive, non-trivial feedback: [#22](#), [#24](#), [#34](#), [#65](#)
+- Reported and suggested improvements for other teams: [29](#), [30](#), [136](#)
 ---
