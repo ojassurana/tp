@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class PhotoPrinter {
 
-    private static final String locationPinIconPath = "./data/assets/photo_Location_Pin.png";
+    private static final String locationPinIconPath = "assets/photo_Location_Pin.png";
     private static final Logger logger = Logger.getLogger(PhotoPrinter.class.getName());
 
     /**
