@@ -133,7 +133,7 @@ Commands are executed based on the current FSM state, ensuring context-appropria
 
 
 #### Parser
-![Parser](puml_pics/parser_class_diagram.png)
+![Parser](puml_pics/ParserClassDiagram.png)
 
 - Contains static classes
 - Parse input based on tags
