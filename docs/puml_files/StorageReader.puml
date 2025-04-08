@@ -1,12 +1,12 @@
 @startuml
-participant Storage
-participant StorageReader
-participant TripManager
-participant Trip
-participant Album
-participant BufferedReader
-participant FileFormatException
-participant StringEncoder
+participant ":Storage" as Storage
+participant ":StorageReader" as StorageReader
+participant ":TripManager" as TripManager
+participant ":Trip" as Trip
+participant ":Album" as Album
+participant ":BufferedReader" as BufferedReader
+participant ":FileFormatException" as FileFormatException
+participant ":StringEncoder" as StringEncoder
 
 Storage -> StorageReader: readTripsFromFile(tripManager, dataFile, filePath)
 StorageReader -> BufferedReader: new BufferedReader(FileReader(dataFile))
