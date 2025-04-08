@@ -59,6 +59,8 @@ public class StorageReader {
      * Processes all lines in the file, parsing trip, album, and photo data.
      * This method reads each line, identifies its type based on markers, and
      * processes it accordingly.
+     * Skips lines that are corrupted, if it is a photo then skip 1 line
+     * But if it is a trip, skip line until the next trip
      *
      * @param reader The BufferedReader to read lines from
      * @param tripManager The TripManager instance to which trips should be added

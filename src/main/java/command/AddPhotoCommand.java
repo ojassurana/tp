@@ -1,7 +1,6 @@
 package command;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.MissingCompulsoryParameter;
 import exception.NoMetaDataException;
 import exception.TravelDiaryException;
 import exception.DuplicateNameException;
@@ -10,7 +9,6 @@ import exception.MetadataFilepathNotFound;
 import trip.TripManager;
 import ui.Ui;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -52,8 +50,6 @@ public class AddPhotoCommand extends Command {
      * @param ui the user interface to display results
      * @param fsmValue the current finite state machine value (should be 1)
      * @throws TravelDiaryException if the tripManager or selected trip is null
-     * @throws MissingCompulsoryParameter if a required parameter is missing
-     * @throws IOException if there is an error reading the photo file
      * @throws ImageProcessingException if there is an error processing the image
      * @throws NoMetaDataException if required metadata cannot be extracted from the photo
      */
