@@ -1,10 +1,8 @@
 package ui;
-
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import parser.Parser;
-import java.io.File;
-import java.io.FileNotFoundException;
-
+import java.io.InputStream;
 /**
  * Handles all user interface operations in the Travel Diary application.
  * This class is responsible for displaying information to the user and
@@ -107,20 +105,22 @@ public class Ui {
      */
     public void showLogo() {
         try {
-            File file = new File(FILE_PATH);
-            Scanner scanner = new Scanner(file);
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                System.out.println(line);
+            InputStream inputStream = ClassLoader.getSystemResourceAsStream(FILE_PATH);
+            if (inputStream == null) {
+                throw new FileNotFoundException("Resource not found: "  + FILE_PATH);
             }
 
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            // Handle the exception if the file is not found
-            System.err.println("File not found: " + e.getMessage());
+            // Directly read the InputStream and print its content using Scanner
+            try (Scanner scanner = new Scanner(inputStream)) {
+                while (scanner.hasNextLine()) {
+                    System.out.println(scanner.nextLine());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
+
 
     /**
      * Closes the scanner when the application is shutting down.

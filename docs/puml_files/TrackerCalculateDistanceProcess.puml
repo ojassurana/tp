@@ -1,0 +1,31 @@
+@startuml
+actor Album
+participant ":Tracker" as Tracker
+participant ":Photo1" as Photo1
+participant ":Photo2" as Photo2
+participant ":Location1" as Location1
+participant ":Location2" as Location2
+
+Album -> Tracker: getDist(photo1, photo2)
+activate Tracker
+
+Tracker -> Photo1: getLocation()
+activate Photo1
+Photo1 -> Location1: getLatitude(), getLongitude()
+deactivate Photo1
+activate Location1
+Location1 --> Tracker: latitude1, longitude1
+deactivate Location1
+
+Tracker -> Photo2: getLocation()
+activate Photo2
+Photo2 -> Location2: getLatitude(), getLongitude()
+deactivate Photo2
+activate Location2
+Location2 --> Tracker: latitude2, longitude2
+deactivate Location2
+
+Tracker -> Tracker: calculateHaversineDistance(lat1, lon1, lat2, lon2)
+Tracker --> Album: distance (in km)
+deactivate Tracker
+@enduml

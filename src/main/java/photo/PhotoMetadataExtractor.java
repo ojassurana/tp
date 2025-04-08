@@ -8,6 +8,7 @@ import com.drew.metadata.exif.GpsDirectory;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -35,10 +36,16 @@ public class PhotoMetadataExtractor {
     private double latitude;
     private double longitude;
 
+
     /**
      * Constructs a PhotoMetadataExtractor to read metadata from the given file path.
+     * The metadata extracted will be longitude, latitude and datetime of photo taken and store inside the attribute
      *
-     * @param filepath the path to the image file
+     *
+     * @param filepath image filepath
+     * @throws ImageProcessingException Error from API
+     * @throws NoMetaDataException Exception due to missing gps or datetime metadata
+     * @throws MetadataFilepathNotFound Exception due to picture having no metadata at all
      */
     public PhotoMetadataExtractor(String filepath) throws ImageProcessingException, NoMetaDataException,
             MetadataFilepathNotFound {
@@ -79,6 +86,18 @@ public class PhotoMetadataExtractor {
         }
     }
 
+    public LocalDateTime getDatetime() {
+        return datetime;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     /**
      * Returns a map of the extracted metadata: location, latitude, longitude, and datetime.
      *
@@ -99,7 +118,7 @@ public class PhotoMetadataExtractor {
                 // Load the file as a resource from the classpath
                 InputStream inputStream = ClassLoader.getSystemResourceAsStream(DATA_FILEPATH);
                 if (inputStream == null) {
-                    throw new RuntimeException("Resource not found: assets/1000cities.csv");
+                    throw new FileNotFoundException(DATA_FILEPATH);
                 }
                 List<City> cities = loadCities(inputStream); // Updated to load from InputStream
                 kdTree = buildKDTree(cities, 0);

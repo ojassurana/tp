@@ -1,5 +1,7 @@
 # Developer Guide
+
 ## Acknowledgements
+This project was inspired by the AddressBook-Level3 project created by the SE-EDU initiative.
 
 ## Setting up, getting started
 
@@ -41,15 +43,14 @@ Importing as a Gradle project is different from a normal Java project. Be sure t
 
 ## Design
 
-# Architecture
+### Architecture
 
-## Architecture Diagram
 ![Class Diagram for Architecture](puml_pics/TravelDiaryArchitecture.png)
 The Architecture Diagram above explains the high-level design of the Travel Diary App.
 
 Given below is a quick overview of main components and how they interact with each other.
 
-## Main components of the architecture
+#### Main components of the architecture
 
 **Main** (implemented in `TravelDiary` class) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence and connects them with each other.
@@ -64,9 +65,7 @@ The bulk of the app's work is done by the following four components:
 
 **Commons** represents a collection of classes used by multiple components, including exceptions and utility classes.
 
-## How the architecture components interact with each other
-
-### Component Interactions
+#### Component interactions
 
 The sequence diagram below shows a typical interaction flow when a user enters a command:
 ![Sequence Diagram for Architecture](puml_pics/TravelDiarySequenceDiagram.png)
@@ -79,7 +78,7 @@ The sequence diagram below shows a typical interaction flow when a user enters a
 6. After command execution, any changes are saved via **Storage**
 7. Results are displayed to the user through the **UI**
 
-### State Management
+#### State Management
 
 The application uses a Finite State Machine (FSM) to track the user's current context:
 * State 0: No trip selected
@@ -97,7 +96,6 @@ The `TravelDiary` class:
 * Processes user commands in a continuous loop until exit
 * Saves all trips before exiting
 * Manages the FSM state that tracks user context
-
 
 ### UI Component
 
@@ -135,56 +133,103 @@ Commands are executed based on the current FSM state, ensuring context-appropria
 
 
 #### Parser
-![Parser](puml_pics/parser_class_diagram.png)
-####
+![Parser](puml_pics/ParserClassDiagram.png)
+
 - Contains static classes
 - Parse input based on tags
 - Return hashmap based on command name and tags
 
-#### Parsing Input
+##### Parsing Input
 The parsing process convert input and return hashmap which will be processed by CommandFactory.
 
 ![Sequence diagram for parsing data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/Parser%20sequence%20diagram.png)
 
-The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+The sequence diagram above illustrates how the parsing process works:
 
 1. The parsing will be split by space and tags
 2. The return value for this parsing will be a hashmap <String, String>
 3. The hashmap will be process to CommandFactory which will return the corresponding command
 
-#### Command Sequence
+##### Command Sequence
 The hashmap will be process based on its Command key value in the hashmap
 
 ![Sequence diagram for command process](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/command%20sequence%20diagram.png)
 
-The sequence diagram above illustrates how the `saveTasks` method processes a list of Trip objects:
+The sequence diagram above illustrates how command processing works:
 
 1. The hashmap will always have a key `"command"`
 2. The value of hashmap.get(`"command"`) will be the commandName eg. `"list"`
 3. This value will be used to get the corresponding command eg. `ListCommand`
 
-
 ### Model Component
 
+#### TripManager Component
+
 The `TripManager` class:
-* Stores and manages all trips
-* Maintains the current selected trip
+* Manages the application's trip data
+* Maintains the collection of all trips
+* Tracks the currently selected trip
 * Provides methods to manipulate trips and their contents
-![Trip Manager Class Diagra](puml_pics/TripManager.png)
+* Supports the Finite State Machine for application context
 
-#### Photo
-![Photo](puml_pics/photo.png)
-####
-- Stores image data with file paths and captions.
+![TripManager](puml_pics/TripClass.png)
 
-- Extracts metadata from image files using PhotoMetadataExtractor.
+The TripManager component:
+* Serves as the central data repository for all trip information
+* Implements a hierarchical data structure where:
+  * TripManager maintains a collection of Trip objects
+  * Each Trip contains an Album
+  * Albums organize collections of Photos
+  * Photos can include Location information
+* Implements selection state tracking to support the application's FSM
+* Provides a clear API for Command classes to manipulate trip data
+* Maintains a single source of truth for trip information
 
-- Links each photo to a specific Location.
+The TripManager follows a singleton pattern:
+* Only one instance exists throughout the application lifecycle
+* It centralizes data access and modification
+* All commands operate on the same trip collection
+* It ensures data consistency across the application
 
-- Supports comparison of photos by datetime using PhotoDateTimeComparator.
+##### TripManager Class
+- Core class responsible for managing all trips in the application
+- Stores trips in an ArrayList<Trip> collection
+- Tracks the currently selected trip through a reference variable
+- Provides methods for trip manipulation (addTrip, removeTrip, getTrip)
+- Handles trip selection and deselection through selectTrip() and unselectTrip()
+- Returns trip collection through getTrips() for UI display
+- Acts as the central interface between the application logic and trip data
+- Maintains trip selection state which affects command availability
 
-- Can be displayed using PhotoPrinter.
+##### Trip Class
+- Represents a user's travel journey with name, description, and a unique ID
+- Contains an Album to store and organize photos from the trip
+- Maintains a boolean isSelected flag to track selection status
+- Provides methods to manage trip metadata (getName, getDescription, getId)
+- Supports Album management through getAlbum() and setAlbum() methods
+- Can be created with either a name and description or with additional ID parameter
+- Implements toString() method for displaying trip information to users
 
+This design ensures that trip data remains consistent throughout the application, with clear separation between data management (TripManager) and data representation (Trip).
+
+#### Photo Component
+
+### Component Structure
+The **Photo** component includes multiple related classes and interactions, as shown in the class diagram below:
+
+![Class diagram for Photo](puml_pics/Photo.png)
+
+### Design Considerations
+
+#### Metadata Management
+The **Photo** component uses the `PhotoMetadataExtractor` class to extract relevant metadata (e.g., location and datetime) from image files. This ensures that all information is kept consistent and valid.
+
+#### Location Representation
+The geographical location of a photo is represented using the `Location` class, which encapsulates latitude and longitude. This design allows modular and extensible handling of location data.
+
+#### Exception Handling
+- Validates input attributes like `filePath` to ensure non-null and well-formatted data.
+- Handles scenarios where metadata cannot be extracted, throwing meaningful exceptions for better traceability.
 
 ### Storage Component
 
@@ -223,28 +268,28 @@ The Commons includes:
 
 ### Design Considerations
 
-### Persistence
+#### Persistence
 
 The application saves data after each command to ensure data is not lost in case of unexpected termination.
 
-### Error Handling
+#### Error Handling
 
 Robust exception handling ensures that:
 * File-related errors are properly reported
 * Command parsing errors are gracefully handled
 * Invalid operations based on FSM state are prevented
 
-### Extensibility
+#### Extensibility
 
 The architecture allows for easy extension:
 * New commands can be added by implementing the Command interface
 * Additional storage formats can be supported by extending the Storage component
 * The FSM can be expanded to support more complex workflows
 
-
 ## Implementation
 
-### Storage Component
+### Storage Implementation
+
 The **Storage** component is implemented as a utility class with static methods for interacting with persistent storage. It employs the custom text file format described in the design section.
 
 #### Key Operations
@@ -293,35 +338,182 @@ The exception handling system addresses various error scenarios during file oper
 - Includes the location of the failure
 - Details the type of issue encountered to facilitate troubleshooting
 
+### Photo Implementation
 
-### Add Photo Process Sequence Diagram
-![Add Photo Process Sequence Diagram](puml_pics/AddPhotoProcess.png)
-####
+The **Photo** component is responsible for representing and managing metadata and geographical information about a photo. It acts as a core data structure that stores attributes like file path, caption, and location, and integrates with external tools for extracting metadata from photos.
 
-- AddPhotoCommand calls execute(tripManager, ui, fsmValue).
+### Component Structure
+The **Photo** component includes multiple related classes and interactions, as shown in the class diagram below:
 
-- TripManager getSelectedTrip() retrieves the current trip and its album.
+![Class diagram for Photo](puml_pics/Photo.png)
 
-- Album addPhoto(filepath, photoname, caption) creates a new Photo.
+### Design Considerations
 
-- Photo#extractData(filepath, datetime) extracts metadata.
+#### Metadata Management
+The **Photo** component uses the `PhotoMetadataExtractor` class to extract relevant metadata (e.g., location and datetime) from image files. This ensures that all information is kept consistent and valid.
 
-- If metadata includes coordinates, a Location object is created.
+#### Location Representation
+The geographical location of a photo is represented using the `Location` class, which encapsulates latitude and longitude. This design allows modular and extensible handling of location data.
 
-- The photo is added to the album's list.
+#### Exception Handling
+- Validates input attributes like `filePath` to ensure non-null and well-formatted data.
+- Handles scenarios where metadata cannot be extracted, throwing meaningful exceptions for better traceability.
 
+---
 
-## Apendix: Requirements
-### Product scope
-#### Target user profile
+## AddPhotoProcess
+
+### Sequence Diagram
+The **sequence diagram** below illustrates how the `AddPhotoCommand` interacts with other components to add a photo to a trip:
+
+![Sequence diagram for AddPhotoProcess](puml_pics/AddPhotoProcess.png)
+
+#### Key Steps in the Process
+1. **TravelDiary** initiates the process by calling the `AddPhotoCommand` constructor with a `filePath`, `photoName`, and `caption`.
+2. The `execute` method is called on the `AddPhotoCommand`, passing the `TripManager`, `UI`, and `fsmValue`.
+3. If the `TripManager` is null, a `TravelDiaryException` is logged and thrown.
+4. If the `TripManager` is valid:
+  - The `AddPhotoCommand` fetches the selected `Trip` via `getSelectedTrip()` from `TripManager`.
+  - The `Trip` retrieves its associated `Album` using `getAlbum()`.
+
+5. The **Album**:
+  - Calls its `addPhoto()` method to create and add a new `Photo` object.
+  - Instantiates a `Photo` object with the provided details (`filePath`, `photoName`, and `caption`).
+
+6. The **Photo**:
+  - Invokes `extractData()` to process the file and extract metadata via the `PhotoMetadataExtractor`.
+  - The `PhotoMetadataExtractor` reads the metadata and returns details, including latitude and longitude.
+
+7. The **Photo** uses the `Location` class to create an instance with extracted latitude and longitude.
+
+8. The **Album** adds the photo to its `photos` list.
+
+#### Key Operations
+
+##### Creating a Photo
+The `Photo` class constructor follows this process:
+1. Initializes with a `filePath`, `photoName`, and `caption`.
+2. Calls the `extractData()` method to process the image file.
+3. Validates extracted metadata and initializes associated attributes like `Location`.
+
+##### Extracting Metadata
+- The `PhotoMetadataExtractor` uses a `getMetadataMap()` method to process the image file and return a map of metadata values.
+- Latitude and longitude are extracted and encapsulated in the `Location` class.
+
+#### Error Management
+- If `TripManager` is null, the `AddPhotoCommand` logs an error and throws a `TravelDiaryException`.
+- If the `Photo` file path or metadata are invalid, appropriate exceptions are raised during the creation and extraction process.
+- All errors are logged with contextual information for debugging purposes.
+
+---
+
+### Implementation
+
+#### AddPhotoProcess
+The **AddPhotoProcess** is implemented as a sequence of commands that involve multiple components:
+- `AddPhotoCommand`: Central command class managing the workflow.
+- `TripManager`: Fetches the selected `Trip`.
+- `Album`: Stores and organizes photos.
+- `Photo`: Represents the photo with its metadata.
+- `PhotoMetadataExtractor`: Extracts metadata from the photo file.
+- `Location`: Represents the geographical coordinates of the photo.
+
+#### Photo Component
+The **Photo** component is implemented with methods for:
+- **Creation:** `Photo(String filePath, String photoName, String caption)`
+- **Data Extraction:** `void extractData(String filePath, LocalDateTime datetime)`
+- **Interaction with Location:** `Location fromCoordinates(double latitude, double longitude)`
+
+---
+
+## Tracker Component
+
+### Overview
+The **Tracker** component serves as a utility module for operations related to photo data management. It is responsible for calculating distances between photo locations, sorting photos by date, and determining periods for albums. This component encapsulates logic for data analysis and simplifies operations involving geographic and temporal data.
+
+#### Component Structure
+The **Tracker** component consists of static methods and does not maintain its own state. Below is the class diagram for the **Tracker** component:
+
+![Class diagram for Tracker](puml_pics/Tracker.png)
+
+### Design Considerations
+
+#### Distance Calculation
+The **Tracker** uses the Haversine formula to calculate the geographical distance between two photos. This formula accounts for the Earth's curvature, ensuring accurate results for any two points on the globe. The calculation uses:
+- Latitude and longitude coordinates of two photo locations.
+- A constant for Earth's radius: `EARTH_RADIUS = 6371` (in kilometers).
+
+#### Sorting Photos
+The component provides functionality to sort photos by their `datetime` attribute, leveraging the `PhotoDateTimeComparator`.
+
+#### Period Calculation
+The **Tracker** determines the date range of an album by analyzing the minimum and maximum `datetime` values among the photos in the album.
+
+#### Exception Handling
+The **Tracker** ensures robust exception handling for all operations:
+- Validates that `Photo` objects have valid `Location` and `datetime` data.
+- Ensures geographic coordinates are within valid ranges:
+  - Latitude: `[-90, 90]`
+  - Longitude: `[-180, 180]`.
+
+The **sequence diagram** below illustrates the process for calculating the distance between two photos using the `Tracker` component:
+
+![Sequence diagram for TrackerCalculateDistance](puml_pics/TrackerCalculateDistanceProcess.png)
+
+#### Key Steps in the Process
+1. **Album** initiates the process by calling the `getDist` method of the **Tracker**, passing two **Photo** objects (`photo1` and `photo2`).
+2. The **Tracker** retrieves the `Location` objects from both photos by invoking their `getLocation()` method.
+3. It extracts the latitude and longitude of each photo using `getLatitude()` and `getLongitude()` from the respective `Location` objects.
+4. The **Tracker** calculates the distance between the two points using the **Haversine formula**:
+  - Computes the differences in latitude and longitude, in radians.
+  - Applies the Haversine equation to calculate the great-circle distance.
+5. The calculated distance (in kilometers) is returned to the **Album**.
+
+#### Key Operations
+
+##### Calculating Distance
+The `getDist` method follows this process:
+1. Retrieve `Location` from both `Photo` objects.
+2. Extract latitude and longitude from the `Location` objects.
+3. Validate coordinate ranges.
+4. Calculate the Haversine distance:
+  - Formula:
+    ```
+    a = sin²(Δφ / 2) + cos(φ₁) ⋅ cos(φ₂) ⋅ sin²(Δλ / 2)
+    c = 2 ⋅ atan2(√a, √(1 − a))
+    distance = EARTH_RADIUS ⋅ c
+    ```
+5. Return the distance.
+
+##### Validations
+The following validations are performed:
+- Ensure `Photo` objects are non-null and have valid `Location` data.
+- Validate that latitude and longitude are within acceptable ranges.
+
+#### Error Management
+The component ensures:
+- Invalid `Location` or `Photo` data is logged and handled gracefully.
+- Exceptional cases, such as null attributes or out-of-range coordinates, are flagged with detailed error messages.
+
+#### Implementation
+
+##### Tracker Component
+The **Tracker** component is implemented as a utility class with the following static methods:
+- `sortPhotosByDate(List<Photo>)`: Sorts photos by their `datetime` field.
+- `getDist(Photo photo1, Photo photo2)`: Calculates the distance between two `Photo` objects.
+- `calculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)`: Performs the distance calculation using the Haversine formula.
+- `getPeriod(Album album)`: Retrieves the date range of an album.
+
+## Appendix A: Product Scope
+
+### Target user profile
 
 Roadtrippers, van lifers, backpackers, and long-distance drivers who want to document their journeys efficiently. These users value convenience, real-time tracking, and the ability to relive their trips through route history.
 
-
-#### Value proposition
+### Value proposition
 The app enables roadtrippers to seamlessly track their journeys on the go. It automatically logs their geographical location, records mileage between stops, and helps them organize rest stops and key travel moments. By reducing manual input, it ensures that travelers can focus on their experience while still capturing essential trip details effortlessly.
 
-### User Stories
+## Appendix B: User Stories
 
 | Version | As a ...      | I want to ...                                        | So that I can ...                                               |
 |---------|---------------|------------------------------------------------------|------------------------------------------------------------------|
@@ -340,23 +532,27 @@ The app enables roadtrippers to seamlessly track their journeys on the go. It au
 | v2.0    | advanced user | access and edit the saved data file manually        | make bulk edits or backups directly from the storage file       |
 | v2.0    | user          | get notified about missing fields when adding items | fix input errors immediately and avoid confusion                |
 
-### Non-Functional Requirements
+## Appendix C: Non-Functional Requirements
 
-This application works on any computers that are Windows, macOS or Unix that has Java17.
+1. The application works on any computers that are Windows, macOS or Unix that has Java17.
+2. The application should respond to user commands within 2 seconds.
+3. The application should be able to handle at least 1000 trips with 100 photos each.
+4. The application should be usable by users who are comfortable with command-line interfaces.
+5. The storage file format should be human-readable to allow for manual editing if necessary.
 
-### Glossary
-* Trip - A user-defined journey or travel event that includes details such as start/end points, duration, and associated albums or photos.
-* Album - A collection of photos linked to a specific trip, used to organize visual memories captured during the journey.
-* Photo - An image file with metadata (e.g., caption, location, timestamp) that documents a specific moment within a trip.
-* PhotoFrame - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
-* TripManager - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
+## Appendix D: Glossary
 
+* **Trip** - A user-defined journey or travel event that includes details such as start/end points, duration, and associated albums or photos.
+* **Album** - A collection of photos linked to a specific trip, used to organize visual memories captured during the journey.
+* **Photo** - An image file with metadata (e.g., caption, location, timestamp) that documents a specific moment within a trip.
+* **PhotoFrame** - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
+* **TripManager** - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
+* **FSM** - Finite State Machine, a computational model used in the application to track user context and available commands.
+* **Haversine Formula** - A mathematical formula used to calculate the distance between two points on a sphere, used in the application to determine distances between photo locations.
 
-## Appendix: Instructions for Manual Testing
+## Appendix E: Instructions for Manual Testing
 
 These instructions provide a systematic approach to manually test the Travel Diary application. Each test case describes the steps to perform and the expected outcome.
-
----
 
 ### Launch and Shutdown
 
@@ -370,8 +566,6 @@ These instructions provide a systematic approach to manually test the Travel Dia
 
 - Type `bye` and press Enter  
   **Expected:** The application terminates and closes the terminal window or returns to command prompt
-
----
 
 ### Trip Management
 
@@ -432,8 +626,6 @@ These instructions provide a systematic approach to manually test the Travel Dia
 
 - **Other incorrect commands to try:** `delete`, `delete x` (where x is not a number)  
   **Expected:** Error messages explaining the correct format.
-
----
 
 ### Photo Management
 
@@ -505,8 +697,6 @@ These instructions provide a systematic approach to manually test the Travel Dia
 - **Test case:** Execute `close` without selecting a photo  
   **Expected:** Error message indicates no photo is currently selected.
 
----
-
 ### Navigation
 
 #### Returning to main menu
@@ -526,8 +716,6 @@ These instructions provide a systematic approach to manually test the Travel Dia
 
 - **Test case:** `help` on Photo Page  
   **Expected:** Displays all available commands for the Photo Page.
-
----
 
 ### Data Persistence
 
@@ -555,8 +743,6 @@ These instructions provide a systematic approach to manually test the Travel Dia
 3. Open the data file in a text editor and modify it to make it invalid JSON
 4. Restart the application  
    **Expected:** Application attempts to load the file, detects corruption, and either creates a new empty data file or displays an error message explaining the issue with the data file.
-
----
 
 ### Edge Cases
 

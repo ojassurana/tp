@@ -1,13 +1,13 @@
 @startuml TravelDiarySequenceDiagram
 
 actor User
-participant TravelDiary as Main
-participant Ui
-participant Parser
-participant CommandFactory
-participant "Command\nImplementation" as Command
-participant TripManager
-participant Storage
+participant ":TravelDiary" as Main
+participant ":Ui" as Ui
+participant ":Parser" as Parser
+participant ":CommandFactory" as CommandFactory
+participant ":Command\nImplementation" as Command
+participant ":TripManager" as TripManager
+participant ":Storage" as Storage
 
 User -> Ui : enters command
 activate Ui
