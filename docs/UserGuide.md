@@ -87,6 +87,8 @@ These are the command available when user is at the trip page. 
 
 Adds a new trip to the collection.
 
+!!! CAUTION: please refrain from entering `#` for NAME and DESCRIPTION 
+
 #### Format:
 
 ```sh
@@ -165,6 +167,7 @@ select 2
 
 After selecting a trip, users can add a new photo to the trip.
 
+!!! CAUTION: please refrain from entering `#` for FILENAME, DESCRIPTION
 #### Format:
 
 ```sh
@@ -178,7 +181,7 @@ add_photo f#desktop/bali.jpg n#Dog c#Wow
 add_photo f#desktop/Phuket.jpg n#Cat c#Amazing Fun
 ```
 
-> **Note:** This program only accepts .jpg images.
+> **Note:** This program only accepts .jpg images. Photos must be taken from a phone with internet and make sure your gps is working. If you are using a messaging app like telegram to transfer the photo please transfer it as a `FILE !!!`
 
 > **Important:** Only images with GPS data can be uploaded. You can use [Online EXIF Viewer](https://onlineexifviewer.com/) to check if your images contain GPS data before uploading them.
 
@@ -195,7 +198,7 @@ select [ID]
 #### Example Output:
 
 ```
-Caption: #summer holiday
+Caption: summer holiday
 Location: Bali beach (Nusa Dua)
 Photo Name: Beach photo
 ```
