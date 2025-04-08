@@ -77,9 +77,3 @@
     - **Appendices: Requirements (User Stories)**
 
 ---
-
-### 🤝 Community Involvement
-
-- Reviewed PRs with constructive, non-trivial feedback: [#22](#)
-- Reported and suggested improvements for other teams: [29](#)
----
