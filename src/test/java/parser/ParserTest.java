@@ -1,9 +1,10 @@
 package parser;
 
+import exception.TravelDiaryException;
 import org.junit.jupiter.api.Test;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ParserTest {
 
@@ -53,4 +54,33 @@ class ParserTest {
         // Verify the parsed result
         assertEquals("list", parsedCommand.get("command"));
     }
+
+    @Test
+    public void UnrecogniseParsing() {
+        assertThrows(exception.CommandNotRecogniseException.class, () ->
+                Parser.processInput("bla"));
+    }
+
+    public void AddTripParsingTest() {
+        Map<String, String> parsedCommand = assertDoesNotThrow(() ->
+                Parser.processInput("add_trip n#2025 Great Barrier Reef d#Summer break with family"));
+        // Verify the parsed result
+        assertEquals("add_trip", parsedCommand.get("command"));
+        assertEquals("2025 Great Barrier Reef", parsedCommand.get("name"));
+        assertEquals("Summer break with family", parsedCommand.get("description"));
+    }
+    @Test
+    public void addMissingTagParsingTest() {
+        assertThrows (exception.MissingTagsException.class,() ->
+                Parser.processInput("add_trip  d#Summer break with family"));
+    }
+
+    @Test
+    public void addDuplicateTagParsingTest() {
+        assertThrows (exception.TagException.class,() ->
+                Parser.processInput("add_trip  d#Summer break with family d#Summer break with family"));
+    }
+
+
+
 }

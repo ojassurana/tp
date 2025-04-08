@@ -80,6 +80,18 @@ public class PhotoMetadataExtractor {
         }
     }
 
+    public LocalDateTime getDatetime() {
+        return datetime;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     /**
      * Returns a map of the extracted metadata: location, latitude, longitude, and datetime.
      *
