@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.util.logging.Logger;
+
 /**
  * PhotoPrinter class creates a PhotoFrame with JLabels based on Photo details.
  * It can display the PhotoFrame in a GUI window.
@@ -22,7 +23,6 @@ import java.util.logging.Logger;
  */
 public class PhotoPrinter {
 
-    private static final String locationPinIconPath = "assets/photo_Location_Pin.png";
     private static final Logger logger = Logger.getLogger(PhotoPrinter.class.getName());
 
     /**
@@ -56,11 +56,6 @@ public class PhotoPrinter {
         assert originalIcon.getIconWidth() > 0 : "Image icon width must be greater than 0";
         assert originalIcon.getIconHeight() > 0 : "Image icon height must be greater than 0";
 
-        // Resize the location pin icon
-        ImageIcon locationIcon = new ImageIcon(locationPinIconPath);
-        Image scaledLocationImage = locationIcon.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
-        locationIcon = new ImageIcon(scaledLocationImage);
-
         // Format the datetime
         LocalDateTime dateTime = photo.getDatetime();
         assert dateTime != null : "Photo datetime cannot be null";
@@ -69,7 +64,7 @@ public class PhotoPrinter {
 
         // Create a label for location and datetime
         String locationAndDateText = photo.getLocation() + " | " + formattedDate;
-        JLabel locationLabel = new JLabel(locationAndDateText, locationIcon, SwingConstants.CENTER);
+        JLabel locationLabel = new JLabel(locationAndDateText, SwingConstants.CENTER);
         locationLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
         locationLabel.setForeground(Color.DARK_GRAY);
 
