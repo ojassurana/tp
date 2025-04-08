@@ -1,11 +1,15 @@
 package storage;
 
 import com.drew.imaging.ImageProcessingException;
-import exception.FileFormatException;
 import exception.FileReadException;
+import exception.FileFormatException;
 import exception.FileWriteException;
 import exception.NoMetaDataException;
 import exception.TravelDiaryException;
+import exception.DuplicateFilepathException;
+import exception.DuplicateNameException;
+import exception.MetadataFilepathNotFound;
+import exception.MissingCompulsoryParameter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -58,7 +62,8 @@ class StorageTest {
 
     @Test
     void saveAndLoadTrips() throws TravelDiaryException, FileWriteException, FileReadException, FileFormatException,
-            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException {
+            ImageProcessingException, IOException, NoSuchAlgorithmException, NoMetaDataException,
+            DuplicateNameException, MissingCompulsoryParameter, MetadataFilepathNotFound, DuplicateFilepathException {
         // Create some test trips
         tripManager.addTrip("Test Trip 1", "Test Description 1");
         tripManager.addTrip("Test Trip 2", "Test Description 2");
@@ -71,7 +76,8 @@ class StorageTest {
         // Add photos to trips using a real image with metadata
         LocalDateTime photoTime = LocalDateTime.now();
 
-        trip1.album.addPhoto(copyRealTestPhoto("data/photos/samurai.jpg"), "Photo 1", "Caption 1", photoTime);
+        trip1.album.addPhoto(copyRealTestPhoto("data/photos/samurai.jpg"), "Photo 1",
+                "Caption 1", photoTime);
         trip2.album.addPhoto(copyRealTestPhoto("data/photos/clem_with_metadata.jpg"),
                 "Photo 2", "Caption 2", photoTime);
         // Save trips
@@ -186,7 +192,8 @@ class StorageTest {
     }
 
     @Test
-    void saveTripsToNonExistentParentDirectory() throws FileWriteException, TravelDiaryException {
+    void saveTripsToNonExistentParentDirectory() throws FileWriteException, TravelDiaryException,
+            DuplicateNameException, MissingCompulsoryParameter {
         // Create a file path with a non-existent parent directory
         String nonExistentParentPath = tempDir.resolve("nonexistentParentDir/test_trips.dat").toString();
 

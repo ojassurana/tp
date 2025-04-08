@@ -51,7 +51,7 @@ public class Storage {
         }
 
         // Validate file format before processing
-        validateFileFormat(dataFile, filePath);
+        validateFileFormat(dataFile, filePath); // need to ctach the error to indicate that the first line is corrupted
 
         // Store current silent mode and set to requested mode
         boolean originalSilentMode = tripManager.isSilentMode();
