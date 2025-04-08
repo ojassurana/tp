@@ -1,5 +1,5 @@
 @startuml
-actor User
+actor TravelDiary
 
 
 participant ":AddPhotoCommand" as AddPhotoCommand
@@ -9,9 +9,9 @@ participant ":Album" as Album
 participant ":Photo" as Photo
 participant ":PhotoMetadataExtractor" as PhotoMetadataExtractor
 participant ":Metadata" as Metadata
-participant ":Location" as location
+participant ":Location" as Location
 
-User     -> AddPhotoCommand: AddPhotoCommand(filepath, photoname, caption)
+TravelDiary -> AddPhotoCommand: AddPhotoCommand(filepath, photoname, caption)
 activate AddPhotoCommand
 
 AddPhotoCommand -> AddPhotoCommand: execute(tripManager, ui, fsmValue)
