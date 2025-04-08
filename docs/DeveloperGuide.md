@@ -351,7 +351,6 @@ This application works on any computers that are Windows, macOS or Unix that has
 * PhotoFrame - A graphical component responsible for rendering a photo and its metadata in a visually appealing layout.
 * TripManager - A utility class or module responsible for creating and managing Trip objects during data loading and application runtime.
 
-## Appendix: Instructions for manual testing
 
 ## Appendix: Instructions for Manual Testing
 

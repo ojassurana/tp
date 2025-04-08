@@ -2,11 +2,15 @@ package storage;
 
 import album.Album;
 import com.drew.imaging.ImageProcessingException;
-import exception.FileFormatException;
 import exception.NoMetaDataException;
-import exception.PhotoLoadException;
+import exception.FileFormatException;
 import exception.TravelDiaryException;
+import exception.MissingCompulsoryParameter;
+import exception.MetadataFilepathNotFound;
+import exception.DuplicateFilepathException;
+import exception.DuplicateNameException;
 import exception.TripLoadException;
+import exception.PhotoLoadException;
 import trip.Trip;
 import trip.TripManager;
 
@@ -24,6 +28,7 @@ import java.util.logging.Logger;
 public class StorageReader {
     private static final Logger logger = Logger.getLogger(StorageReader.class.getName());
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static boolean isTripCorrupted = false;
 
     /**
      * Reads trips from a file and adds them to the trip manager
@@ -41,8 +46,8 @@ public class StorageReader {
     /**
      * Process all lines in the file
      */
-    private static List<Trip> processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
-            throws IOException, FileFormatException, NoMetaDataException {
+    private static void processFileLines(BufferedReader reader, TripManager tripManager, String filePath)
+            throws FileFormatException, IOException , NoMetaDataException {
         List<Trip> trips = new ArrayList<>();
         String line;
         Trip currentTrip = null;
@@ -50,9 +55,15 @@ public class StorageReader {
 
         while ((line = reader.readLine()) != null) {
             lineNumber++;
+            String[] parts = splitByDelimiter(line, Storage.DELIMITER);
+            // if a trip is corrupted, skip the photos and album inside the corrupted trip until a
+            // new trip is encountered
+            if (isTripCorrupted && !parts[0].equals(Storage.TRIP_MARKER)){
+                continue;
+            }
+            isTripCorrupted = false;
             try {
                 // Improved splitting logic to handle DELIMITER correctly
-                String[] parts = splitByDelimiter(line, Storage.DELIMITER);
 
                 if (parts.length == 0) {
                     throw new FileFormatException(filePath, line);
@@ -73,21 +84,25 @@ public class StorageReader {
                 default:
                     throw new FileFormatException(filePath, "Unknown marker: " + marker);
                 }
-            } catch (TripLoadException | PhotoLoadException e) {
+            } catch (TripLoadException  e) {
                 // Propagate these exceptions without wrapping
-                throw e;
+                System.out.println(10);
+                isTripCorrupted = true;
+            } catch (PhotoLoadException e) {
+                // Propagate these exceptions without wrapping
+                System.out.println(11);
             } catch (Exception e) {
                 // Only wrap if it's not already a FileFormatException
                 if (!(e instanceof FileFormatException)) {
                     throw new FileFormatException(filePath, lineNumber, e);
                 }
-                throw e;
+                System.out.println(e.getMessage());
+                //throw e;
             }
         }
 
         // Add the last trip to the list if there is one
         addRemainingTrip(currentTrip, trips);
-        return trips;
     }
 
     /**
@@ -189,8 +204,15 @@ public class StorageReader {
         return line.substring(position, position + delimiter.length()).equals(delimiter);
     }
 
+
     /**
-     * Creates a trip from a line
+     * create trips from a line
+     * @param parts
+     * @param tripManager
+     * @param filePath
+     * @return trip
+     * @throws TripLoadException error that stems when creating trip object
+     * @throws FileFormatException error that stems when the txt file is not valid
      */
     private static Trip createTrip(String[] parts, TripManager tripManager, String filePath)
             throws TripLoadException, FileFormatException {
@@ -204,7 +226,7 @@ public class StorageReader {
             Trip newTrip = tripManager.addTripSilently(name, description);
             ensureTripHasAlbum(newTrip);
             return newTrip;
-        } catch (TravelDiaryException e) {
+        } catch (TravelDiaryException|MissingCompulsoryParameter|DuplicateNameException e) {
             String tripName = "unknown";
             if (parts.length > 1) {
                 tripName = StringEncoder.decodeString(parts[1]);
@@ -218,6 +240,7 @@ public class StorageReader {
      */
     private static void validateTripFormat(String[] parts, String filePath) throws FileFormatException {
         if (parts.length < 3) {
+            isTripCorrupted = true;
             throw new FileFormatException(filePath, String.join(Storage.DELIMITER, parts));
         }
     }
@@ -247,7 +270,8 @@ public class StorageReader {
             addPhotoWithSilentMode(currentTrip, photoPath, photoName, caption, photoTime);
         } catch (DateTimeParseException e) {
             throw new FileFormatException(filePath, lineNumber, e);
-        } catch (TravelDiaryException | ImageProcessingException | IOException e) {
+        } catch (TravelDiaryException | ImageProcessingException | MetadataFilepathNotFound |
+                 DuplicateNameException | DuplicateFilepathException e) {
             String photoName = extractPhotoNameForError(parts, 2);
             String photoPath = extractPhotoNameForError(parts, 1);
             throw new PhotoLoadException(photoName, photoPath, e);
@@ -259,7 +283,8 @@ public class StorageReader {
      */
     private static void addPhotoWithSilentMode(Trip trip, String photoPath, String photoName,
                                                String caption, LocalDateTime photoTime)
-            throws TravelDiaryException, ImageProcessingException, IOException, NoMetaDataException {
+            throws TravelDiaryException, ImageProcessingException, MetadataFilepathNotFound, NoMetaDataException,
+            DuplicateNameException, DuplicateFilepathException {
         // Get current album silent mode setting before adding photo
         boolean originalSilentMode = trip.album.isSilentMode();
         // Use silent mode during loading
