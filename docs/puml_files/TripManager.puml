@@ -1,18 +1,16 @@
 @startuml
 hide circle
 skinparam classAttributeIconSize 0
+
 package trip {
 
 class TripManager {
     - trips: List<Trip>
     - selectedTrip: Trip
     + addTrip(name: String, description: String): void
-    + addTripSilently(name: String, description: String): Trip
-    + setSelectedTrip(selectedTrip: Trip): void
     + deleteTrip(index: int): void
     + viewTrips(): void
     + selectTrip(index: int): void
-    + getSelectedTrip(): Trip
     + getTrips(): List<Trip>
 }
 
@@ -21,13 +19,45 @@ class Trip {
     - description: String
     - album: Album
     + Trip(name: String, description: String)
-    + getAlbumDetails(): String
-    + getAlbum(): Album
+}
+
+class Album {
+    - photos: List<Photo>
+    - selectedPhoto: Photo
+    + addPhoto(filePath: String, photoName: String, caption: String, datetime: LocalDateTime): void
+    + addPhoto(filePath: String, photoName: String, caption: String): void
+    + deletePhoto(index: int): void
+    + viewPhotos(): void
+    + getPhotos(): List<Photo>
+    + setSelectedPhoto(selectedPhoto: Photo): void
+    + selectPhoto(index: int): void
+}
+
+class Photo {
+    + getPhotoName(): String
+    + getFilePath(): String
     + toString(): String
 }
 
-TripManager --> Trip : manages >
-Trip --> Album : contains >
-Trip --> Tracker : uses >
+class Tracker {
+    + sortPhotosByDate(photos: List<Photo>): void
+    + getDist(photo1: Photo, photo2: Photo): String
 }
+
+class PhotoFrame
+class PhotoPrinter {
+    + createFrame(photo: Photo): PhotoFrame
+    + display(photoFrame: PhotoFrame): void
+}
+
+TripManager "0..*" --> "1" Trip : manages >
+Trip "1" --> "1" Album : contains >
+Album "0..*" --> "1" Photo : contains >
+Album --> PhotoPrinter : uses >
+Album --> Tracker : uses >
+PhotoPrinter --> PhotoFrame : creates >
+PhotoPrinter --> Photo : uses >
+
+}
+
 @enduml
