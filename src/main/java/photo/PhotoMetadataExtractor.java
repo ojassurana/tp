@@ -36,10 +36,16 @@ public class PhotoMetadataExtractor {
     private double latitude;
     private double longitude;
 
+
     /**
      * Constructs a PhotoMetadataExtractor to read metadata from the given file path.
+     * The metadata extracted will be longitude, latitude and datetime of photo taken and store inside the attribute
      *
-     * @param filepath the path to the image file
+     *
+     * @param filepath image filepath
+     * @throws ImageProcessingException Error from API
+     * @throws NoMetaDataException Exception due to missing gps or datetime metadata
+     * @throws MetadataFilepathNotFound Exception due to picture having no metadata at all
      */
     public PhotoMetadataExtractor(String filepath) throws ImageProcessingException, NoMetaDataException,
             MetadataFilepathNotFound {

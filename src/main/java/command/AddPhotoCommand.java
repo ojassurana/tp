@@ -52,11 +52,13 @@ public class AddPhotoCommand extends Command {
      * @param ui the user interface to display results
      * @param fsmValue the current finite state machine value (should be 1)
      * @throws TravelDiaryException if the tripManager or selected trip is null
-     * @throws MissingCompulsoryParameter if a required parameter is missing
-     * @throws IOException if there is an error reading the photo file
      * @throws ImageProcessingException if there is an error processing the image
      * @throws NoMetaDataException if required metadata cannot be extracted from the photo
+     * @throws MetadataFilepathNotFound metadata filepath can not be found
+     * @throws DuplicateNameException exception due to same photo name in album
+     * @throws DuplicateFilepathException exception due to same photo filepath in album
      */
+
     @Override
     public void execute(TripManager tripManager, Ui ui, int fsmValue) throws
             TravelDiaryException, ImageProcessingException,
