@@ -11,9 +11,8 @@ public class NoMetaDataException extends Exception {
     public static final String GUIDE = "\n\tPlease upload an actual photo taken using a phone's camera.\n" +
             "\n\tStep by Step Guide:\n" +
             "\t1) Take a photo with your phone's camera.\n" +
-            "\t2) Save the photo to your computer as a file (jpeg).\n" +
-            "\t3) If using messengers like Telegram, please send the image as a FILE and not as a compressed image.\n";
-
+            "\t2) Save the photo to your computer as a file (jpg).\n" +
+            "\t3) Otherwise, please convert your image to jpg format and ensure that meta data is available.\n";
     /**
      * Constructs a NoMetaDataException with a custom message.
      * @param message The custom message describing the exception.
