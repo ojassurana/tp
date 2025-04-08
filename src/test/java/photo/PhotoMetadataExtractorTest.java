@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class PhotoMetadataExtractorTest {
 
@@ -15,7 +17,8 @@ class PhotoMetadataExtractorTest {
     }
     @Test
     void extractMetadata(){
-        PhotoMetadataExtractor photoMetadataExtractor = assertDoesNotThrow(() -> new PhotoMetadataExtractor("./data/photos/group_photo.jpg"));
+        PhotoMetadataExtractor photoMetadataExtractor = assertDoesNotThrow(() -> new
+                PhotoMetadataExtractor("./data/photos/group_photo.jpg"));
         assertEquals(35.693691666666666, photoMetadataExtractor.getLatitude());
         assertEquals(139.701325, photoMetadataExtractor.getLongitude());
         LocalDateTime dateTime = LocalDateTime.parse("2024-05-19T02:14:53");

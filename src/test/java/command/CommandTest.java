@@ -6,7 +6,6 @@ import exception.InvalidIndexException;
 import exception.TravelDiaryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import photo.Photo;
 import trip.TripManager;
 import ui.Ui;
 
