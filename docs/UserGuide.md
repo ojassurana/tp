@@ -87,6 +87,8 @@ These are the command available when user is at the trip page. 
 
 Adds a new trip to the collection.
 
+!!! CAUTION: please refrain from entering `#` for NAME and DESCRIPTION 
+
 #### Format:
 
 ```sh
@@ -165,6 +167,7 @@ select 2
 
 After selecting a trip, users can add a new photo to the trip.
 
+!!! CAUTION: please refrain from entering `#` for FILENAME, DESCRIPTION
 #### Format:
 
 ```sh
@@ -195,7 +198,7 @@ select [ID]
 #### Example Output:
 
 ```
-Caption: #summer holiday
+Caption: summer holiday
 Location: Bali beach (Nusa Dua)
 Photo Name: Beach photo
 ```
