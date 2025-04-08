@@ -1,8 +1,8 @@
 @startuml
-participant Storage
-participant StorageWriter
-participant BufferedWriter
-participant StringEncoder
+participant ":Storage" as Storage
+participant ":StorageWriter" as StorageWriter
+participant ":BufferedWriter" as BufferedWriter
+participant ":StringEncoder" as StringEncoder
 
 Storage -> StorageWriter : writeTripsToFile(trips, dataFile, filePath)
 activate StorageWriter
