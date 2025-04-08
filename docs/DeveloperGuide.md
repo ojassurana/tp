@@ -142,7 +142,7 @@ Commands are executed based on the current FSM state, ensuring context-appropria
 ##### Parsing Input
 The parsing process convert input and return hashmap which will be processed by CommandFactory.
 
-![Sequence diagram for parsing data](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/Parser%20sequence%20diagram.png)
+![Sequence diagram for parsing data](puml_pics/ParserSequenceDiagram.png)
 
 The sequence diagram above illustrates how the parsing process works:
 
@@ -153,7 +153,7 @@ The sequence diagram above illustrates how the parsing process works:
 ##### Command Sequence
 The hashmap will be process based on its Command key value in the hashmap
 
-![Sequence diagram for command process](https://raw.githubusercontent.com/AY2425S2-CS2113-W11-3/tp/refs/heads/master/docs/command%20sequence%20diagram.png)
+![Sequence diagram for command process](puml_pics/CommandSequenceDiagram.png)
 
 The sequence diagram above illustrates how command processing works:
 
